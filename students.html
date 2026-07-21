@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    name="description"
+    content="Flight-training resources for FlyWithAngus students, including safety tools, FAA regulations, Airman Certification Standards, handbooks, and rating-specific study guides."
+  />
+  <meta name="theme-color" content="#f5f5f7" />
+  <title>Student Resources | FlyWithAngus</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="students.css" />
+  <script src="script.js" defer></script>
+</head>
+<body class="students-page">
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header" id="top">
+    <nav class="nav container" aria-label="Primary navigation">
+      <a class="brand" href="index.html" aria-label="FlyWithAngus home">
+        <span class="brand-mark" aria-hidden="true">A</span>
+        <span>FlyWithAngus</span>
+      </a>
+
+      <button
+        class="nav-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="nav-links"
+        aria-label="Open navigation"
+      >
+        <span></span>
+        <span></span>
+      </button>
+
+      <div class="nav-links" id="nav-links">
+        <a href="index.html">Home</a>
+        <a href="students.html" aria-current="page">Students</a>
+        <a href="index.html#instruction">Instruction</a>
+        <a href="index.html#about">About</a>
+        <a class="nav-cta" href="index.html#booking">Book a flight</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <section class="student-hero section">
+      <div class="container student-hero-grid">
+        <div class="student-hero-copy reveal">
+          <p class="eyebrow">Student resources</p>
+          <h1>Your training, organised.</h1>
+          <p class="student-hero-lead">
+            A practical home base for the documents, study material, safety tools,
+            and official references you will use throughout flight training.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#training-path">Choose your stage</a>
+            <a class="button button-secondary" href="#faa-library">Open FAA library</a>
+          </div>
+          <p class="hero-note">
+            Start with your current training stage, then use the safety and FAA sections as ongoing references.
+          </p>
+        </div>
+
+        <div class="training-route-card reveal" aria-label="Flight training progression">
+          <div class="route-card-heading">
+            <div>
+              <span class="card-label">Training route</span>
+              <strong>From first lesson to professional standards</strong>
+            </div>
+            <span class="route-card-badge">FAA</span>
+          </div>
+
+          <div class="training-route" aria-hidden="true">
+            <div class="training-route-track"></div>
+            <div class="training-stop training-stop-complete">
+              <span>01</span>
+              <strong>Start</strong>
+            </div>
+            <div class="training-stop">
+              <span>02</span>
+              <strong>Solo</strong>
+            </div>
+            <div class="training-stop">
+              <span>03</span>
+              <strong>Private</strong>
+            </div>
+            <div class="training-stop">
+              <span>04</span>
+              <strong>Instrument</strong>
+            </div>
+            <div class="training-stop">
+              <span>05</span>
+              <strong>Commercial</strong>
+            </div>
+          </div>
+
+          <div class="route-card-footer">
+            <span>Learn</span>
+            <span>Practice</span>
+            <span>Apply</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <nav class="resource-jumpbar" aria-label="Student resource sections">
+      <div class="container resource-jumpbar-inner">
+        <a href="#safety">Safety</a>
+        <a href="#angus-resources">Training resources</a>
+        <a href="#faa-library">FAA library</a>
+        <a href="#training-path">By rating</a>
+      </div>
+    </nav>
+
+    <section class="section" id="safety">
+      <div class="container">
+        <div class="section-heading reveal">
+          <p class="eyebrow">Safety first</p>
+          <h2>Good flying starts before the engine does.</h2>
+          <p>
+            Use these tools to build sound habits around risk management, weather,
+            personal readiness, and continuing proficiency.
+          </p>
+        </div>
+
+        <div class="resource-grid resource-grid-featured">
+          <a
+            class="resource-card resource-card-featured reveal"
+            href="https://www.faa.gov/faasteam"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <div class="resource-card-topline">
+              <span class="resource-icon" aria-hidden="true">✓</span>
+              <span class="resource-source">FAA</span>
+            </div>
+            <h3>FAASTeam &amp; WINGS</h3>
+            <p>Free safety courses, seminars, proficiency activities, and recurrent-training credit.</p>
+            <span class="resource-link">Open safety training <span aria-hidden="true">↗</span></span>
+          </a>
+
+          <a
+            class="resource-card reveal"
+            href="https://aviationweather.gov/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <div class="resource-card-topline">
+              <span class="resource-icon" aria-hidden="true">☁</span>
+              <span class="resource-source">NWS</span>
+            </div>
+            <h3>Aviation Weather Center</h3>
+            <p>Official observations, forecasts, G-AIRMETs, SIGMETs, PIREPs, radar, and planning tools.</p>
+            <span class="resource-link">Check aviation weather <span aria-hidden="true">↗</span></span>
+          </a>
+
+          <a
+            class="resource-card reveal"
+            href="https://www.faa.gov/pilots/safety"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <div class="resource-card-topline">
+              <span class="resource-icon" aria-hidden="true">!</span>
+              <span class="resource-source">FAA</span>
+            </div>
+            <h3>Pilot safety hub</h3>
+            <p>Safety alerts, risk-management publications, medical-fitness guidance, and reporting resources.</p>
+            <span class="resource-link">Browse safety material <span aria-hidden="true">↗</span></span>
+          </a>
+
+          <article class="resource-card reveal">
+            <div class="resource-card-topline">
+              <span class="resource-icon" aria-hidden="true">P</span>
+              <span class="resource-source resource-source-angus">FlyWithAngus</span>
+            </div>
+            <h3>Personal minimums worksheet</h3>
+            <p>A simple aircraft, environment, pilot, and external-pressure check for use before every flight.</p>
+            <span class="resource-link resource-link-muted">Worksheet coming soon</span>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt" id="angus-resources">
+      <div class="container">
+        <div class="section-heading reveal">
+          <p class="eyebrow">FlyWithAngus resources</p>
+          <h2>Built around the way we train.</h2>
+          <p>
+            This section is ready for your own briefing sheets, lesson guides,
+            checklists, study plans, and downloadable training material.
+          </p>
+        </div>
+
+        <div class="resource-grid">
+          <article class="resource-card reveal">
+            <div class="resource-card-topline">
+              <span class="resource-type">Getting started</span>
+              <span class="resource-status">Coming soon</span>
+            </div>
+            <h3>New-student guide</h3>
+            <p>What to bring, how lessons are structured, aircraft documents, logbooks, and expectations.</p>
+            <span class="resource-link resource-link-muted">PDF guide</span>
+          </article>
+
+          <article class="resource-card reveal">
+            <div class="resource-card-topline">
+              <span class="resource-type">Briefing</span>
+              <span class="resource-status">Coming soon</span>
+            </div>
+            <h3>Preflight briefing template</h3>
+            <p>A repeatable flow for weather, NOTAMs, performance, fuel, risk, and diversion planning.</p>
+            <span class="resource-link resource-link-muted">Printable worksheet</span>
+          </article>
+
+          <article class="resource-card reveal">
+            <div class="resource-card-topline">
+              <span class="resource-type">Flight lessons</span>
+              <span class="resource-status">Coming soon</span>
+            </div>
+            <h3>Maneuver guides</h3>
+            <p>Objectives, setup, standards, common errors, and debrief points for each maneuver.</p>
+            <span class="resource-link resource-link-muted">Lesson library</span>
+          </article>
+
+          <article class="resource-card reveal">
+            <div class="resource-card-topline">
+              <span class="resource-type">Cross-country</span>
+              <span class="resource-status">Coming soon</span>
+            </div>
+            <h3>Navigation planning pack</h3>
+            <p>Route selection, fuel calculations, alternates, airspace review, and in-flight replanning.</p>
+            <span class="resource-link resource-link-muted">Planning pack</span>
+          </article>
+
+          <article class="resource-card reveal">
+            <div class="resource-card-topline">
+              <span class="resource-type">Checkride</span>
+              <span class="resource-status">Coming soon</span>
+            </div>
+            <h3>Checkride readiness tracker</h3>
+            <p>Track knowledge, risk-management, and flight-skill items against the applicable ACS.</p>
+            <span class="resource-link resource-link-muted">Progress tracker</span>
+          </article>
+
+          <article class="resource-card resource-card-ask reveal">
+            <div class="resource-card-topline">
+              <span class="resource-type">Need something?</span>
+              <span class="resource-icon resource-icon-small" aria-hidden="true">→</span>
+            </div>
+            <h3>Ask Angus</h3>
+            <p>Not sure which document or study area applies to your next lesson? Send me a message.</p>
+            <a class="resource-link" href="mailto:angus@flywithangus.com">angus@flywithangus.com</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="faa-library">
+      <div class="container">
+        <div class="section-heading reveal">
+          <p class="eyebrow">Official FAA library</p>
+          <h2>The source material that matters.</h2>
+          <p>
+            These links lead to live government sources so students can confirm the
+            current regulation, standard, or publication rather than relying on an old copy.
+          </p>
+        </div>
+
+        <div class="library-layout">
+          <div class="library-column reveal">
+            <div class="library-heading">
+              <span class="library-number">01</span>
+              <div>
+                <p class="card-kicker">Rules &amp; standards</p>
+                <h3>Regulations and testing</h3>
+              </div>
+            </div>
+
+            <a class="library-row" href="https://www.ecfr.gov/current/title-14/chapter-I/subchapter-D/part-61" target="_blank" rel="noopener noreferrer">
+              <span><strong>14 CFR Part 61</strong><small>Certification: pilots, instructors, and ground instructors</small></span>
+              <span aria-hidden="true">↗</span>
+            </a>
+            <a class="library-row" href="https://www.ecfr.gov/current/title-14/chapter-I/subchapter-F/part-91" target="_blank" rel="noopener noreferrer">
+              <span><strong>14 CFR Part 91</strong><small>General operating and flight rules</small></span>
+              <span aria-hidden="true">↗</span>
+            </a>
+            <a class="library-row" href="https://www.faa.gov/training_testing/testing/acs" target="_blank" rel="noopener noreferrer">
+              <span><strong>Airman Certification Standards</strong><small>Current ACS documents and companion guidance</small></span>
+              <span aria-hidden="true">↗</span>
+            </a>
+            <a class="library-row" href="https://www.faa.gov/air_traffic/publications/atpubs/aim_html/" target="_blank" rel="noopener noreferrer">
+              <span><strong>Aeronautical Information Manual</strong><small>FAA guide to flight information and ATC procedures</small></span>
+              <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+
+          <div class="library-column reveal">
+            <div class="library-heading">
+              <span class="library-number">02</span>
+              <div>
+                <p class="card-kicker">Knowledge &amp; technique</p>
+                <h3>Handbooks and manuals</h3>
+              </div>
+            </div>
+
+            <a class="library-row" href="https://www.faa.gov/regulations_policies/handbooks_manuals/aviation/phak" target="_blank" rel="noopener noreferrer">
+              <span><strong>Pilot’s Handbook of Aeronautical Knowledge</strong><small>Core aeronautical knowledge for pilots</small></span>
+              <span aria-hidden="true">↗</span>
+            </a>
+            <a class="library-row" href="https://www.faa.gov/regulations_policies/handbooks_manuals/aviation/airplane_handbook" target="_blank" rel="noopener noreferrer">
+              <span><strong>Airplane Flying Handbook</strong><small>Flight maneuvers, operations, and technique</small></span>
+              <span aria-hidden="true">↗</span>
+            </a>
+            <a class="library-row" href="https://www.faa.gov/regulations_policies/handbooks_manuals/aviation/instrument_procedures_handbook" target="_blank" rel="noopener noreferrer">
+              <span><strong>Instrument Procedures Handbook</strong><small>Departures, en route operations, arrivals, and approaches</small></span>
+              <span aria-hidden="true">↗</span>
+            </a>
+            <a class="library-row" href="https://www.faa.gov/regulations_policies/handbooks_manuals/aviation" target="_blank" rel="noopener noreferrer">
+              <span><strong>Complete aviation handbook library</strong><small>Weather, risk management, charts, instruments, and more</small></span>
+              <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="official-source-note reveal">
+          <span aria-hidden="true">i</span>
+          <p>
+            Regulations, ACS documents, and FAA publications can change. Use these live links and
+            confirm questions with your instructor rather than relying on saved screenshots or old PDFs.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt" id="training-path">
+      <div class="container">
+        <div class="section-heading reveal">
+          <p class="eyebrow">Training path</p>
+          <h2>Go straight to your current stage.</h2>
+          <p>
+            Each section combines the most useful official references with the specific
+            skills and decisions we will focus on during training.
+          </p>
+        </div>
+
+        <div class="stage-list">
+          <article class="stage-card reveal" id="first-solo">
+            <div class="stage-card-side">
+              <span class="stage-number">01</span>
+              <p>Student pilot</p>
+            </div>
+            <div class="stage-card-main">
+              <div class="stage-card-heading">
+                <div>
+                  <p class="card-kicker">First milestone</p>
+                  <h3>First solo</h3>
+                </div>
+                <span class="stage-tag">Foundations</span>
+              </div>
+              <p class="stage-intro">
+                Build consistent aircraft control, traffic-pattern judgement, radio discipline,
+                go-around decisions, and safe independence before flying alone.
+              </p>
+              <div class="stage-focus-grid">
+                <div>
+                  <strong>Training focus</strong>
+                  <ul>
+                    <li>Preflight preparation and aircraft documents</li>
+                    <li>Normal, crosswind, and go-around procedures</li>
+                    <li>Emergency procedures and sound judgement</li>
+                  </ul>
+                </div>
+                <div>
+                  <strong>Official references</strong>
+                  <div class="stage-links">
+                    <a href="https://www.ecfr.gov/current/title-14/chapter-I/subchapter-D/part-61/subpart-C/section-61.87" target="_blank" rel="noopener noreferrer">§ 61.87 Solo requirements ↗</a>
+                    <a href="https://www.faa.gov/regulations_policies/handbooks_manuals/aviation/airplane_handbook" target="_blank" rel="noopener noreferrer">Airplane Flying Handbook ↗</a>
+                    <a href="https://www.faa.gov/regulations_policies/handbooks_manuals/aviation/phak" target="_blank" rel="noopener noreferrer">PHAK ↗</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="stage-card reveal" id="private-pilot">
+            <div class="stage-card-side">
+              <span class="stage-number">02</span>
+              <p>Private pilot</p>
+            </div>
+            <div class="stage-card-main">
+              <div class="stage-card-heading">
+                <div>
+                  <p class="card-kicker">Certificate</p>
+                  <h3>Private pilot training</h3>
+                </div>
+                <span class="stage-tag">VFR mastery</span>
+              </div>
+              <p class="stage-intro">
+                Turn basic aircraft control into complete flight planning, navigation,
+                airspace management, weather judgement, and passenger-carrying competence.
+              </p>
+              <div class="stage-focus-grid">
+                <div>
+                  <strong>Training focus</strong>
+                  <ul>
+                    <li>Cross-country planning and diversions</li>
+                    <li>Performance, weight and balance, and limitations</li>
+                    <li>ACS-level knowledge, risk management, and flight skills</li>
+                  </ul>
+                </div>
+                <div>
+                  <strong>Official references</strong>
+                  <div class="stage-links">
+                    <a href="https://www.ecfr.gov/current/title-14/chapter-I/subchapter-D/part-61/subpart-E/section-61.103" target="_blank" rel="noopener noreferrer">§ 61.103 Eligibility ↗</a>
+                    <a href="https://www.ecfr.gov/current/title-14/chapter-I/subchapter-D/part-61/subpart-E/section-61.109" target="_blank" rel="noopener noreferrer">§ 61.109 Experience ↗</a>
+                    <a href="https://www.faa.gov/training_testing/testing/acs" target="_blank" rel="noopener noreferrer">Private Pilot ACS ↗</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="stage-card reveal" id="instrument-rating">
+            <div class="stage-card-side">
+              <span class="stage-number">03</span>
+              <p>Instrument</p>
+            </div>
+            <div class="stage-card-main">
+              <div class="stage-card-heading">
+                <div>
+                  <p class="card-kicker">Rating</p>
+                  <h3>Instrument training</h3>
+                </div>
+                <span class="stage-tag">IFR systems</span>
+              </div>
+              <p class="stage-intro">
+                Develop disciplined instrument flying, procedural awareness, weather judgement,
+                clearance management, and workload control in the IFR system.
+              </p>
+              <div class="stage-focus-grid">
+                <div>
+                  <strong>Training focus</strong>
+                  <ul>
+                    <li>Attitude-instrument flying and automation management</li>
+                    <li>Clearances, departures, arrivals, holds, and approaches</li>
+                    <li>IFR weather, alternates, fuel, and missed-approach decisions</li>
+                  </ul>
+                </div>
+                <div>
+                  <strong>Official references</strong>
+                  <div class="stage-links">
+                    <a href="https://www.ecfr.gov/current/title-14/chapter-I/subchapter-D/part-61/subpart-B/section-61.65" target="_blank" rel="noopener noreferrer">§ 61.65 Instrument rating ↗</a>
+                    <a href="https://www.faa.gov/training_testing/testing/acs" target="_blank" rel="noopener noreferrer">Instrument Rating ACS ↗</a>
+                    <a href="https://www.faa.gov/regulations_policies/handbooks_manuals/aviation/instrument_procedures_handbook" target="_blank" rel="noopener noreferrer">Instrument Procedures Handbook ↗</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="stage-card reveal" id="commercial-pilot">
+            <div class="stage-card-side">
+              <span class="stage-number">04</span>
+              <p>Commercial</p>
+            </div>
+            <div class="stage-card-main">
+              <div class="stage-card-heading">
+                <div>
+                  <p class="card-kicker">Certificate</p>
+                  <h3>Commercial pilot training</h3>
+                </div>
+                <span class="stage-tag">Professionalism</span>
+              </div>
+              <p class="stage-intro">
+                Refine precision, energy management, aircraft mastery, aeronautical judgement,
+                and professional consistency beyond private-pilot standards.
+              </p>
+              <div class="stage-focus-grid">
+                <div>
+                  <strong>Training focus</strong>
+                  <ul>
+                    <li>Commercial maneuvers and energy management</li>
+                    <li>Advanced systems, performance, and operational decisions</li>
+                    <li>Professional briefings, standards, and self-evaluation</li>
+                  </ul>
+                </div>
+                <div>
+                  <strong>Official references</strong>
+                  <div class="stage-links">
+                    <a href="https://www.ecfr.gov/current/title-14/chapter-I/subchapter-D/part-61/subpart-F/section-61.123" target="_blank" rel="noopener noreferrer">§ 61.123 Eligibility ↗</a>
+                    <a href="https://www.ecfr.gov/current/title-14/chapter-I/subchapter-D/part-61/subpart-F/section-61.129" target="_blank" rel="noopener noreferrer">§ 61.129 Experience ↗</a>
+                    <a href="https://www.faa.gov/training_testing/testing/acs" target="_blank" rel="noopener noreferrer">Commercial Pilot ACS ↗</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="stage-card reveal" id="recurrent-training">
+            <div class="stage-card-side">
+              <span class="stage-number">05</span>
+              <p>Recurrent</p>
+            </div>
+            <div class="stage-card-main">
+              <div class="stage-card-heading">
+                <div>
+                  <p class="card-kicker">Stay sharp</p>
+                  <h3>Flight reviews &amp; proficiency</h3>
+                </div>
+                <span class="stage-tag">Continuous learning</span>
+              </div>
+              <p class="stage-intro">
+                Keep legal currency separate from genuine proficiency and use recurrent training
+                to address the risks, missions, and aircraft that matter to your flying.
+              </p>
+              <div class="stage-focus-grid">
+                <div>
+                  <strong>Training focus</strong>
+                  <ul>
+                    <li>Scenario-based decision-making and risk management</li>
+                    <li>Emergency, abnormal, and proficiency work</li>
+                    <li>Instrument currency, flight reviews, and WINGS activities</li>
+                  </ul>
+                </div>
+                <div>
+                  <strong>Official references</strong>
+                  <div class="stage-links">
+                    <a href="https://www.ecfr.gov/current/title-14/chapter-I/subchapter-D/part-61/subpart-A/section-61.56" target="_blank" rel="noopener noreferrer">§ 61.56 Flight review ↗</a>
+                    <a href="https://www.ecfr.gov/current/title-14/chapter-I/subchapter-D/part-61/subpart-A/section-61.57" target="_blank" rel="noopener noreferrer">§ 61.57 Recent experience ↗</a>
+                    <a href="https://www.faa.gov/faasteam" target="_blank" rel="noopener noreferrer">FAASTeam &amp; WINGS ↗</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section student-cta-section">
+      <div class="container student-cta reveal">
+        <div>
+          <p class="eyebrow eyebrow-light">Next lesson</p>
+          <h2>Know what to study before you arrive.</h2>
+          <p>
+            Book your next flight or email me when you need help choosing the right material.
+          </p>
+        </div>
+        <div class="student-cta-actions">
+          <a class="button button-light" href="index.html#booking">Book a flight</a>
+          <a class="button button-dark-outline" href="mailto:angus@flywithangus.com">Email Angus</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <a class="brand footer-brand" href="index.html">
+        <span class="brand-mark" aria-hidden="true">A</span>
+        <span>FlyWithAngus</span>
+      </a>
+      <p>© <span id="current-year"></span> Angus O’Neill. All rights reserved.</p>
+      <p class="footer-disclaimer">
+        These resources support flight training but do not replace current regulations,
+        official publications, aircraft documentation, or individual instructor guidance.
+      </p>
+    </div>
+  </footer>
+</body>
+</html>
