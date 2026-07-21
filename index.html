@@ -302,104 +302,68 @@
       </div>
     </section>
 
-    <section class="section section-dark" id="booking">
-      <div class="container booking-grid">
-        <div class="booking-copy reveal">
-          <p class="eyebrow eyebrow-light">Availability</p>
-          <h2>Ready to get in the air?</h2>
-          <p>
-            Choose the type of flying you are interested in and send a request. A live
-            Google Calendar booking link can be connected here later without redesigning
-            the page.
-          </p>
-          <div class="booking-meta">
-            <span>West Michigan</span>
-            <span>Student or owner-provided aircraft</span>
-            <span>Subject to aircraft and insurance approval</span>
-          </div>
+   <section class="section section-dark" id="booking">
+  <div class="container booking-grid">
+    <div class="booking-copy reveal">
+      <p class="eyebrow eyebrow-light">Availability</p>
+
+      <h2>Ready to get in the air?</h2>
+
+      <p>
+        Choose the type of flight you are interested in, view my live
+        availability, and select a date, time, and preferred airport.
+      </p>
+
+      <div class="booking-meta">
+        <span>West Michigan</span>
+        <span>Student or owner-provided aircraft</span>
+        <span>Subject to aircraft and insurance approval</span>
+      </div>
+    </div>
+
+    <div class="booking-card booking-card-action reveal">
+      <p class="eyebrow">Live scheduling</p>
+
+      <h3>Find a time that works</h3>
+
+      <p class="booking-card-description">
+        My booking page checks my current Outlook calendar and only displays
+        times when I am available.
+      </p>
+
+      <div class="booking-details">
+        <div class="booking-detail">
+          <span class="booking-detail-number">1</span>
+          <span>Choose your type of flight</span>
         </div>
 
-        <div class="booking-card reveal">
-          <div class="form-row">
-  <label for="full-name">
-    Full name <span aria-hidden="true">*</span>
-  </label>
-  <input
-    id="full-name"
-    name="full-name"
-    type="text"
-    autocomplete="name"
-    placeholder="Your full name"
-    required
-  />
-</div>
+        <div class="booking-detail">
+          <span class="booking-detail-number">2</span>
+          <span>Select an available date and time</span>
+        </div>
 
-<div class="form-grid">
-  <div class="form-row">
-    <label for="email">
-      Email address <span aria-hidden="true">*</span>
-    </label>
-    <input
-      id="email"
-      name="email"
-      type="email"
-      autocomplete="email"
-      placeholder="you@example.com"
-      required
-    />
-  </div>
-
-  <div class="form-row">
-    <label for="phone">
-      Phone number <span aria-hidden="true">*</span>
-    </label>
-    <input
-      id="phone"
-      name="phone"
-      type="tel"
-      autocomplete="tel"
-      placeholder="(231) 555-0123"
-      required
-    />
-  </div>
-</div>
-
-          <div class="form-grid">
-            <div class="form-row">
-              <label for="preferred-date">Preferred date</label>
-              <input id="preferred-date" name="preferred-date" type="date" />
-            </div>
-            <div class="form-row">
-              <label for="preferred-time">Preferred time</label>
-              <select id="preferred-time" name="preferred-time">
-                <option>Morning</option>
-                <option>Afternoon</option>
-                <option>Evening</option>
-                <option>Flexible</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="form-row">
-            <label for="airport">Airport or area</label>
-            <input
-              id="airport"
-              name="airport"
-              type="text"
-              placeholder="e.g. Muskegon, Grand Haven, Grand Rapids"
-            />
-          </div>
-
-          <button class="button button-booking" id="booking-button" type="button">
-            Request this time
-          </button>
-          <p class="form-note" id="booking-note" aria-live="polite">
-            This currently opens an email request. Replace the booking URL in
-            <code>script.js</code> when your Google booking page is ready.
-          </p>
+        <div class="booking-detail">
+          <span class="booking-detail-number">3</span>
+          <span>Enter your contact details and airport</span>
         </div>
       </div>
-    </section>
+
+      <a
+        class="button button-booking booking-link"
+        href="https://outlook.office.com/book/FlightSchedule@flywithangus.com/?ismsaljsauthenabled"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        View availability and book
+        <span aria-hidden="true">↗</span>
+      </a>
+
+      <p class="form-note">
+        Opens the secure Microsoft Bookings page in a new tab.
+      </p>
+    </div>
+  </div>
+</section>
 
     <section class="section contact-section">
       <div class="container contact-card reveal">
