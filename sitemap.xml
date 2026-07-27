@@ -2,11 +2,14 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://flywithangus.com/</loc>
-    <lastmod>2026-07-21</lastmod>
+    <lastmod>2026-07-27</lastmod>
   </url>
-
   <url>
-    <loc>https://flywithangus.com/students.html</loc>
-    <lastmod>2026-07-21</lastmod>
+    <loc>https://flywithangus.com/students</loc>
+    <lastmod>2026-07-27</lastmod>
+  </url>
+  <url>
+    <loc>https://flywithangus.com/policy</loc>
+    <lastmod>2026-07-27</lastmod>
   </url>
 </urlset>

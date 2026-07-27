@@ -1,0 +1,644 @@
+/*
+  FlyWithAngus policies page
+  Load this file after styles.css.
+*/
+
+.policy-hero {
+  position: relative;
+  overflow: hidden;
+  padding-top: 94px;
+  background:
+    radial-gradient(circle at 82% 20%, rgba(0, 113, 227, 0.12), transparent 28%),
+    linear-gradient(180deg, #fff 0%, #f7f8fa 100%);
+}
+
+.policy-hero::after {
+  content: "";
+  position: absolute;
+  right: -12%;
+  bottom: -45%;
+  width: 60%;
+  height: 68%;
+  border-radius: 50%;
+  background: rgba(0, 113, 227, 0.05);
+  filter: blur(35px);
+}
+
+.policy-hero-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(390px, 0.95fr);
+  gap: 76px;
+  align-items: center;
+}
+
+.policy-hero h1 {
+  max-width: 780px;
+  margin-bottom: 24px;
+  font-size: clamp(3.7rem, 7.6vw, 7rem);
+  line-height: 0.93;
+  letter-spacing: -0.068em;
+}
+
+.policy-hero-lead {
+  max-width: 650px;
+  margin-bottom: 34px;
+  color: var(--muted);
+  font-size: clamp(1.18rem, 2.2vw, 1.55rem);
+  line-height: 1.42;
+  letter-spacing: -0.02em;
+}
+
+.policy-summary-card {
+  position: relative;
+  overflow: hidden;
+  padding: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.76);
+  border-radius: var(--radius-large);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.94), rgba(242, 246, 250, 0.76)),
+    var(--surface);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(24px);
+}
+
+.policy-summary-card::before {
+  content: "";
+  position: absolute;
+  top: -105px;
+  right: -76px;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  background: rgba(0, 113, 227, 0.12);
+}
+
+.policy-card-heading,
+.policy-card-footer {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.policy-card-heading > div {
+  display: grid;
+  gap: 6px;
+}
+
+.policy-card-heading strong {
+  max-width: 300px;
+  font-size: 1.45rem;
+  line-height: 1.15;
+  letter-spacing: -0.035em;
+}
+
+.policy-card-badge {
+  display: grid;
+  width: 54px;
+  height: 54px;
+  place-items: center;
+  border-radius: 18px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+.policy-summary-list {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 14px;
+  margin: 44px 0 34px;
+}
+
+.policy-summary-item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 16px;
+  align-items: start;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.policy-summary-item:last-child {
+  border-bottom: 0;
+}
+
+.policy-summary-icon {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border: 2px solid rgba(0, 113, 227, 0.2);
+  border-radius: 50%;
+  background: #fff;
+  color: var(--accent);
+  font-size: 0.68rem;
+  font-weight: 800;
+}
+
+.policy-summary-item strong {
+  display: block;
+  margin-bottom: 4px;
+  letter-spacing: -0.015em;
+}
+
+.policy-summary-item p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.policy-card-footer {
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.policy-jumpbar {
+  position: sticky;
+  top: var(--nav-height);
+  z-index: 50;
+  border-top: 1px solid rgba(29, 29, 31, 0.06);
+  border-bottom: 1px solid rgba(29, 29, 31, 0.08);
+  background: rgba(255, 255, 255, 0.84);
+  backdrop-filter: saturate(180%) blur(18px);
+  -webkit-backdrop-filter: saturate(180%) blur(18px);
+}
+
+.policy-jumpbar-inner {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  min-height: 56px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.policy-jumpbar-inner::-webkit-scrollbar {
+  display: none;
+}
+
+.policy-jumpbar a {
+  flex: 0 0 auto;
+  color: #4b4b4f;
+  font-size: 0.84rem;
+  font-weight: 650;
+  transition: color 180ms ease;
+}
+
+.policy-jumpbar a:hover {
+  color: var(--accent);
+}
+
+.policy-principles-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.policy-principle {
+  min-height: 260px;
+  padding: 30px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #fff;
+}
+
+.policy-principle > span {
+  display: grid;
+  width: 46px;
+  height: 46px;
+  margin-bottom: 48px;
+  place-items: center;
+  border-radius: 15px;
+  background: var(--background-alt);
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.policy-principle h3,
+.policy-detail-card h3,
+.weather-card h3,
+.payment-card h3,
+.safety-panel h3 {
+  margin-bottom: 12px;
+  font-size: 1.45rem;
+  line-height: 1.15;
+  letter-spacing: -0.035em;
+}
+
+.policy-principle p,
+.policy-detail-card p,
+.weather-card p,
+.payment-card p,
+.safety-panel p {
+  color: var(--muted);
+}
+
+.policy-section-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.7fr) minmax(0, 1.3fr);
+  gap: 72px;
+  align-items: start;
+}
+
+.policy-section-heading {
+  position: sticky;
+  top: calc(var(--nav-height) + 88px);
+}
+
+.policy-section-heading h2 {
+  margin-bottom: 22px;
+  font-size: clamp(2.6rem, 5.3vw, 5rem);
+  line-height: 0.98;
+  letter-spacing: -0.06em;
+}
+
+.policy-section-heading > p:last-child {
+  max-width: 470px;
+  color: var(--muted);
+  font-size: 1.06rem;
+  line-height: 1.6;
+}
+
+.policy-detail-stack {
+  display: grid;
+  gap: 18px;
+}
+
+.policy-detail-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 24px;
+  padding: 34px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #fff;
+}
+
+.policy-detail-card-dark {
+  border-color: transparent;
+  background: var(--dark);
+  color: #fff;
+}
+
+.policy-detail-card-dark p {
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.policy-detail-number {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border-radius: 16px;
+  background: var(--background-alt);
+  color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.policy-detail-card-dark .policy-detail-number {
+  background: rgba(255, 255, 255, 0.1);
+  color: #8ec5ff;
+}
+
+.policy-list {
+  display: grid;
+  gap: 14px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.policy-list li {
+  position: relative;
+  padding-left: 27px;
+  color: #4b4b4f;
+  line-height: 1.6;
+}
+
+.policy-list li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--accent);
+  font-weight: 800;
+}
+
+.policy-note {
+  margin-top: 28px;
+  padding: 22px;
+  border-radius: 20px;
+  background: var(--background-alt);
+}
+
+.policy-note strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.policy-note p {
+  margin: 0;
+  font-size: 0.92rem;
+}
+
+.weather-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.weather-card {
+  min-height: 270px;
+  padding: 30px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #fff;
+}
+
+.weather-icon {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 48px;
+  place-items: center;
+  border-radius: 16px;
+  background: var(--background-alt);
+  color: var(--accent);
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.payment-card {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-large);
+  background: #fff;
+  box-shadow: var(--shadow-soft);
+}
+
+.payment-card-main {
+  padding: 38px;
+}
+
+.payment-card-main h3 {
+  max-width: 600px;
+  margin-top: 12px;
+  font-size: clamp(2rem, 3.8vw, 3.2rem);
+}
+
+.payment-excludes {
+  padding: 30px 38px 38px;
+  border-top: 1px solid var(--line);
+  background: var(--background-alt);
+}
+
+.payment-excludes > strong {
+  display: block;
+  margin-bottom: 18px;
+  font-size: 0.86rem;
+}
+
+.payment-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.payment-tags span {
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  color: #4b4b4f;
+  font-size: 0.78rem;
+  font-weight: 650;
+}
+
+.safety-panel {
+  overflow: hidden;
+  border-radius: var(--radius-large);
+  background: var(--dark);
+  color: #fff;
+}
+
+.safety-panel-copy {
+  padding: 40px;
+}
+
+.safety-mark {
+  display: inline-flex;
+  margin-bottom: 34px;
+  padding: 7px 11px;
+  border-radius: 999px;
+  background: rgba(0, 113, 227, 0.18);
+  color: #8ec5ff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.safety-panel h3 {
+  max-width: 640px;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  letter-spacing: -0.05em;
+}
+
+.safety-panel p {
+  max-width: 700px;
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.safety-panel-rule {
+  padding: 28px 40px 34px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.safety-panel-rule strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.safety-panel-rule p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.policy-cta-section {
+  padding-top: 24px;
+}
+
+.policy-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 42px;
+  padding: 48px;
+  border-radius: var(--radius-large);
+  background: var(--dark);
+  color: #fff;
+}
+
+.policy-cta h2 {
+  margin-bottom: 14px;
+  font-size: clamp(2.3rem, 4.8vw, 4.4rem);
+  line-height: 1;
+  letter-spacing: -0.055em;
+}
+
+.policy-cta p:not(.eyebrow) {
+  max-width: 650px;
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.policy-cta-actions {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 10px;
+}
+
+.button-light {
+  background: #fff;
+  color: var(--text);
+}
+
+.button-light:hover {
+  background: #f3f3f5;
+}
+
+.button-dark-outline {
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: transparent;
+  color: #fff;
+}
+
+.button-dark-outline:hover {
+  border-color: rgba(255, 255, 255, 0.42);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+@media (max-width: 980px) {
+  .policy-hero-grid,
+  .policy-section-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .policy-hero-grid {
+    gap: 56px;
+  }
+
+  .policy-summary-card {
+    max-width: 680px;
+  }
+
+  .policy-section-layout {
+    gap: 44px;
+  }
+
+  .policy-section-heading {
+    position: static;
+  }
+
+  .policy-principles-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .policy-cta {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .policy-cta-actions {
+    width: 100%;
+  }
+
+  .policy-cta-actions .button {
+    flex: 1;
+  }
+}
+
+@media (max-width: 760px) {
+  .policy-hero {
+    padding-top: 70px;
+  }
+
+  .policy-hero h1 {
+    font-size: clamp(3.3rem, 16vw, 5.2rem);
+  }
+
+  .policy-jumpbar-inner {
+    gap: 22px;
+  }
+
+  .policy-principles-grid,
+  .weather-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .policy-detail-card {
+    grid-template-columns: 1fr;
+    padding: 28px;
+  }
+
+  .payment-card-main,
+  .payment-excludes,
+  .safety-panel-copy,
+  .safety-panel-rule {
+    padding-right: 28px;
+    padding-left: 28px;
+  }
+
+  .policy-cta {
+    padding: 34px 28px;
+    border-radius: 30px;
+  }
+
+  .policy-cta-actions {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 540px) {
+  .policy-summary-card {
+    padding: 24px 20px;
+    border-radius: 30px;
+  }
+
+  .policy-card-heading {
+    align-items: flex-start;
+  }
+
+  .policy-card-heading strong {
+    font-size: 1.2rem;
+  }
+
+  .policy-card-badge {
+    width: 46px;
+    height: 46px;
+    border-radius: 15px;
+  }
+
+  .policy-principle,
+  .weather-card {
+    min-height: 230px;
+    padding: 26px;
+  }
+}
