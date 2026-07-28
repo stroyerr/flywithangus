@@ -2642,12 +2642,23 @@ studentTsaButton?.addEventListener(
 
     tsaRecordForm.reset();
 
+
     currentTsaRecordId =
       null;
 
 
+    /*
+      Don't allow a training event until
+      the main TSA record exists.
+    */
+
+    addTsaEventButton.disabled =
+      true;
+
+
     tsaStudentCategory.value =
       "pending";
+
 
     tsaComplianceStatus.value =
       "pending";
@@ -2655,6 +2666,7 @@ studentTsaButton?.addEventListener(
 
     tsaFormMessage.textContent =
       "";
+
 
     tsaFormMessage.classList.remove(
       "is-success",
@@ -2669,9 +2681,10 @@ studentTsaButton?.addEventListener(
       selectedStudentId
     );
 
+
     await loadTsaEvents(
-  selectedStudentId
-);
+      selectedStudentId
+    );
 
   }
 );
@@ -2724,30 +2737,52 @@ async function loadTsaRecord(
     tsaFormMessage.textContent =
       "Could not load TSA record.";
 
+
     tsaFormMessage.classList.add(
       "is-error"
     );
 
-    return;
 
+    currentTsaRecordId =
+      null;
+
+
+    addTsaEventButton.disabled =
+      true;
+
+
+    return;
   }
 
+
+  /*
+    No TSA record exists yet.
+  */
 
   if (!data) {
 
     currentTsaRecordId =
       null;
 
-      addTsaEventButton.disabled =
-  false;
+
+    addTsaEventButton.disabled =
+      true;
+
 
     return;
-
   }
 
 
+  /*
+    Existing TSA record found.
+  */
+
   currentTsaRecordId =
     data.id;
+
+
+  addTsaEventButton.disabled =
+    false;
 
 
   tsaStudentCategory.value =
@@ -2833,12 +2868,14 @@ tsaRecordForm?.addEventListener(
     tsaSaveButton.disabled =
       true;
 
+
     tsaSaveButton.textContent =
       "Saving…";
 
 
     tsaFormMessage.textContent =
       "";
+
 
     tsaFormMessage.classList.remove(
       "is-success",
@@ -2940,6 +2977,7 @@ tsaRecordForm?.addEventListener(
       tsaFormMessage.textContent =
         "Could not save TSA record.";
 
+
       tsaFormMessage.classList.add(
         "is-error"
       );
@@ -2948,20 +2986,31 @@ tsaRecordForm?.addEventListener(
       tsaSaveButton.disabled =
         false;
 
+
       tsaSaveButton.textContent =
         "Save TSA record";
 
-      return;
 
+      return;
     }
 
+
+    /*
+      We now have a valid TSA record,
+      so training events can be created.
+    */
 
     currentTsaRecordId =
       data.id;
 
 
+    addTsaEventButton.disabled =
+      false;
+
+
     tsaFormMessage.textContent =
       "TSA record saved.";
+
 
     tsaFormMessage.classList.add(
       "is-success"
@@ -2970,6 +3019,7 @@ tsaRecordForm?.addEventListener(
 
     tsaSaveButton.disabled =
       false;
+
 
     tsaSaveButton.textContent =
       "Save TSA record";
