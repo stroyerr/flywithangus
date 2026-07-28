@@ -604,6 +604,24 @@
                 </span>
 
               </button>
+              <button
+  class="student-management-card"
+  id="student-tsa-button"
+  type="button"
+>
+  <span class="student-management-icon">
+    🛡
+  </span>
+
+  <span>
+    <strong>TSA & Compliance</strong>
+    <small>FTSP and verification records</small>
+  </span>
+
+  <span aria-hidden="true">
+    →
+  </span>
+</button>
 
 
             </div>
@@ -1132,6 +1150,619 @@
     </form>
 
   </div>
+</dialog>
+
+<dialog
+  class="admin-dialog tsa-dialog"
+  id="tsa-dialog"
+>
+  <div class="admin-dialog-card tsa-dialog-card">
+
+    <div class="admin-dialog-heading">
+
+      <div>
+        <p class="admin-card-label">
+          Compliance
+        </p>
+
+        <h2>
+          TSA & FTSP
+        </h2>
+
+        <p id="tsa-student-name">
+          Student compliance record
+        </p>
+      </div>
+
+      <button
+        type="button"
+        class="admin-dialog-close"
+        id="tsa-dialog-close"
+        aria-label="Close"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <form id="tsa-record-form">
+
+      <div class="admin-form-grid">
+
+        <div class="admin-field">
+
+          <label for="tsa-student-category">
+            Student category
+          </label>
+
+          <select
+            id="tsa-student-category"
+            required
+          >
+            <option value="pending">
+              Pending
+            </option>
+
+            <option value="us_citizen">
+              U.S. citizen
+            </option>
+
+            <option value="us_national">
+              U.S. national
+            </option>
+
+            <option value="candidate">
+              FTSP candidate
+            </option>
+
+            <option value="dod_endorsee">
+              DoD endorsee
+            </option>
+          </select>
+
+        </div>
+
+
+        <div class="admin-field">
+
+          <label for="tsa-compliance-status">
+            Compliance status
+          </label>
+
+          <select
+            id="tsa-compliance-status"
+            required
+          >
+            <option value="pending">
+              Pending
+            </option>
+
+            <option value="verified">
+              Verified
+            </option>
+
+            <option value="eligible">
+              Eligible
+            </option>
+
+            <option value="expired">
+              Expired
+            </option>
+
+            <option value="ineligible">
+              Ineligible
+            </option>
+          </select>
+
+        </div>
+
+
+        <div class="admin-field">
+
+          <label for="tsa-verification-date">
+            Verification date
+          </label>
+
+          <input
+            id="tsa-verification-date"
+            type="date"
+          />
+
+        </div>
+
+
+        <div class="admin-field">
+
+          <label for="tsa-verification-method">
+            Verification method
+          </label>
+
+          <input
+            id="tsa-verification-method"
+            type="text"
+            placeholder="U.S. passport"
+          />
+
+        </div>
+
+
+        <div class="admin-field">
+
+          <label for="tsa-document-type">
+            Document type
+          </label>
+
+          <input
+            id="tsa-document-type"
+            type="text"
+            placeholder="Passport, birth certificate, etc."
+          />
+
+        </div>
+
+
+        <div class="admin-field">
+
+          <label for="tsa-document-reference">
+            Document reference
+          </label>
+
+          <input
+            id="tsa-document-reference"
+            type="text"
+            placeholder="Optional internal reference"
+          />
+
+        </div>
+
+
+        <div class="admin-field">
+
+          <label for="tsa-record-method">
+            Record method
+          </label>
+
+          <input
+            id="tsa-record-method"
+            type="text"
+            placeholder="FTSP Portal"
+          />
+
+        </div>
+
+
+        <div class="admin-field">
+
+          <label for="tsa-ftsp-reference">
+            FTSP reference
+          </label>
+
+          <input
+            id="tsa-ftsp-reference"
+            type="text"
+            placeholder="Optional"
+          />
+
+        </div>
+
+
+        <div class="admin-field">
+
+          <label for="tsa-expiry-date">
+            Determination expiration
+          </label>
+
+          <input
+            id="tsa-expiry-date"
+            type="date"
+          />
+
+        </div>
+
+
+        <div class="admin-field">
+
+          <label for="tsa-provider-selected-date">
+            Provider selected date
+          </label>
+
+          <input
+            id="tsa-provider-selected-date"
+            type="date"
+          />
+
+        </div>
+
+      </div>
+
+
+      <div class="admin-field tsa-notes-field">
+
+        <label for="tsa-notes">
+          Notes
+        </label>
+
+        <textarea
+          id="tsa-notes"
+          rows="4"
+          placeholder="Optional compliance notes..."
+        ></textarea>
+
+      </div>
+
+
+      <p
+        class="admin-form-message"
+        id="tsa-form-message"
+        role="status"
+      ></p>
+
+
+      <div class="admin-dialog-actions">
+
+        <button
+          type="button"
+          class="admin-secondary-button"
+          id="tsa-dialog-cancel"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="submit"
+          class="admin-primary-button"
+          id="tsa-save-button"
+        >
+          Save TSA record
+        </button>
+
+      </div>
+
+    </form>
+    <!-- =====================================================
+     TSA TRAINING EVENTS
+====================================================== -->
+
+<section class="tsa-events-section">
+
+  <div class="tsa-events-heading">
+
+    <div>
+      <p class="admin-card-label">
+        FTSP activity
+      </p>
+
+      <h3>
+        Training events
+      </h3>
+
+      <p>
+        Candidate training notifications and completion records.
+      </p>
+    </div>
+
+    <button
+      id="add-tsa-event-button"
+      class="admin-primary-button"
+      type="button"
+    >
+      Add event
+    </button>
+
+  </div>
+
+
+  <div
+    id="tsa-event-list"
+    class="tsa-event-list"
+  >
+    <div class="student-list-empty">
+      No training events recorded.
+    </div>
+  </div>
+
+</section>
+
+  </div>
+</dialog>
+
+<!-- =====================================================
+     ADD / EDIT TSA TRAINING EVENT
+====================================================== -->
+
+<dialog
+  class="admin-dialog"
+  id="tsa-event-dialog"
+>
+
+  <div class="admin-dialog-card">
+
+    <div class="admin-dialog-heading">
+
+      <div>
+
+        <p class="admin-card-label">
+          FTSP training event
+        </p>
+
+        <h2 id="tsa-event-dialog-title">
+          Add training event
+        </h2>
+
+        <p>
+          Record the TSA / FTSP details for this training event.
+        </p>
+
+      </div>
+
+      <button
+        type="button"
+        class="admin-dialog-close"
+        id="tsa-event-dialog-close"
+        aria-label="Close"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <form id="tsa-event-form">
+
+      <div class="admin-form-grid">
+
+        <div class="admin-field">
+
+          <label for="tsa-event-training-type">
+            Training type
+          </label>
+
+          <input
+            id="tsa-event-training-type"
+            type="text"
+            placeholder="Private Pilot"
+            required
+          />
+
+        </div>
+
+
+        <div class="admin-field">
+
+          <label for="tsa-event-reference">
+            FTSP event reference
+          </label>
+
+          <input
+            id="tsa-event-reference"
+            type="text"
+          />
+
+        </div>
+
+
+        <div class="admin-field">
+
+          <label for="tsa-event-proposed-start">
+            Proposed start
+          </label>
+
+          <input
+            id="tsa-event-proposed-start"
+            type="date"
+          />
+
+        </div>
+
+
+        <div class="admin-field">
+
+          <label for="tsa-event-proposed-end">
+            Proposed end
+          </label>
+
+          <input
+            id="tsa-event-proposed-end"
+            type="date"
+          />
+
+        </div>
+
+
+        <div class="admin-field">
+
+          <label for="tsa-event-notification-date">
+            TSA notification date
+          </label>
+
+          <input
+            id="tsa-event-notification-date"
+            type="date"
+          />
+
+        </div>
+
+
+        <div class="admin-field">
+
+          <label for="tsa-event-arrival-date">
+            Candidate arrival date
+          </label>
+
+          <input
+            id="tsa-event-arrival-date"
+            type="date"
+          />
+
+        </div>
+
+
+        <div class="admin-field">
+
+          <label for="tsa-event-photo-date">
+            Photo uploaded date
+          </label>
+
+          <input
+            id="tsa-event-photo-date"
+            type="date"
+          />
+
+        </div>
+
+
+        <div class="admin-field">
+
+          <label for="tsa-event-location">
+            Training location
+          </label>
+
+          <input
+            id="tsa-event-location"
+            type="text"
+            placeholder="Kalamazoo, MI"
+          />
+
+        </div>
+
+
+        <div class="admin-field">
+
+          <label for="tsa-event-actual-start">
+            Actual start
+          </label>
+
+          <input
+            id="tsa-event-actual-start"
+            type="date"
+          />
+
+        </div>
+
+
+        <div class="admin-field">
+
+          <label for="tsa-event-actual-end">
+            Actual end
+          </label>
+
+          <input
+            id="tsa-event-actual-end"
+            type="date"
+          />
+
+        </div>
+
+
+        <div class="admin-field">
+
+          <label for="tsa-event-status">
+            Status
+          </label>
+
+          <select id="tsa-event-status">
+
+            <option value="planned">
+              Planned
+            </option>
+
+            <option value="in_progress">
+              In progress
+            </option>
+
+            <option value="completed">
+              Completed
+            </option>
+
+            <option value="not_completed">
+              Not completed
+            </option>
+
+            <option value="cancelled">
+              Cancelled
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="admin-field">
+
+          <label for="tsa-event-completion-notification">
+            Completion notification
+          </label>
+
+          <input
+            id="tsa-event-completion-notification"
+            type="date"
+          />
+
+        </div>
+
+      </div>
+
+
+      <div class="admin-field tsa-notes-field">
+
+        <label for="tsa-event-not-completed-reason">
+          Reason not completed
+        </label>
+
+        <textarea
+          id="tsa-event-not-completed-reason"
+          rows="3"
+        ></textarea>
+
+      </div>
+
+
+      <div class="admin-field tsa-notes-field">
+
+        <label for="tsa-event-notes">
+          Notes
+        </label>
+
+        <textarea
+          id="tsa-event-notes"
+          rows="4"
+        ></textarea>
+
+      </div>
+
+
+      <p
+        id="tsa-event-message"
+        class="admin-form-message"
+        role="status"
+      ></p>
+
+
+      <div class="admin-dialog-actions">
+
+        <button
+          id="tsa-event-cancel"
+          type="button"
+          class="admin-secondary-button"
+        >
+          Cancel
+        </button>
+
+        <button
+          id="tsa-event-save"
+          type="submit"
+          class="admin-primary-button"
+        >
+          Save event
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
 </dialog>
 
 </body>

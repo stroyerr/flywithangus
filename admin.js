@@ -2510,5 +2510,1453 @@ endorsementSearch
     }
   );
 
+  /* ==========================================================
+   TSA / COMPLIANCE
+========================================================== */
+
+const studentTsaButton =
+  document.getElementById(
+    "student-tsa-button"
+  );
+
+const tsaDialog =
+  document.getElementById(
+    "tsa-dialog"
+  );
+
+const tsaDialogClose =
+  document.getElementById(
+    "tsa-dialog-close"
+  );
+
+const tsaDialogCancel =
+  document.getElementById(
+    "tsa-dialog-cancel"
+  );
+
+const tsaStudentName =
+  document.getElementById(
+    "tsa-student-name"
+  );
+
+const tsaRecordForm =
+  document.getElementById(
+    "tsa-record-form"
+  );
+
+const tsaStudentCategory =
+  document.getElementById(
+    "tsa-student-category"
+  );
+
+const tsaComplianceStatus =
+  document.getElementById(
+    "tsa-compliance-status"
+  );
+
+const tsaVerificationDate =
+  document.getElementById(
+    "tsa-verification-date"
+  );
+
+const tsaVerificationMethod =
+  document.getElementById(
+    "tsa-verification-method"
+  );
+
+const tsaDocumentType =
+  document.getElementById(
+    "tsa-document-type"
+  );
+
+const tsaDocumentReference =
+  document.getElementById(
+    "tsa-document-reference"
+  );
+
+const tsaRecordMethod =
+  document.getElementById(
+    "tsa-record-method"
+  );
+
+const tsaFtspReference =
+  document.getElementById(
+    "tsa-ftsp-reference"
+  );
+
+const tsaExpiryDate =
+  document.getElementById(
+    "tsa-expiry-date"
+  );
+
+const tsaProviderSelectedDate =
+  document.getElementById(
+    "tsa-provider-selected-date"
+  );
+
+const tsaNotes =
+  document.getElementById(
+    "tsa-notes"
+  );
+
+const tsaSaveButton =
+  document.getElementById(
+    "tsa-save-button"
+  );
+
+const tsaFormMessage =
+  document.getElementById(
+    "tsa-form-message"
+  );
+
+
+let currentTsaRecordId =
+  null;
+
+
+/* ==========================================================
+   OPEN TSA
+========================================================== */
+
+studentTsaButton?.addEventListener(
+  "click",
+  async () => {
+
+    if (!selectedStudentId) {
+      return;
+    }
+
+
+    const student =
+      students.find(
+        student =>
+          student.id === selectedStudentId
+      );
+
+
+    tsaStudentName.textContent =
+      student?.full_name ||
+      student?.email ||
+      "Student";
+
+
+    tsaRecordForm.reset();
+
+    currentTsaRecordId =
+      null;
+
+
+    tsaStudentCategory.value =
+      "pending";
+
+    tsaComplianceStatus.value =
+      "pending";
+
+
+    tsaFormMessage.textContent =
+      "";
+
+    tsaFormMessage.classList.remove(
+      "is-success",
+      "is-error"
+    );
+
+
+    tsaDialog.showModal();
+
+
+    await loadTsaRecord(
+      selectedStudentId
+    );
+
+    await loadTsaEvents(
+  selectedStudentId
+);
+
+  }
+);
+
+
+/* ==========================================================
+   LOAD TSA RECORD
+========================================================== */
+
+async function loadTsaRecord(
+  studentId
+) {
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from("tsa_records")
+      .select(`
+        id,
+        student_id,
+        student_category,
+        compliance_status,
+        verification_date,
+        verification_method,
+        document_type,
+        document_reference,
+        record_method,
+        ftsp_reference,
+        determination_expires_at,
+        provider_selected_date,
+        notes
+      `)
+      .eq(
+        "student_id",
+        studentId
+      )
+      .maybeSingle();
+
+
+  if (error) {
+
+    console.error(
+      "TSA record load error:",
+      error
+    );
+
+
+    tsaFormMessage.textContent =
+      "Could not load TSA record.";
+
+    tsaFormMessage.classList.add(
+      "is-error"
+    );
+
+    return;
+
+  }
+
+
+  if (!data) {
+
+    currentTsaRecordId =
+      null;
+
+      addTsaEventButton.disabled =
+  false;
+
+    return;
+
+  }
+
+
+  currentTsaRecordId =
+    data.id;
+
+
+  tsaStudentCategory.value =
+    data.student_category ||
+    "pending";
+
+
+  tsaComplianceStatus.value =
+    data.compliance_status ||
+    "pending";
+
+
+  tsaVerificationDate.value =
+    data.verification_date ||
+    "";
+
+
+  tsaVerificationMethod.value =
+    data.verification_method ||
+    "";
+
+
+  tsaDocumentType.value =
+    data.document_type ||
+    "";
+
+
+  tsaDocumentReference.value =
+    data.document_reference ||
+    "";
+
+
+  tsaRecordMethod.value =
+    data.record_method ||
+    "";
+
+
+  tsaFtspReference.value =
+    data.ftsp_reference ||
+    "";
+
+
+  tsaExpiryDate.value =
+    data.determination_expires_at ||
+    "";
+
+
+  tsaProviderSelectedDate.value =
+    data.provider_selected_date ||
+    "";
+
+
+  tsaNotes.value =
+    data.notes ||
+    "";
+
+}
+
+
+/* ==========================================================
+   SAVE TSA RECORD
+========================================================== */
+
+tsaRecordForm?.addEventListener(
+  "submit",
+  async event => {
+
+    event.preventDefault();
+
+
+    if (!selectedStudentId) {
+      return;
+    }
+
+
+    if (
+      !tsaRecordForm.reportValidity()
+    ) {
+      return;
+    }
+
+
+    tsaSaveButton.disabled =
+      true;
+
+    tsaSaveButton.textContent =
+      "Saving…";
+
+
+    tsaFormMessage.textContent =
+      "";
+
+    tsaFormMessage.classList.remove(
+      "is-success",
+      "is-error"
+    );
+
+
+    const record =
+      {
+
+        student_id:
+          selectedStudentId,
+
+        student_category:
+          tsaStudentCategory.value,
+
+        compliance_status:
+          tsaComplianceStatus.value,
+
+        verification_date:
+          tsaVerificationDate.value ||
+          null,
+
+        verification_method:
+          tsaVerificationMethod
+            .value
+            .trim() ||
+          null,
+
+        document_type:
+          tsaDocumentType
+            .value
+            .trim() ||
+          null,
+
+        document_reference:
+          tsaDocumentReference
+            .value
+            .trim() ||
+          null,
+
+        record_method:
+          tsaRecordMethod
+            .value
+            .trim() ||
+          null,
+
+        ftsp_reference:
+          tsaFtspReference
+            .value
+            .trim() ||
+          null,
+
+        determination_expires_at:
+          tsaExpiryDate.value ||
+          null,
+
+        provider_selected_date:
+          tsaProviderSelectedDate.value ||
+          null,
+
+        notes:
+          tsaNotes
+            .value
+            .trim() ||
+          null,
+
+        updated_at:
+          new Date().toISOString()
+
+      };
+
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("tsa_records")
+        .upsert(
+          record,
+          {
+            onConflict:
+              "student_id"
+          }
+        )
+        .select()
+        .single();
+
+
+    if (error) {
+
+      console.error(
+        "TSA save error:",
+        error
+      );
+
+
+      tsaFormMessage.textContent =
+        "Could not save TSA record.";
+
+      tsaFormMessage.classList.add(
+        "is-error"
+      );
+
+
+      tsaSaveButton.disabled =
+        false;
+
+      tsaSaveButton.textContent =
+        "Save TSA record";
+
+      return;
+
+    }
+
+
+    currentTsaRecordId =
+      data.id;
+
+
+    tsaFormMessage.textContent =
+      "TSA record saved.";
+
+    tsaFormMessage.classList.add(
+      "is-success"
+    );
+
+
+    tsaSaveButton.disabled =
+      false;
+
+    tsaSaveButton.textContent =
+      "Save TSA record";
+
+  }
+);
+
+
+/* ==========================================================
+   CLOSE TSA
+========================================================== */
+
+tsaDialogClose?.addEventListener(
+  "click",
+  () => {
+
+    tsaDialog.close();
+
+  }
+);
+
+
+tsaDialogCancel?.addEventListener(
+  "click",
+  () => {
+
+    tsaDialog.close();
+
+  }
+);
+
+/* ==========================================================
+   TSA TRAINING EVENTS
+========================================================== */
+
+const tsaEventList =
+  document.getElementById(
+    "tsa-event-list"
+  );
+
+const addTsaEventButton =
+  document.getElementById(
+    "add-tsa-event-button"
+  );
+
+const tsaEventDialog =
+  document.getElementById(
+    "tsa-event-dialog"
+  );
+
+const tsaEventDialogTitle =
+  document.getElementById(
+    "tsa-event-dialog-title"
+  );
+
+const tsaEventDialogClose =
+  document.getElementById(
+    "tsa-event-dialog-close"
+  );
+
+const tsaEventCancel =
+  document.getElementById(
+    "tsa-event-cancel"
+  );
+
+const tsaEventForm =
+  document.getElementById(
+    "tsa-event-form"
+  );
+
+const tsaEventTrainingType =
+  document.getElementById(
+    "tsa-event-training-type"
+  );
+
+const tsaEventReference =
+  document.getElementById(
+    "tsa-event-reference"
+  );
+
+const tsaEventProposedStart =
+  document.getElementById(
+    "tsa-event-proposed-start"
+  );
+
+const tsaEventProposedEnd =
+  document.getElementById(
+    "tsa-event-proposed-end"
+  );
+
+const tsaEventNotificationDate =
+  document.getElementById(
+    "tsa-event-notification-date"
+  );
+
+const tsaEventArrivalDate =
+  document.getElementById(
+    "tsa-event-arrival-date"
+  );
+
+const tsaEventPhotoDate =
+  document.getElementById(
+    "tsa-event-photo-date"
+  );
+
+const tsaEventLocation =
+  document.getElementById(
+    "tsa-event-location"
+  );
+
+const tsaEventActualStart =
+  document.getElementById(
+    "tsa-event-actual-start"
+  );
+
+const tsaEventActualEnd =
+  document.getElementById(
+    "tsa-event-actual-end"
+  );
+
+const tsaEventStatus =
+  document.getElementById(
+    "tsa-event-status"
+  );
+
+const tsaEventCompletionNotification =
+  document.getElementById(
+    "tsa-event-completion-notification"
+  );
+
+const tsaEventNotCompletedReason =
+  document.getElementById(
+    "tsa-event-not-completed-reason"
+  );
+
+const tsaEventNotes =
+  document.getElementById(
+    "tsa-event-notes"
+  );
+
+const tsaEventMessage =
+  document.getElementById(
+    "tsa-event-message"
+  );
+
+const tsaEventSave =
+  document.getElementById(
+    "tsa-event-save"
+  );
+
+
+let tsaEvents = [];
+
+let editingTsaEventId =
+  null;
+
+
+/* ==========================================================
+   LOAD EVENTS
+========================================================== */
+
+async function loadTsaEvents(
+  studentId
+) {
+
+  tsaEventList.innerHTML =
+    `
+      <div class="student-list-empty">
+        Loading training events…
+      </div>
+    `;
+
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from("tsa_training_events")
+      .select(`
+        id,
+        student_id,
+        tsa_record_id,
+        training_type,
+        ftsp_event_reference,
+        proposed_start_date,
+        proposed_end_date,
+        notification_date,
+        arrival_date,
+        photo_uploaded_date,
+        actual_start_date,
+        actual_end_date,
+        training_location,
+        completion_status,
+        completion_notification_date,
+        not_completed_reason,
+        notes,
+        created_at
+      `)
+      .eq(
+        "student_id",
+        studentId
+      )
+      .order(
+        "created_at",
+        {
+          ascending: false
+        }
+      );
+
+
+  if (error) {
+
+    console.error(
+      "TSA event load error:",
+      error
+    );
+
+
+    tsaEventList.innerHTML =
+      `
+        <div class="student-list-empty">
+          Could not load training events.
+        </div>
+      `;
+
+    return;
+  }
+
+
+  tsaEvents =
+    data || [];
+
+
+  renderTsaEvents();
+
+}
+
+
+/* ==========================================================
+   RENDER EVENTS
+========================================================== */
+
+function renderTsaEvents() {
+
+  tsaEventList.innerHTML =
+    "";
+
+
+  if (!tsaEvents.length) {
+
+    tsaEventList.innerHTML =
+      `
+        <div class="student-list-empty">
+          No training events recorded.
+        </div>
+      `;
+
+    return;
+  }
+
+
+  tsaEvents.forEach(
+    event => {
+
+      const item =
+        document.createElement(
+          "article"
+        );
+
+
+      item.className =
+        "tsa-event-item";
+
+
+      const status =
+        getTsaEventStatus(
+          event.completion_status
+        );
+
+
+      const meta =
+        [];
+
+
+      if (
+        event.ftsp_event_reference
+      ) {
+
+        meta.push(
+          `FTSP ${event.ftsp_event_reference}`
+        );
+
+      }
+
+
+      if (
+        event.proposed_start_date
+      ) {
+
+        meta.push(
+          `Proposed ${formatTsaDate(
+            event.proposed_start_date
+          )}`
+        );
+
+      }
+
+
+      if (
+        event.actual_start_date
+      ) {
+
+        meta.push(
+          `Started ${formatTsaDate(
+            event.actual_start_date
+          )}`
+        );
+
+      }
+
+
+      if (
+        event.actual_end_date
+      ) {
+
+        meta.push(
+          `Ended ${formatTsaDate(
+            event.actual_end_date
+          )}`
+        );
+
+      }
+
+
+      if (
+        event.training_location
+      ) {
+
+        meta.push(
+          event.training_location
+        );
+
+      }
+
+
+      item.innerHTML =
+        `
+          <div class="tsa-event-main">
+
+            <strong>
+              ${escapeHtml(
+                event.training_type
+              )}
+            </strong>
+
+
+            <div class="tsa-event-meta">
+
+              ${meta
+                .map(
+                  value =>
+                    escapeHtml(value)
+                )
+                .join(" • ")}
+
+            </div>
+
+
+            ${
+              event.not_completed_reason
+                ? `
+                    <p class="tsa-event-notes">
+                      <strong>Not completed:</strong>
+                      ${escapeHtml(
+                        event.not_completed_reason
+                      )}
+                    </p>
+                  `
+                : ""
+            }
+
+
+            ${
+              event.notes
+                ? `
+                    <p class="tsa-event-notes">
+                      ${escapeHtml(
+                        event.notes
+                      )}
+                    </p>
+                  `
+                : ""
+            }
+
+          </div>
+
+
+          <div class="tsa-event-side">
+
+            <span
+              class="tsa-event-status ${status.className}"
+            >
+              ${status.label}
+            </span>
+
+
+            <div class="tsa-event-actions">
+
+              <button
+                type="button"
+                class="tsa-event-action tsa-event-edit"
+              >
+                Edit
+              </button>
+
+
+              <button
+                type="button"
+                class="tsa-event-action is-delete tsa-event-delete"
+              >
+                Delete
+              </button>
+
+            </div>
+
+          </div>
+        `;
+
+
+      item
+        .querySelector(
+          ".tsa-event-edit"
+        )
+        .addEventListener(
+          "click",
+          () => {
+
+            openEditTsaEvent(
+              event
+            );
+
+          }
+        );
+
+
+      item
+        .querySelector(
+          ".tsa-event-delete"
+        )
+        .addEventListener(
+          "click",
+          () => {
+
+            deleteTsaEvent(
+              event
+            );
+
+          }
+        );
+
+
+      tsaEventList.appendChild(
+        item
+      );
+
+    }
+  );
+
+}
+
+
+/* ==========================================================
+   STATUS
+========================================================== */
+
+function getTsaEventStatus(
+  status
+) {
+
+  switch (status) {
+
+    case "in_progress":
+
+      return {
+        label: "In progress",
+        className: "is-active"
+      };
+
+
+    case "completed":
+
+      return {
+        label: "Completed",
+        className: "is-complete"
+      };
+
+
+    case "not_completed":
+
+      return {
+        label: "Not completed",
+        className: "is-warning"
+      };
+
+
+    case "cancelled":
+
+      return {
+        label: "Cancelled",
+        className: "is-warning"
+      };
+
+
+    default:
+
+      return {
+        label: "Planned",
+        className: ""
+      };
+
+  }
+
+}
+
+
+/* ==========================================================
+   OPEN ADD EVENT
+========================================================== */
+
+addTsaEventButton?.addEventListener(
+  "click",
+  () => {
+
+    if (!selectedStudentId) {
+      return;
+    }
+
+
+    if (!currentTsaRecordId) {
+
+      alert(
+        "Save the student's TSA record before adding a training event."
+      );
+
+      return;
+
+    }
+
+
+    editingTsaEventId =
+      null;
+
+
+    tsaEventForm.reset();
+
+
+    tsaEventDialogTitle.textContent =
+      "Add training event";
+
+
+    tsaEventStatus.value =
+      "planned";
+
+
+    tsaEventMessage.textContent =
+      "";
+
+
+    tsaEventDialog.showModal();
+
+
+    tsaEventTrainingType.focus();
+
+  }
+);
+
+
+/* ==========================================================
+   EDIT EVENT
+========================================================== */
+
+function openEditTsaEvent(
+  event
+) {
+
+  editingTsaEventId =
+    event.id;
+
+
+  tsaEventForm.reset();
+
+
+  tsaEventDialogTitle.textContent =
+    "Edit training event";
+
+
+  tsaEventTrainingType.value =
+    event.training_type ||
+    "";
+
+
+  tsaEventReference.value =
+    event.ftsp_event_reference ||
+    "";
+
+
+  tsaEventProposedStart.value =
+    event.proposed_start_date ||
+    "";
+
+
+  tsaEventProposedEnd.value =
+    event.proposed_end_date ||
+    "";
+
+
+  tsaEventNotificationDate.value =
+    event.notification_date ||
+    "";
+
+
+  tsaEventArrivalDate.value =
+    event.arrival_date ||
+    "";
+
+
+  tsaEventPhotoDate.value =
+    event.photo_uploaded_date ||
+    "";
+
+
+  tsaEventLocation.value =
+    event.training_location ||
+    "";
+
+
+  tsaEventActualStart.value =
+    event.actual_start_date ||
+    "";
+
+
+  tsaEventActualEnd.value =
+    event.actual_end_date ||
+    "";
+
+
+  tsaEventStatus.value =
+    event.completion_status ||
+    "planned";
+
+
+  tsaEventCompletionNotification.value =
+    event.completion_notification_date ||
+    "";
+
+
+  tsaEventNotCompletedReason.value =
+    event.not_completed_reason ||
+    "";
+
+
+  tsaEventNotes.value =
+    event.notes ||
+    "";
+
+
+  tsaEventMessage.textContent =
+    "";
+
+
+  tsaEventDialog.showModal();
+
+}
+
+
+/* ==========================================================
+   SAVE EVENT
+========================================================== */
+
+tsaEventForm?.addEventListener(
+  "submit",
+  async event => {
+
+    event.preventDefault();
+
+
+    if (
+      !tsaEventForm.reportValidity()
+    ) {
+
+      return;
+
+    }
+
+
+    if (
+      !selectedStudentId ||
+      !currentTsaRecordId
+    ) {
+
+      return;
+
+    }
+
+
+    tsaEventSave.disabled =
+      true;
+
+
+    tsaEventSave.textContent =
+      "Saving…";
+
+
+    const record =
+      {
+
+        student_id:
+          selectedStudentId,
+
+        tsa_record_id:
+          currentTsaRecordId,
+
+        training_type:
+          tsaEventTrainingType
+            .value
+            .trim(),
+
+        ftsp_event_reference:
+          tsaEventReference
+            .value
+            .trim() ||
+          null,
+
+        proposed_start_date:
+          tsaEventProposedStart.value ||
+          null,
+
+        proposed_end_date:
+          tsaEventProposedEnd.value ||
+          null,
+
+        notification_date:
+          tsaEventNotificationDate.value ||
+          null,
+
+        arrival_date:
+          tsaEventArrivalDate.value ||
+          null,
+
+        photo_uploaded_date:
+          tsaEventPhotoDate.value ||
+          null,
+
+        actual_start_date:
+          tsaEventActualStart.value ||
+          null,
+
+        actual_end_date:
+          tsaEventActualEnd.value ||
+          null,
+
+        training_location:
+          tsaEventLocation
+            .value
+            .trim() ||
+          null,
+
+        completion_status:
+          tsaEventStatus.value,
+
+        completion_notification_date:
+          tsaEventCompletionNotification.value ||
+          null,
+
+        not_completed_reason:
+          tsaEventNotCompletedReason
+            .value
+            .trim() ||
+          null,
+
+        notes:
+          tsaEventNotes
+            .value
+            .trim() ||
+          null,
+
+        updated_at:
+          new Date().toISOString()
+
+      };
+
+
+    let result;
+
+
+    if (
+      editingTsaEventId
+    ) {
+
+      result =
+        await supabaseClient
+          .from(
+            "tsa_training_events"
+          )
+          .update(
+            record
+          )
+          .eq(
+            "id",
+            editingTsaEventId
+          );
+
+    } else {
+
+      result =
+        await supabaseClient
+          .from(
+            "tsa_training_events"
+          )
+          .insert(
+            record
+          );
+
+    }
+
+
+    if (result.error) {
+
+      console.error(
+        "TSA event save error:",
+        result.error
+      );
+
+
+      tsaEventMessage.textContent =
+        "Could not save training event.";
+
+
+      tsaEventMessage
+        .classList
+        .add(
+          "is-error"
+        );
+
+
+      tsaEventSave.disabled =
+        false;
+
+
+      tsaEventSave.textContent =
+        "Save event";
+
+
+      return;
+
+    }
+
+
+    editingTsaEventId =
+      null;
+
+
+    tsaEventDialog.close();
+
+
+    await loadTsaEvents(
+      selectedStudentId
+    );
+
+
+    tsaEventSave.disabled =
+      false;
+
+
+    tsaEventSave.textContent =
+      "Save event";
+
+  }
+);
+
+
+/* ==========================================================
+   DELETE EVENT
+========================================================== */
+
+async function deleteTsaEvent(
+  event
+) {
+
+  const confirmed =
+    window.confirm(
+      `Delete "${event.training_type}" training event?\n\nThis cannot be undone.`
+    );
+
+
+  if (!confirmed) {
+    return;
+  }
+
+
+  const {
+    error
+  } =
+    await supabaseClient
+      .from(
+        "tsa_training_events"
+      )
+      .delete()
+      .eq(
+        "id",
+        event.id
+      );
+
+
+  if (error) {
+
+    console.error(
+      "TSA event delete error:",
+      error
+    );
+
+
+    alert(
+      "Could not delete training event."
+    );
+
+
+    return;
+
+  }
+
+
+  await loadTsaEvents(
+    selectedStudentId
+  );
+
+}
+
+
+/* ==========================================================
+   CLOSE EVENT DIALOG
+========================================================== */
+
+tsaEventDialogClose
+  ?.addEventListener(
+    "click",
+    () => {
+
+      tsaEventDialog.close();
+
+    }
+  );
+
+
+tsaEventCancel
+  ?.addEventListener(
+    "click",
+    () => {
+
+      tsaEventDialog.close();
+
+    }
+  );
+
+
+function formatTsaDate(
+  value
+) {
+
+  if (!value) {
+    return "—";
+  }
+
+
+  return new Date(
+    `${value}T00:00:00`
+  ).toLocaleDateString(
+    "en-US",
+    {
+      month: "short",
+      day: "numeric",
+      year: "numeric"
+    }
+  );
+
+}
+
 
 initializeAdmin();
