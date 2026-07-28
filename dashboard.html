@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="description"
+    content="Fly With Angus student training dashboard."
+  >
+
+  <title>Student Dashboard | Fly With Angus</title>
+
+  <link
+    rel="icon"
+    type="image/png"
+    href="/favicon.png"
+  >
+
+  <link
+    rel="apple-touch-icon"
+    href="/favicon.png"
+  >
+
+  <link
+    rel="stylesheet"
+    href="/styles.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="/dashboard.css"
+  >
+
+  <!-- Supabase -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+  ></script>
+
+  <script
+    src="/dashboard.js"
+    defer
+  ></script>
+</head>
+
+<body class="dashboard-page">
+
+  <!-- Loading screen -->
+  <div
+    class="dashboard-loading"
+    id="dashboard-loading"
+  >
+    <div class="dashboard-loading-inner">
+
+      <img
+        src="/favicon.png"
+        alt=""
+        class="dashboard-loading-logo"
+      >
+
+      <p>Loading your training dashboard…</p>
+
+    </div>
+  </div>
+
+
+  <!-- Header -->
+  <header class="dashboard-header">
+
+    <div class="container dashboard-nav">
+
+      <a
+        href="/"
+        class="dashboard-brand"
+      >
+        <img
+          src="/favicon.png"
+          alt=""
+        >
+
+        <span>FlyWithAngus</span>
+      </a>
+
+
+      <nav
+        class="dashboard-nav-links"
+        aria-label="Student portal navigation"
+      >
+
+        <a
+          href="/dashboard"
+          aria-current="page"
+        >
+          Dashboard
+        </a>
+
+        <a href="/students">
+          Resources
+        </a>
+
+        <button
+          type="button"
+          class="dashboard-logout"
+          id="logout-button"
+        >
+          Log out
+        </button>
+
+      </nav>
+
+    </div>
+
+  </header>
+
+
+  <main class="dashboard-main">
+
+    <div class="container">
+
+      <!-- Welcome -->
+      <section class="dashboard-welcome">
+
+        <div>
+
+          <p class="dashboard-eyebrow">
+            Student portal
+          </p>
+
+          <h1>
+            Welcome back,
+            <span id="student-name">Student</span>.
+          </h1>
+
+          <p class="dashboard-program">
+            <span id="training-program">
+              Flight Training
+            </span>
+
+            <span class="dashboard-dot">•</span>
+
+            <span id="student-status">
+              Active
+            </span>
+          </p>
+
+        </div>
+
+
+        <a
+          href="/#booking"
+          class="dashboard-book-button"
+        >
+          Book a flight
+          <span aria-hidden="true">→</span>
+        </a>
+
+      </section>
+
+
+      <!-- Summary Cards -->
+      <section
+        class="dashboard-summary-grid"
+        aria-label="Training summary"
+      >
+
+        <article class="dashboard-summary-card">
+
+          <p class="dashboard-card-label">
+            Training time
+          </p>
+
+          <strong id="total-hours">
+            0.0 hrs
+          </strong>
+
+          <span id="lesson-count">
+            No lessons recorded yet
+          </span>
+
+        </article>
+
+
+        <article class="dashboard-summary-card">
+
+          <p class="dashboard-card-label">
+            ACS progress
+          </p>
+
+          <strong id="acs-summary">
+            —
+          </strong>
+
+          <span id="acs-description">
+            Progress tracking coming soon
+          </span>
+
+        </article>
+
+
+        <article
+          class="
+            dashboard-summary-card
+            dashboard-summary-account
+          "
+        >
+
+          <p class="dashboard-card-label">
+            Account
+          </p>
+
+          <strong id="account-balance">
+            $0.00
+          </strong>
+
+          <span
+            class="account-status account-paid"
+            id="account-status"
+          >
+            Paid up
+          </span>
+
+        </article>
+
+      </section>
+
+
+      <!-- Main grid -->
+      <div class="dashboard-content-grid">
+
+
+        <!-- Left column -->
+        <div class="dashboard-primary-column">
+
+
+          <!-- Next lesson -->
+          <section class="dashboard-section">
+
+            <div class="dashboard-section-heading">
+
+              <div>
+
+                <p class="dashboard-card-label">
+                  Next lesson
+                </p>
+
+                <h2>What's coming up</h2>
+
+              </div>
+
+            </div>
+
+
+            <article class="dashboard-feature-card">
+
+              <div
+                class="empty-state"
+                id="next-lesson-empty"
+              >
+
+                <span class="empty-state-icon">
+                  ✈
+                </span>
+
+                <div>
+
+                  <strong>
+                    No upcoming lesson
+                  </strong>
+
+                  <p>
+                    Book your next training session
+                    when you're ready.
+                  </p>
+
+                </div>
+
+                <a
+                  href="/#booking"
+                  class="dashboard-inline-button"
+                >
+                  Book a flight
+                </a>
+
+              </div>
+
+            </article>
+
+          </section>
+
+
+          <!-- Progress -->
+          <section class="dashboard-section">
+
+            <div class="dashboard-section-heading">
+
+              <div>
+
+                <p class="dashboard-card-label">
+                  Training progress
+                </p>
+
+                <h2>
+                  ACS proficiency
+                </h2>
+
+              </div>
+
+              <a
+                href="/progress"
+                class="dashboard-text-link"
+              >
+                View full progress →
+              </a>
+
+            </div>
+
+
+            <div class="dashboard-feature-card">
+
+              <div class="progress-placeholder">
+
+                <p>
+                  Your ACS progress will appear here
+                  as training items are assessed.
+                </p>
+
+                <div class="progress-row">
+
+                  <div class="progress-heading">
+
+                    <span>
+                      Takeoffs, Landings &
+                      Go-Arounds
+                    </span>
+
+                    <strong>—</strong>
+
+                  </div>
+
+                  <div class="progress-track">
+                    <span style="width: 0%"></span>
+                  </div>
+
+                </div>
+
+
+                <div class="progress-row">
+
+                  <div class="progress-heading">
+
+                    <span>
+                      Navigation
+                    </span>
+
+                    <strong>—</strong>
+
+                  </div>
+
+                  <div class="progress-track">
+                    <span style="width: 0%"></span>
+                  </div>
+
+                </div>
+
+
+                <div class="progress-row">
+
+                  <div class="progress-heading">
+
+                    <span>
+                      Emergency Operations
+                    </span>
+
+                    <strong>—</strong>
+
+                  </div>
+
+                  <div class="progress-track">
+                    <span style="width: 0%"></span>
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </section>
+
+
+          <!-- Recent lesson -->
+          <section class="dashboard-section">
+
+            <div class="dashboard-section-heading">
+
+              <div>
+
+                <p class="dashboard-card-label">
+                  Recent training
+                </p>
+
+                <h2>
+                  Last lesson
+                </h2>
+
+              </div>
+
+              <a
+                href="/lessons"
+                class="dashboard-text-link"
+              >
+                View all lessons →
+              </a>
+
+            </div>
+
+
+            <article class="dashboard-feature-card">
+
+              <div class="empty-state">
+
+                <span class="empty-state-icon">
+                  ✓
+                </span>
+
+                <div>
+
+                  <strong>
+                    No lessons recorded yet
+                  </strong>
+
+                  <p>
+                    Your lesson history and instructor
+                    notes will appear here.
+                  </p>
+
+                </div>
+
+              </div>
+
+            </article>
+
+          </section>
+
+        </div>
+
+
+        <!-- Right column -->
+        <aside class="dashboard-sidebar">
+
+
+          <!-- Quick actions -->
+          <section class="dashboard-side-card">
+
+            <p class="dashboard-card-label">
+              Quick access
+            </p>
+
+            <h3>
+              Student resources
+            </h3>
+
+            <div class="dashboard-action-list">
+
+              <a href="/students#training-path">
+
+                <span>
+                  Training syllabus
+                </span>
+
+                <span>→</span>
+
+              </a>
+
+
+              <a href="/students#faa-library">
+
+                <span>
+                  FAA library
+                </span>
+
+                <span>→</span>
+
+              </a>
+
+
+              <a href="/students#safety">
+
+                <span>
+                  Safety resources
+                </span>
+
+                <span>→</span>
+
+              </a>
+
+
+              <a href="/#booking">
+
+                <span>
+                  Book a lesson
+                </span>
+
+                <span>→</span>
+
+              </a>
+
+            </div>
+
+          </section>
+
+
+          <!-- Documents -->
+          <section class="dashboard-side-card">
+
+            <div class="dashboard-side-heading">
+
+              <div>
+
+                <p class="dashboard-card-label">
+                  Documents
+                </p>
+
+                <h3>
+                  Your records
+                </h3>
+
+              </div>
+
+              <a href="/documents">
+                View all
+              </a>
+
+            </div>
+
+            <div class="dashboard-mini-empty">
+
+              <span>▤</span>
+
+              <p>
+                Signed agreements and training
+                documents will appear here.
+              </p>
+
+            </div>
+
+          </section>
+
+
+          <!-- Billing -->
+          <section class="dashboard-side-card">
+
+            <div class="dashboard-side-heading">
+
+              <div>
+
+                <p class="dashboard-card-label">
+                  Billing
+                </p>
+
+                <h3>
+                  Account
+                </h3>
+
+              </div>
+
+              <a href="/billing">
+                View billing
+              </a>
+
+            </div>
+
+
+            <div class="billing-preview">
+
+              <span>
+                Current balance
+              </span>
+
+              <strong id="sidebar-balance">
+                $0.00
+              </strong>
+
+            </div>
+
+          </section>
+
+        </aside>
+
+      </div>
+
+    </div>
+
+  </main>
+
+
+  <footer class="dashboard-footer">
+
+    <div class="container">
+
+      <span>
+        Fly With Angus Student Portal
+      </span>
+
+      <a href="mailto:angus@flywithangus.com">
+        Need help?
+      </a>
+
+    </div>
+
+  </footer>
+
+</body>
+</html>

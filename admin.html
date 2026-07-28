@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta
+    name="description"
+    content="Fly With Angus administration portal."
+  />
+
+  <title>Admin | Fly With Angus</title>
+
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="apple-touch-icon" href="/favicon.png" />
+
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/admin.css" />
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/admin.js" defer></script>
+</head>
+
+<body class="admin-page">
+
+  <div class="admin-loading" id="admin-loading">
+    <div class="admin-loading-inner">
+      <img
+        class="admin-loading-logo"
+        src="/favicon.png"
+        alt=""
+      />
+
+      <p>Loading admin portal…</p>
+    </div>
+  </div>
+
+
+  <header class="admin-header">
+    <div class="container admin-nav">
+
+      <a class="admin-brand" href="/">
+        <img src="/favicon.png" alt="" />
+        <span>FlyWithAngus</span>
+      </a>
+
+      <nav class="admin-nav-links" aria-label="Admin navigation">
+
+        <a href="/admin.html" aria-current="page">
+          Admin
+        </a>
+
+        <a href="/students.html">
+          Students
+        </a>
+
+        <button
+          id="admin-logout-button"
+          class="admin-logout-button"
+          type="button"
+        >
+          Log out
+        </button>
+
+      </nav>
+
+    </div>
+  </header>
+
+
+  <main class="admin-main">
+
+    <div class="container">
+
+      <section class="admin-welcome">
+
+        <div>
+          <p class="admin-eyebrow">Fly With Angus</p>
+
+          <h1>Admin portal</h1>
+
+          <p class="admin-welcome-copy">
+            Manage students, training records, documents,
+            balances, and progress from one place.
+          </p>
+        </div>
+
+        <div class="admin-session-card">
+          <span>Signed in as</span>
+          <strong id="admin-email">—</strong>
+        </div>
+
+      </section>
+
+
+      <section class="admin-summary-grid">
+
+        <article class="admin-summary-card">
+          <p class="admin-card-label">
+            Active students
+          </p>
+
+          <strong id="active-student-count">
+            0
+          </strong>
+
+          <span>
+            Current student profiles
+          </span>
+        </article>
+
+
+        <article class="admin-summary-card">
+          <p class="admin-card-label">
+            Outstanding balance
+          </p>
+
+          <strong>
+            $0.00
+          </strong>
+
+          <span>
+            Billing integration coming soon
+          </span>
+        </article>
+
+
+        <article class="admin-summary-card">
+          <p class="admin-card-label">
+            Recent activity
+          </p>
+
+          <strong>
+            —
+          </strong>
+
+          <span>
+            Lesson tracking coming soon
+          </span>
+        </article>
+
+      </section>
+
+
+      <div class="admin-layout">
+
+
+        <section class="admin-students-panel">
+
+          <div class="admin-panel-heading">
+
+            <div>
+              <p class="admin-card-label">
+                Students
+              </p>
+
+              <h2>Student records</h2>
+            </div>
+
+            <button
+              class="admin-primary-button"
+              id="new-student-button"
+              type="button"
+            >
+              Add student
+              <span aria-hidden="true">+</span>
+            </button>
+
+          </div>
+
+
+          <div class="admin-search-wrap">
+
+            <label
+              class="sr-only"
+              for="student-search"
+            >
+              Search students
+            </label>
+
+            <input
+              id="student-search"
+              class="admin-search"
+              type="search"
+              placeholder="Search by name, email, or program"
+            />
+
+          </div>
+
+
+          <div
+            class="student-list"
+            id="student-list"
+          >
+
+            <div class="student-list-empty">
+              Loading students…
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <aside class="admin-student-detail">
+
+          <div
+            class="student-detail-empty"
+            id="student-detail-empty"
+          >
+            <div class="student-detail-empty-icon">
+              ✈
+            </div>
+
+            <h3>Select a student</h3>
+
+            <p>
+              Choose a student record to view
+              and manage their profile.
+            </p>
+          </div>
+
+
+          <div
+            class="student-detail-content"
+            id="student-detail-content"
+            hidden
+          >
+
+            <div class="student-detail-heading">
+
+              <div>
+                <p class="admin-card-label">
+                  Student profile
+                </p>
+
+                <h2 id="detail-student-name">
+                  Student
+                </h2>
+
+                <p id="detail-student-email">
+                  —
+                </p>
+              </div>
+
+              <span
+                class="student-status-badge"
+                id="detail-student-status-badge"
+              >
+                Active
+              </span>
+
+            </div>
+
+
+            <form
+              class="student-profile-form"
+              id="student-profile-form"
+            >
+
+              <input
+                type="hidden"
+                id="profile-id"
+              />
+
+
+              <div class="admin-form-grid">
+
+                <div class="admin-field">
+                  <label for="profile-full-name">
+                    Full name
+                  </label>
+
+                  <input
+                    id="profile-full-name"
+                    type="text"
+                    required
+                  />
+                </div>
+
+
+                <div class="admin-field">
+                  <label for="profile-preferred-name">
+                    Preferred name
+                  </label>
+
+                  <input
+                    id="profile-preferred-name"
+                    type="text"
+                  />
+                </div>
+
+
+                <div class="admin-field">
+                  <label for="profile-email">
+                    Email
+                  </label>
+
+                  <input
+                    id="profile-email"
+                    type="email"
+                    required
+                  />
+                </div>
+
+
+                <div class="admin-field">
+                  <label for="profile-training-program">
+                    Training program
+                  </label>
+
+                  <input
+                    id="profile-training-program"
+                    type="text"
+                    placeholder="Private Pilot Training"
+                  />
+                </div>
+
+
+                <div class="admin-field">
+                  <label for="profile-start-date">
+                    Start date
+                  </label>
+
+                  <input
+                    id="profile-start-date"
+                    type="date"
+                  />
+                </div>
+
+
+                <div class="admin-field">
+                  <label for="profile-status">
+                    Status
+                  </label>
+
+                  <select id="profile-status">
+                    <option value="Active">
+                      Active
+                    </option>
+
+                    <option value="Inactive">
+                      Inactive
+                    </option>
+
+                    <option value="Complete">
+                      Complete
+                    </option>
+                  </select>
+                </div>
+
+              </div>
+
+
+              <div class="student-profile-actions">
+
+                <button
+                  class="admin-primary-button"
+                  id="save-profile-button"
+                  type="submit"
+                >
+                  Save changes
+                </button>
+
+                <p
+                  class="admin-form-message"
+                  id="profile-form-message"
+                  role="status"
+                  aria-live="polite"
+                ></p>
+
+              </div>
+
+            </form>
+
+
+            <div class="student-management-grid">
+
+
+              <button
+                class="student-management-card"
+                type="button"
+                data-section="lessons"
+              >
+                <span class="student-management-icon">
+                  ✈
+                </span>
+
+                <span>
+                  <strong>Lessons</strong>
+                  <small>View and record training</small>
+                </span>
+
+                <span aria-hidden="true">
+                  →
+                </span>
+              </button>
+
+
+              <button
+                class="student-management-card"
+                type="button"
+                data-section="progress"
+              >
+                <span class="student-management-icon">
+                  ✓
+                </span>
+
+                <span>
+                  <strong>ACS progress</strong>
+                  <small>Update proficiency status</small>
+                </span>
+
+                <span aria-hidden="true">
+                  →
+                </span>
+              </button>
+
+
+              <button
+                class="student-management-card"
+                type="button"
+                data-section="documents"
+              >
+                <span class="student-management-icon">
+                  ▤
+                </span>
+
+                <span>
+                  <strong>Documents</strong>
+                  <small>Agreements and records</small>
+                </span>
+
+                <span aria-hidden="true">
+                  →
+                </span>
+              </button>
+
+
+              <button
+                class="student-management-card"
+                type="button"
+                data-section="billing"
+              >
+                <span class="student-management-icon">
+                  $
+                </span>
+
+                <span>
+                  <strong>Billing</strong>
+                  <small>Invoices and balances</small>
+                </span>
+
+                <span aria-hidden="true">
+                  →
+                </span>
+              </button>
+
+
+            </div>
+
+          </div>
+
+        </aside>
+
+      </div>
+
+    </div>
+
+  </main>
+
+
+  <footer class="admin-footer">
+    <div class="container">
+      <span>Fly With Angus Admin Portal</span>
+
+      <a href="mailto:angus@flywithangus.com">
+        Support
+      </a>
+    </div>
+  </footer>
+
+</body>
+</html>
