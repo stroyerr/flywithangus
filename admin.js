@@ -4956,7 +4956,18 @@ function renderLessons() {
 >
   Lesson PDF
 </button>
-
+${
+  lesson.invoice?.id
+    ? `
+        <button
+          type="button"
+          class="lesson-action-button lesson-send-pdfs-button"
+        >
+          Send PDFs
+        </button>
+      `
+    : ""
+}
               <button
                 type="button"
                 class="lesson-action-button lesson-edit-button"
@@ -5037,6 +5048,21 @@ function renderLessons() {
 
       generateLessonPdf(
         lesson
+      );
+
+    }
+  );
+  item
+  .querySelector(
+    ".lesson-send-pdfs-button"
+  )
+  ?.addEventListener(
+    "click",
+    async event => {
+
+      await sendLessonPdfs(
+        lesson,
+        event.currentTarget
       );
 
     }
@@ -9642,12 +9668,58 @@ billingInvoiceList.appendChild(
 );
 
 
+
+
+    }
+  );
+
+
+  /*
+    If billing was opened from a lesson invoice link,
+    jump straight to that invoice.
+  */
+
+  if (billingFocusInvoiceId) {
+
+    const target =
+      billingInvoiceList
+        .querySelector(
+          `[data-billing-invoice-id="${billingFocusInvoiceId}"]`
+        );
+
+
+    if (target) {
+
+      target.classList.add(
+        "is-highlighted"
+      );
+
+
+      setTimeout(
+        () => {
+
+          target.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+          });
+
+        },
+        100
+      );
+
+    }
+
+  }
+
+}
+
 /* ==========================================================
    INVOICE PDF
 ========================================================== */
 
 function generateInvoicePdf(
-  invoice
+  invoice,
+  shouldSave = true
 ) {
 
   if (
@@ -10407,50 +10479,279 @@ function generateInvoicePdf(
      DOWNLOAD
   ======================================================== */
 
+  if (shouldSave) {
+
   doc.save(
     `${invoice.invoice_number}.pdf`
   );
 
 }
 
+
+return doc;
+
+}
+
+/* ==========================================================
+   EMAIL LESSON + INVOICE PDFS
+========================================================== */
+
+async function loadInvoiceForPdf(
+  invoiceId
+) {
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from("invoices")
+      .select(`
+        id,
+        student_id,
+        invoice_number,
+        issue_date,
+        due_date,
+        status,
+        notes,
+        created_at,
+
+        profiles (
+          full_name,
+          email
+        ),
+
+        invoice_items (
+          id,
+          lesson_id,
+          description,
+          quantity,
+          unit_amount
+        ),
+
+        payments (
+          id,
+          amount,
+          payment_date,
+          payment_method,
+          reference_number
+        )
+      `)
+      .eq(
+        "id",
+        invoiceId
+      )
+      .single();
+
+
+  if (error) {
+
+    throw error;
+
+  }
+
+
+  return data;
+}
+
+
+function pdfDocToBase64(
+  doc
+) {
+
+  const dataUri =
+    doc.output(
+      "datauristring"
+    );
+
+
+  return dataUri.split(
+    ","
+  )[1];
+
+}
+
+
+async function sendLessonPdfs(
+  lesson,
+  button
+) {
+
+  const student =
+    getStudentById(
+      lesson.student_id
+    );
+
+
+  if (
+    !lesson.invoice?.id
+  ) {
+
+    alert(
+      "This lesson does not have an invoice."
+    );
+
+    return;
+  }
+
+
+  if (
+    !student?.email
+  ) {
+
+    alert(
+      "This student does not have an email address."
+    );
+
+    return;
+  }
+
+
+  const confirmed =
+    window.confirm(
+      `Email the lesson PDF and ${lesson.invoice.number} to ${student.email}?`
+    );
+
+
+  if (!confirmed) {
+
+    return;
+
+  }
+
+
+  const originalText =
+    button.textContent;
+
+
+  button.disabled =
+    true;
+
+  button.textContent =
+    "Sending…";
+
+
+  try {
+
+    const invoice =
+      await loadInvoiceForPdf(
+        lesson.invoice.id
+      );
+
+
+    const lessonDoc =
+      generateLessonPdf(
+        lesson,
+        false
+      );
+
+
+    const invoiceDoc =
+      generateInvoicePdf(
+        invoice,
+        false
+      );
+
+
+    if (
+      !lessonDoc ||
+      !invoiceDoc
+    ) {
+
+      throw new Error(
+        "Could not generate PDFs."
+      );
+
     }
-  );
 
 
-  /*
-    If billing was opened from a lesson invoice link,
-    jump straight to that invoice.
-  */
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .functions
+        .invoke(
+          "send-lesson-pdfs",
+          {
+            body: {
 
-  if (billingFocusInvoiceId) {
+              lesson_id:
+                lesson.id,
 
-    const target =
-      billingInvoiceList
-        .querySelector(
-          `[data-billing-invoice-id="${billingFocusInvoiceId}"]`
+              invoice_id:
+                invoice.id,
+
+              lesson_pdf_base64:
+                pdfDocToBase64(
+                  lessonDoc
+                ),
+
+              invoice_pdf_base64:
+                pdfDocToBase64(
+                  invoiceDoc
+                )
+
+            }
+          }
         );
 
 
-    if (target) {
+    if (error) {
 
-      target.classList.add(
-        "is-highlighted"
-      );
+      throw error;
+
+    }
 
 
-      setTimeout(
-        () => {
+    if (
+      !data?.success
+    ) {
 
-          target.scrollIntoView({
-            behavior: "smooth",
-            block: "center"
-          });
-
-        },
-        100
+      throw new Error(
+        data?.error ||
+        "Email could not be sent."
       );
 
     }
+
+
+    button.textContent =
+      "Sent ✓";
+
+
+    setTimeout(
+      () => {
+
+        button.disabled =
+          false;
+
+        button.textContent =
+          originalText;
+
+      },
+      1800
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      "Could not email lesson PDFs:",
+      error
+    );
+
+
+    button.disabled =
+      false;
+
+    button.textContent =
+      originalText;
+
+
+    alert(
+      "Could not email the PDFs."
+    );
 
   }
 
