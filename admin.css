@@ -2805,3 +2805,526 @@ a[aria-current="page"] {
 .student-detail-content[hidden] {
   display: none !important;
 }
+
+.admin-field {
+  align-content: start;
+}
+
+.admin-field input,
+.admin-field select {
+  height: 44px;
+}
+
+/* ==========================================================
+   BILLING
+========================================================== */
+
+.billing-dialog {
+  width: min(900px, calc(100% - 32px));
+  max-width: 900px;
+}
+
+
+.billing-summary-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap: 12px;
+
+  margin-bottom: 30px;
+}
+
+
+.billing-summary-card {
+  display: grid;
+
+  gap: 7px;
+
+  padding: 17px;
+
+  border: 1px solid var(--line);
+  border-radius: 15px;
+
+  background: #fafbfc;
+}
+
+
+.billing-summary-card span {
+  color: var(--muted);
+
+  font-size: 0.67rem;
+  font-weight: 700;
+}
+
+
+.billing-summary-card strong {
+  font-size: 1.4rem;
+
+  letter-spacing: -0.04em;
+}
+
+
+.billing-section-heading {
+  margin-bottom: 14px;
+}
+
+
+.billing-section-heading h3 {
+  margin: 4px 0 0;
+}
+
+
+.billing-invoice-list {
+  display: grid;
+
+  gap: 11px;
+}
+
+
+.billing-invoice-card {
+  padding: 17px;
+
+  border: 1px solid var(--line);
+  border-radius: 15px;
+
+  background: #fff;
+}
+
+
+.billing-invoice-header {
+  display: flex;
+
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 20px;
+}
+
+
+.billing-invoice-header strong {
+  display: block;
+}
+
+
+.billing-invoice-date {
+  display: block;
+
+  margin-top: 4px;
+
+  color: var(--muted);
+
+  font-size: 0.67rem;
+}
+
+
+.billing-invoice-total {
+  text-align: right;
+}
+
+
+.billing-invoice-total strong {
+  font-size: 1rem;
+}
+
+
+.billing-invoice-items {
+  display: grid;
+
+  gap: 7px;
+
+  margin-top: 14px;
+  padding-top: 14px;
+
+  border-top: 1px solid var(--line);
+}
+
+
+.billing-invoice-item {
+  display: flex;
+
+  justify-content: space-between;
+
+  gap: 20px;
+
+  color: var(--muted);
+
+  font-size: 0.7rem;
+}
+
+
+.billing-status {
+  display: inline-flex;
+
+  margin-top: 8px;
+
+  padding: 5px 8px;
+
+  border-radius: 999px;
+
+  font-size: 0.62rem;
+  font-weight: 750;
+
+  background: rgba(0, 113, 227, 0.08);
+
+  color: var(--accent);
+}
+
+
+.billing-status.is-paid {
+  background: rgba(19, 115, 51, 0.09);
+
+  color: #137333;
+}
+
+
+@media (max-width: 650px) {
+
+  .billing-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+/* ==========================================================
+   BILLING SUMMARY BUTTON
+========================================================== */
+
+.admin-summary-button {
+  appearance: none;
+
+  width: 100%;
+
+  border: inherit;
+
+  text-align: left;
+  font: inherit;
+
+  cursor: pointer;
+
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+
+
+.admin-summary-button:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.07);
+}
+
+
+.admin-summary-button span {
+  text-align: left;
+}
+
+
+/* ==========================================================
+   BILLING WORKSPACE
+========================================================== */
+
+.billing-dialog {
+  width: min(
+    1100px,
+    calc(100% - 32px)
+  );
+
+  max-width: 1100px;
+}
+
+
+.billing-dialog-card {
+  min-height: 650px;
+}
+
+
+.billing-controls {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 240px));
+
+  gap: 12px;
+
+  margin-bottom: 20px;
+}
+
+
+.billing-summary-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap: 12px;
+
+  margin-bottom: 34px;
+}
+
+
+.billing-summary-card {
+  display: grid;
+
+  gap: 7px;
+
+  padding: 18px;
+
+  border:
+    1px solid var(--line);
+
+  border-radius: 16px;
+
+  background: #fafbfc;
+}
+
+
+.billing-summary-card span {
+  color: var(--muted);
+
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+
+.billing-summary-card strong {
+  font-size: 1.5rem;
+
+  letter-spacing: -0.045em;
+}
+
+
+.billing-section-heading {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 15px;
+}
+
+
+.billing-section-heading h3 {
+  margin: 4px 0 0;
+
+  font-size: 1.15rem;
+}
+
+
+.billing-invoice-list {
+  display: grid;
+
+  gap: 12px;
+}
+
+
+.billing-invoice-card {
+  padding: 18px;
+
+  border:
+    1px solid var(--line);
+
+  border-radius: 16px;
+
+  background: #fff;
+}
+
+
+.billing-invoice-card.is-highlighted {
+  border-color:
+    rgba(0, 113, 227, 0.55);
+
+  box-shadow:
+    0 0 0 4px
+    rgba(0, 113, 227, 0.08);
+}
+
+
+.billing-invoice-header {
+  display: flex;
+
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 20px;
+}
+
+
+.billing-invoice-title strong {
+  display: block;
+
+  font-size: 0.9rem;
+}
+
+
+.billing-invoice-title span {
+  display: block;
+
+  margin-top: 4px;
+
+  color: var(--muted);
+
+  font-size: 0.68rem;
+}
+
+
+.billing-invoice-money {
+  text-align: right;
+}
+
+
+.billing-invoice-money strong {
+  display: block;
+
+  font-size: 1.05rem;
+}
+
+
+.billing-invoice-money span {
+  display: block;
+
+  margin-top: 4px;
+
+  color: var(--muted);
+
+  font-size: 0.66rem;
+}
+
+
+.billing-status {
+  display: inline-flex;
+
+  margin-top: 11px;
+
+  padding:
+    5px 9px;
+
+  border-radius: 999px;
+
+  background:
+    rgba(0, 113, 227, 0.08);
+
+  color: var(--accent);
+
+  font-size: 0.62rem;
+  font-weight: 750;
+}
+
+
+.billing-status.is-paid {
+  background:
+    rgba(19, 115, 51, 0.09);
+
+  color: #137333;
+}
+
+
+.billing-status.is-open {
+  background:
+    rgba(180, 83, 9, 0.09);
+
+  color: #a04b08;
+}
+
+
+.billing-status.is-void {
+  background: #eef0f3;
+
+  color: #6e6e73;
+}
+
+
+.billing-invoice-items {
+  display: grid;
+
+  gap: 8px;
+
+  margin-top: 16px;
+  padding-top: 15px;
+
+  border-top:
+    1px solid var(--line);
+}
+
+
+.billing-invoice-item {
+  display: flex;
+
+  justify-content: space-between;
+
+  gap: 20px;
+
+  font-size: 0.72rem;
+}
+
+
+.billing-invoice-item span:first-child {
+  color: var(--muted);
+}
+
+
+.billing-payment-info {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 8px 16px;
+
+  margin-top: 14px;
+
+  color: var(--muted);
+
+  font-size: 0.67rem;
+}
+
+
+.lesson-invoice-button {
+  padding: 0;
+
+  border: 0;
+
+  background: none;
+
+  color: var(--accent);
+
+  font: inherit;
+  font-size: inherit;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+
+.lesson-invoice-button:hover {
+  text-decoration: underline;
+}
+
+
+@media (max-width: 700px) {
+
+  .billing-controls,
+  .billing-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+
+  .billing-invoice-header {
+    flex-direction: column;
+  }
+
+
+  .billing-invoice-money {
+    text-align: left;
+  }
+
+}
+
+.billing-invoice-actions {
+  display: flex;
+
+  justify-content: flex-end;
+
+  margin-top: 16px;
+}

@@ -18,7 +18,12 @@
   <link rel="stylesheet" href="/admin.css" />
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="/admin.js" defer></script>
+
+<script
+  src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"
+></script>
+
+<script src="/admin.js" defer></script>
 </head>
 
 <body class="admin-page">
@@ -145,21 +150,26 @@
         </article>
 
 
-        <article class="admin-summary-card">
+        <button
+  class="admin-summary-card admin-summary-button"
+  id="admin-billing-summary-button"
+  type="button"
+>
 
-          <p class="admin-card-label">
-            Outstanding balance
-          </p>
+  <p class="admin-card-label">
+    Outstanding balance
+  </p>
 
-          <strong>
-            $0.00
-          </strong>
+  <strong id="admin-outstanding-balance">
+    $0.00
+  </strong>
 
-          <span>
-            Billing integration coming soon
-          </span>
+  <span id="admin-billing-summary-detail">
+    Open billing →
+  </span>
+  
 
-        </article>
+</button>
 
 
         <article class="admin-summary-card">
@@ -573,10 +583,10 @@
 
 
               <button
-                class="student-management-card"
-                type="button"
-                data-section="billing"
-              >
+  class="student-management-card"
+  id="student-billing-button"
+  type="button"
+>
 
                 <span class="student-management-icon">
                   $
@@ -2080,56 +2090,104 @@
             min="0"
             step="0.01"
             placeholder="56.00"
+            required
           />
 
         </div>
 
         <div class="admin-field">
 
+  <!-- PAYMENT STATUS -->
+
+<div class="admin-field">
+
+  <label for="lesson-billing-status">
+    Payment status
+  </label>
+
+  <select id="lesson-billing-status">
+
+    <option value="unpaid">
+      Unpaid
+    </option>
+
+    <option value="paid">
+      Paid
+    </option>
+
+    <option value="waived">
+      Waived
+    </option>
+
+  </select>
+
+</div>
+
+
+<!-- PAYMENT DETAILS -->
+
+<div
+  class="admin-field"
+  id="lesson-payment-method-field"
+  hidden
+>
+
+  <label for="lesson-payment-method">
+    Payment method
+  </label>
+
+  <select id="lesson-payment-method">
+
+    <option value="Stripe">
+      Stripe
+    </option>
+
+    <option value="Cash">
+      Cash
+    </option>
+
+    <option value="Zelle">
+      Zelle
+    </option>
+
+    <option value="Venmo">
+      Venmo
+    </option>
+
+    <option value="Check">
+      Check
+    </option>
+
+    <option value="Bank transfer">
+      Bank transfer
+    </option>
+
+    <option value="Other">
+      Other
+    </option>
+
+  </select>
+
+</div>
+
+
+<div
+  class="admin-field"
+  id="lesson-receipt-field"
+  hidden
+>
+
   <label for="lesson-receipt-number">
-    Payment receipt number
+    Receipt / transaction reference
   </label>
 
   <input
     id="lesson-receipt-number"
     type="text"
-    placeholder="Receipt / transaction reference"
+    placeholder="Stripe receipt, payment ID, etc."
   />
 
 </div>
-
-
-        <!-- BILLING -->
-
-        <div class="admin-field">
-
-          <label for="lesson-billing-status">
-            Billing status
-          </label>
-
-          <select id="lesson-billing-status">
-
-            <option value="unbilled">
-              Unbilled
-            </option>
-
-            <option value="invoiced">
-              Invoiced
-            </option>
-
-            <option value="paid">
-              Paid
-            </option>
-
-            <option value="waived">
-              Waived
-            </option>
-
-          </select>
-
-        </div>
-
-      </div>
 
 
       <!-- ROUTE -->
@@ -2525,6 +2583,182 @@
     ></p>
 
   </div>
+</dialog>
+
+<!-- =====================================================
+     BILLING
+====================================================== -->
+
+<dialog
+  class="admin-dialog billing-dialog"
+  id="billing-dialog"
+>
+
+  <div class="admin-dialog-card billing-dialog-card">
+
+
+    <!-- HEADER -->
+
+    <div class="admin-dialog-heading">
+
+      <div>
+
+        <p class="admin-card-label">
+          Accounts
+        </p>
+
+        <h2 id="billing-dialog-title">
+          Billing
+        </h2>
+
+        <p id="billing-dialog-subtitle">
+          Invoices, payments and outstanding balances.
+        </p>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="admin-dialog-close"
+        id="billing-dialog-close"
+        aria-label="Close"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <!-- FILTERS -->
+
+    <div class="billing-controls">
+
+      <div class="admin-field">
+
+        <label for="billing-student-filter">
+          Student
+        </label>
+
+        <select id="billing-student-filter">
+
+          <option value="">
+            All students
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div class="admin-field">
+
+        <label for="billing-status-filter">
+          Status
+        </label>
+
+        <select id="billing-status-filter">
+
+          <option value="">
+            All invoices
+          </option>
+
+          <option value="open">
+            Outstanding
+          </option>
+
+          <option value="paid">
+            Paid
+          </option>
+
+          <option value="void">
+            Void
+          </option>
+
+        </select>
+
+      </div>
+
+    </div>
+
+
+    <!-- SUMMARY -->
+
+    <div class="billing-summary-grid">
+
+      <div class="billing-summary-card">
+
+        <span>
+          Outstanding
+        </span>
+
+        <strong id="billing-balance">
+          $0.00
+        </strong>
+
+      </div>
+
+
+      <div class="billing-summary-card">
+
+        <span>
+          Total invoiced
+        </span>
+
+        <strong id="billing-total-invoiced">
+          $0.00
+        </strong>
+
+      </div>
+
+
+      <div class="billing-summary-card">
+
+        <span>
+          Payments recorded
+        </span>
+
+        <strong id="billing-total-paid">
+          $0.00
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <!-- INVOICES -->
+
+    <div class="billing-section-heading">
+
+      <div>
+
+        <p class="admin-card-label">
+          Invoices
+        </p>
+
+        <h3>
+          Account history
+        </h3>
+
+      </div>
+
+    </div>
+
+
+    <div
+      class="billing-invoice-list"
+      id="billing-invoice-list"
+    >
+
+      <div class="student-list-empty">
+        Loading invoices…
+      </div>
+
+    </div>
+
+  </div>
+
 </dialog>
 
 </body>
