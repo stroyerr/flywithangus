@@ -165,16 +165,16 @@
         <article class="admin-summary-card">
 
           <p class="admin-card-label">
-            Recent activity
-          </p>
+  Recent activity
+</p>
 
-          <strong>
-            —
-          </strong>
+<strong id="recent-activity-title">
+  —
+</strong>
 
-          <span>
-            Lesson tracking coming soon
-          </span>
+<span id="recent-activity-detail">
+  No activity yet
+</span>
 
         </article>
 
@@ -387,6 +387,22 @@
 
                 </div>
 
+                <div class="admin-field">
+
+  <label for="profile-acs-program">
+    ACS course
+  </label>
+
+  <select id="profile-acs-program">
+
+    <option value="">
+      No ACS assigned
+    </option>
+
+  </select>
+
+</div>
+
 
                 <div class="admin-field">
 
@@ -476,32 +492,28 @@
 
 
               <button
-                class="student-management-card"
-                type="button"
-                data-section="progress"
-              >
+  class="student-management-card"
+  id="student-acs-button"
+  type="button"
+>
+  <span class="student-management-icon">
+    ✓
+  </span>
 
-                <span class="student-management-icon">
-                  ✓
-                </span>
+  <span>
+    <strong>
+      ACS progress
+    </strong>
 
-                <span>
+    <small>
+      Update proficiency status
+    </small>
+  </span>
 
-                  <strong>
-                    ACS progress
-                  </strong>
-
-                  <small>
-                    Update proficiency status
-                  </small>
-
-                </span>
-
-                <span aria-hidden="true">
-                  →
-                </span>
-
-              </button>
+  <span aria-hidden="true">
+    →
+  </span>
+</button>
 
 
               <!-- ENDORSEMENTS: SELECTED STUDENT -->
@@ -536,32 +548,28 @@
 
 
               <button
-                class="student-management-card"
-                type="button"
-                data-section="documents"
-              >
+  class="student-management-card"
+  id="student-documents-button"
+  type="button"
+>
+  <span class="student-management-icon">
+    ▤
+  </span>
 
-                <span class="student-management-icon">
-                  ▤
-                </span>
+  <span>
+    <strong>
+      Documents
+    </strong>
 
-                <span>
+    <small>
+      Files, agreements and resources
+    </small>
+  </span>
 
-                  <strong>
-                    Documents
-                  </strong>
-
-                  <small>
-                    Agreements and records
-                  </small>
-
-                </span>
-
-                <span aria-hidden="true">
-                  →
-                </span>
-
-              </button>
+  <span aria-hidden="true">
+    →
+  </span>
+</button>
 
 
               <button
@@ -2229,6 +2237,292 @@
       </div>
 
     </form>
+
+  </div>
+</dialog>
+
+<!-- =====================================================
+     DOCUMENTS
+====================================================== -->
+
+<dialog
+  class="admin-dialog documents-dialog"
+  id="documents-dialog"
+>
+  <div class="admin-dialog-card documents-dialog-card">
+
+    <div class="admin-dialog-heading">
+
+      <div>
+        <p class="admin-card-label">
+          Student files
+        </p>
+
+        <h2>
+          Documents
+        </h2>
+
+        <p id="documents-student-name">
+          Student documents
+        </p>
+      </div>
+
+      <button
+        type="button"
+        class="admin-dialog-close"
+        id="documents-dialog-close"
+        aria-label="Close"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <!-- MY DOCUMENTS -->
+
+    <section class="document-section">
+
+      <div class="document-section-heading">
+
+        <div>
+          <p class="admin-card-label">
+            Private files
+          </p>
+
+          <h3>
+            My Documents
+          </h3>
+
+          <p>
+            Visible only to this student.
+          </p>
+        </div>
+
+      </div>
+
+
+      <div
+        class="document-dropzone"
+        id="student-document-dropzone"
+        tabindex="0"
+        role="button"
+      >
+
+        <span class="document-dropzone-icon">
+          ↑
+        </span>
+
+        <strong>
+          Drop files here
+        </strong>
+
+        <span>
+          or click to choose files
+        </span>
+
+      </div>
+
+
+      <input
+        id="student-document-input"
+        type="file"
+        multiple
+        hidden
+      />
+
+
+      <div
+        class="document-list"
+        id="student-document-list"
+      >
+
+        <div class="student-list-empty">
+          Loading documents…
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- STUDENT RESOURCES -->
+
+    <section class="document-section document-resource-section">
+
+      <div class="document-section-heading">
+
+        <div>
+          <p class="admin-card-label">
+            Shared files
+          </p>
+
+          <h3>
+            Student Resources
+          </h3>
+
+          <p>
+            Available to every student.
+          </p>
+        </div>
+
+      </div>
+
+
+      <div
+        class="document-dropzone document-resource-dropzone"
+        id="resource-document-dropzone"
+        tabindex="0"
+        role="button"
+      >
+
+        <span class="document-dropzone-icon">
+          ↑
+        </span>
+
+        <strong>
+          Drop shared resources here
+        </strong>
+
+        <span>
+          or click to choose files
+        </span>
+
+      </div>
+
+
+      <input
+        id="resource-document-input"
+        type="file"
+        multiple
+        hidden
+      />
+
+
+      <div
+        class="document-list"
+        id="resource-document-list"
+      >
+
+        <div class="student-list-empty">
+          Loading resources…
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <p
+      class="admin-form-message document-message"
+      id="document-message"
+      role="status"
+    ></p>
+
+  </div>
+</dialog>
+
+<!-- =====================================================
+     ACS PROGRESS
+====================================================== -->
+
+<dialog
+  class="admin-dialog acs-dialog"
+  id="acs-dialog"
+>
+  <div class="admin-dialog-card acs-dialog-card">
+
+    <div class="admin-dialog-heading">
+
+      <div>
+
+        <p class="admin-card-label">
+          Training progress
+        </p>
+
+        <h2>
+          ACS Progress
+        </h2>
+
+        <p id="acs-student-name">
+          Student
+        </p>
+
+      </div>
+
+      <button
+        type="button"
+        class="admin-dialog-close"
+        id="acs-dialog-close"
+        aria-label="Close"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <div class="acs-overview">
+
+      <div class="acs-overview-copy">
+
+        <strong id="acs-overall-percent">
+          0%
+        </strong>
+
+        <span id="acs-overall-detail">
+          0 of 0 tasks proficient
+        </span>
+
+      </div>
+
+
+      <div
+        class="acs-progress-track"
+        aria-hidden="true"
+      >
+        <span id="acs-progress-fill"></span>
+      </div>
+
+    </div>
+
+
+    <div class="acs-legend">
+
+      <span class="acs-legend-item is-not-started">
+        Not Started
+      </span>
+
+      <span class="acs-legend-item is-introduced">
+        Introduced
+      </span>
+
+      <span class="acs-legend-item is-developing">
+        Developing
+      </span>
+
+      <span class="acs-legend-item is-proficient">
+        Proficient
+      </span>
+
+    </div>
+
+
+    <div
+      class="acs-area-list"
+      id="acs-area-list"
+    >
+      <div class="student-list-empty">
+        Loading ACS…
+      </div>
+    </div>
+
+
+    <p
+      class="admin-form-message"
+      id="acs-message"
+      role="status"
+    ></p>
 
   </div>
 </dialog>

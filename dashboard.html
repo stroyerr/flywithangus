@@ -309,85 +309,113 @@
 
               </div>
 
-              <a
-                href="/progress"
-                class="dashboard-text-link"
-              >
-                View full progress →
-              </a>
+              <button
+  type="button"
+  class="dashboard-text-link dashboard-text-button"
+  id="view-acs-progress-button"
+>
+  View full progress →
+</button>
 
             </div>
 
+  <div class="dashboard-feature-card">
 
-            <div class="dashboard-feature-card">
+  <div class="student-acs-preview">
 
-              <div class="progress-placeholder">
+    <div class="student-acs-overall">
 
-                <p>
-                  Your ACS progress will appear here
-                  as training items are assessed.
-                </p>
+      <div>
+        <strong id="acs-preview-percent">
+          0%
+        </strong>
 
-                <div class="progress-row">
+        <span id="acs-preview-detail">
+          No tasks proficient yet
+        </span>
+      </div>
 
-                  <div class="progress-heading">
+      <div class="student-acs-overall-track">
+        <span id="acs-preview-fill"></span>
+      </div>
 
-                    <span>
-                      Takeoffs, Landings &
-                      Go-Arounds
-                    </span>
-
-                    <strong>—</strong>
-
-                  </div>
-
-                  <div class="progress-track">
-                    <span style="width: 0%"></span>
-                  </div>
-
-                </div>
+    </div>
 
 
-                <div class="progress-row">
+    <div
+      class="progress-row"
+      data-acs-preview-area="IV"
+    >
 
-                  <div class="progress-heading">
+      <div class="progress-heading">
 
-                    <span>
-                      Navigation
-                    </span>
+        <span>
+          Takeoffs, Landings & Go-Arounds
+        </span>
 
-                    <strong>—</strong>
+        <strong id="acs-preview-area-iv">
+          0%
+        </strong>
 
-                  </div>
+      </div>
 
-                  <div class="progress-track">
-                    <span style="width: 0%"></span>
-                  </div>
+      <div class="progress-track">
+        <span id="acs-preview-area-iv-fill"></span>
+      </div>
 
-                </div>
+    </div>
 
 
-                <div class="progress-row">
+    <div
+      class="progress-row"
+      data-acs-preview-area="VI"
+    >
 
-                  <div class="progress-heading">
+      <div class="progress-heading">
 
-                    <span>
-                      Emergency Operations
-                    </span>
+        <span>
+          Navigation
+        </span>
 
-                    <strong>—</strong>
+        <strong id="acs-preview-area-vi">
+          0%
+        </strong>
 
-                  </div>
+      </div>
 
-                  <div class="progress-track">
-                    <span style="width: 0%"></span>
-                  </div>
+      <div class="progress-track">
+        <span id="acs-preview-area-vi-fill"></span>
+      </div>
 
-                </div>
+    </div>
 
-              </div>
 
-            </div>
+    <div
+      class="progress-row"
+      data-acs-preview-area="IX"
+    >
+
+      <div class="progress-heading">
+
+        <span>
+          Emergency Operations
+        </span>
+
+        <strong id="acs-preview-area-ix">
+          0%
+        </strong>
+
+      </div>
+
+      <div class="progress-track">
+        <span id="acs-preview-area-ix-fill"></span>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
 
           </section>
 
@@ -409,40 +437,22 @@
 
               </div>
 
-              <a
-                href="/lessons"
-                class="dashboard-text-link"
-              >
-                View all lessons →
-              </a>
+              <button
+  type="button"
+  class="dashboard-text-link dashboard-text-button"
+  id="view-all-lessons-button"
+>
+  View all lessons →
+</button>
 
             </div>
 
 
-            <article class="dashboard-feature-card">
-
-              <div class="empty-state">
-
-                <span class="empty-state-icon">
-                  ✓
-                </span>
-
-                <div>
-
-                  <strong>
-                    No lessons recorded yet
-                  </strong>
-
-                  <p>
-                    Your lesson history and instructor
-                    notes will appear here.
-                  </p>
-
-                </div>
-
-              </div>
-
-            </article>
+            <article
+  class="dashboard-feature-card"
+  id="last-lesson-card"
+>
+</article>
 
           </section>
 
@@ -483,62 +493,7 @@
 
 </section>
 
-<section class="dashboard-section student-lessons-section">
 
-  <div class="dashboard-section-heading">
-
-    <div>
-      <p class="dashboard-card-label">
-        Training history
-      </p>
-
-      <h2>
-        Lessons
-      </h2>
-    </div>
-
-    <span
-      class="lesson-count"
-      id="student-lesson-count"
-    >
-      0
-    </span>
-
-  </div>
-
-
-  <div class="student-lesson-summary">
-
-    <div>
-      <strong id="student-total-flight">0.0</strong>
-      <span>Flight</span>
-    </div>
-
-    <div>
-      <strong id="student-total-ground">0.0</strong>
-      <span>Ground</span>
-    </div>
-
-    <div>
-      <strong id="student-total-sim">0.0</strong>
-      <span>Sim</span>
-    </div>
-
-  </div>
-
-
-  <div
-    class="student-lesson-list"
-    id="student-lesson-list"
-  >
-
-    <div class="dashboard-empty-state">
-      Loading lessons…
-    </div>
-
-  </div>
-
-</section>
 
         </div>
 
@@ -609,40 +564,57 @@
 
 
           <!-- Documents -->
-          <section class="dashboard-side-card">
+<section class="dashboard-side-card">
 
-            <div class="dashboard-side-heading">
+  <div class="dashboard-side-heading">
 
-              <div>
+    <div>
 
-                <p class="dashboard-card-label">
-                  Documents
-                </p>
+      <p class="dashboard-card-label">
+        Documents
+      </p>
 
-                <h3>
-                  Your records
-                </h3>
+      <h3>
+        Your records
+      </h3>
 
-              </div>
+    </div>
 
-              <a href="/documents">
-                View all
-              </a>
+    <button
+      type="button"
+      class="dashboard-side-link-button"
+      id="view-documents-button"
+    >
+      View all
+    </button>
 
-            </div>
+  </div>
 
-            <div class="dashboard-mini-empty">
 
-              <span>▤</span>
+  <div
+    class="document-dashboard-preview"
+    id="document-dashboard-preview"
+  >
 
-              <p>
-                Signed agreements and training
-                documents will appear here.
-              </p>
+    <span class="document-preview-icon">
+      ▤
+    </span>
 
-            </div>
+    <div>
 
-          </section>
+      <strong id="document-preview-count">
+        —
+      </strong>
+
+      <p id="document-preview-text">
+        Loading documents…
+      </p>
+
+    </div>
+
+  </div>
+
+</section>
 
 
           <!-- Billing -->
@@ -707,6 +679,299 @@
     </div>
 
   </footer>
+
+  <dialog
+  class="lesson-history-dialog"
+  id="lesson-history-dialog"
+>
+  <div class="lesson-history-dialog-card">
+
+    <div class="lesson-history-header">
+
+      <div>
+        <p class="dashboard-card-label">
+          Training history
+        </p>
+
+        <h2>
+          All lessons
+        </h2>
+      </div>
+
+      <button
+        type="button"
+        class="lesson-history-close"
+        id="lesson-history-close"
+        aria-label="Close"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <div
+      class="lesson-history-list"
+      id="lesson-history-list"
+    >
+      <div class="dashboard-empty-state">
+        No lessons recorded yet.
+      </div>
+    </div>
+
+  </div>
+</dialog>
+  
+<!-- =====================================================
+     STUDENT DOCUMENTS
+====================================================== -->
+
+<dialog
+  class="student-documents-dialog"
+  id="student-documents-dialog"
+>
+
+  <div class="student-documents-dialog-card">
+
+
+    <div class="student-documents-header">
+
+      <div>
+
+        <p class="dashboard-card-label">
+          Files
+        </p>
+
+        <h2>
+          Documents
+        </h2>
+
+        <p>
+          Training resources and files shared with you.
+        </p>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="student-documents-close"
+        id="student-documents-close"
+        aria-label="Close"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <!-- STUDENT RESOURCES -->
+
+    <section class="student-document-section">
+
+      <div class="student-document-section-heading">
+
+        <div>
+
+          <p class="dashboard-card-label">
+            Shared resources
+          </p>
+
+          <h3>
+            Student Resources
+          </h3>
+
+          <p>
+            Training material available to all students.
+          </p>
+
+        </div>
+
+        <span
+          class="student-document-count"
+          id="student-resource-count"
+        >
+          0
+        </span>
+
+      </div>
+
+
+      <div
+        class="student-document-list"
+        id="student-resource-list"
+      >
+
+        <div class="dashboard-empty-state">
+          Loading resources…
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- MY DOCUMENTS -->
+
+    <section
+      class="
+        student-document-section
+        student-my-documents-section
+      "
+    >
+
+      <div class="student-document-section-heading">
+
+        <div>
+
+          <p class="dashboard-card-label">
+            Personal files
+          </p>
+
+          <h3>
+            My Documents
+          </h3>
+
+          <p>
+            Files shared specifically with you.
+          </p>
+
+        </div>
+
+        <span
+          class="student-document-count"
+          id="student-my-document-count"
+        >
+          0
+        </span>
+
+      </div>
+
+
+      <div
+        class="student-document-list"
+        id="student-my-document-list"
+      >
+
+        <div class="dashboard-empty-state">
+          Loading documents…
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <p
+      class="student-document-message"
+      id="student-document-message"
+      role="status"
+    ></p>
+
+  </div>
+
+</dialog>
+
+<!-- =====================================================
+     ACS PROGRESS
+====================================================== -->
+
+<dialog
+  class="student-acs-dialog"
+  id="student-acs-dialog"
+>
+
+  <div class="student-acs-dialog-card">
+
+
+    <div class="student-acs-dialog-header">
+
+      <div>
+
+        <p class="dashboard-card-label">
+          Training progress
+        </p>
+
+        <h2>
+          ACS Proficiency
+        </h2>
+
+        <p id="student-acs-program-name">
+          Private Pilot — Airplane Single-Engine Land
+        </p>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="student-acs-dialog-close"
+        id="student-acs-dialog-close"
+        aria-label="Close"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <div class="student-acs-dialog-overview">
+
+      <div>
+
+        <strong id="student-acs-dialog-percent">
+          0%
+        </strong>
+
+        <span id="student-acs-dialog-detail">
+          0 of 0 tasks proficient
+        </span>
+
+      </div>
+
+
+      <div class="student-acs-dialog-track">
+        <span id="student-acs-dialog-fill"></span>
+      </div>
+
+    </div>
+
+
+    <div class="student-acs-status-legend">
+
+      <span class="student-acs-status is-not-started">
+        Not Started
+      </span>
+
+      <span class="student-acs-status is-introduced">
+        Introduced
+      </span>
+
+      <span class="student-acs-status is-developing">
+        Developing
+      </span>
+
+      <span class="student-acs-status is-proficient">
+        Proficient
+      </span>
+
+    </div>
+
+
+    <div
+      class="student-acs-area-list"
+      id="student-acs-area-list"
+    >
+
+      <div class="dashboard-empty-state">
+        Loading progress…
+      </div>
+
+    </div>
+
+  </div>
+
+</dialog>
 
 </body>
 </html>

@@ -77,6 +77,13 @@ const studentDetailContent =
     "student-detail-content"
   );
 
+  const profileAcsProgram =
+  document.getElementById(
+    "profile-acs-program"
+  );
+
+  let acsPrograms = [];
+
 const detailStudentName =
   document.getElementById(
     "detail-student-name"
@@ -146,6 +153,81 @@ const newStudentButton =
   document.getElementById(
     "new-student-button"
   );
+
+  async function loadAcsPrograms() {
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from("acs_programs")
+      .select(`
+        id,
+        code,
+        name,
+        version
+      `)
+      .eq(
+        "is_active",
+        true
+      )
+      .order(
+        "name",
+        {
+          ascending: true
+        }
+      );
+
+
+  if (error) {
+
+    console.error(
+      "Could not load ACS programs:",
+      error
+    );
+
+    return;
+  }
+
+
+  acsPrograms =
+    data || [];
+
+
+  profileAcsProgram.innerHTML =
+    `
+      <option value="">
+        No ACS assigned
+      </option>
+    `;
+
+
+  acsPrograms.forEach(
+    program => {
+
+      const option =
+        document.createElement(
+          "option"
+        );
+
+
+      option.value =
+        program.id;
+
+
+      option.textContent =
+        program.name;
+
+
+      profileAcsProgram.appendChild(
+        option
+      );
+
+    }
+  );
+
+}
 
 
 /* ==========================================================
@@ -220,6 +302,7 @@ async function loadStudents() {
         full_name,
         preferred_name,
         email,
+        acs_program_id,
         training_program,
         start_date,
         status,
@@ -463,6 +546,10 @@ function populateProfileForm(student) {
   profileEmail.value =
     student.email || "";
 
+    profileAcsProgram.value =
+  student.acs_program_id ||
+  "";
+
 
   profileTrainingProgram.value =
     student.training_program || "";
@@ -557,6 +644,10 @@ profileForm?.addEventListener(
 
         email:
           profileEmail.value.trim(),
+
+          acs_program_id:
+  profileAcsProgram.value ||
+  null,
 
         training_program:
           profileTrainingProgram.value.trim() ||
@@ -1275,7 +1366,9 @@ async function initializeAdmin() {
       "Admin";
 
 
+    await loadAcsPrograms();
     await loadStudents();
+    await loadRecentActivity();
 
 
   } catch (error) {
@@ -5430,6 +5523,2577 @@ function getLessonBillingStatus(
       };
 
   }
+
+}
+
+/* ==========================================================
+   RECENT ACTIVITY
+========================================================== */
+
+const recentActivityTitle =
+  document.getElementById(
+    "recent-activity-title"
+  );
+
+const recentActivityDetail =
+  document.getElementById(
+    "recent-activity-detail"
+  );
+
+
+async function loadRecentActivity() {
+
+  const [
+    lessonResult,
+    endorsementResult
+  ] =
+    await Promise.all([
+
+      supabaseClient
+        .from("lessons")
+        .select(`
+          id,
+          student_id,
+          lesson_date,
+          lesson_type,
+          training_goal,
+          flight_time,
+          ground_time,
+          sim_time,
+          created_at,
+          profiles (
+            full_name
+          )
+        `)
+        .order(
+          "created_at",
+          {
+            ascending: false
+          }
+        )
+        .limit(1)
+        .maybeSingle(),
+
+
+      supabaseClient
+        .from("endorsements")
+        .select(`
+          id,
+          student_id,
+          endorsement_type,
+          date_given,
+          created_at,
+          profiles (
+            full_name
+          )
+        `)
+        .order(
+          "created_at",
+          {
+            ascending: false
+          }
+        )
+        .limit(1)
+        .maybeSingle()
+
+    ]);
+
+
+  if (
+    lessonResult.error
+  ) {
+
+    console.error(
+      "Recent lesson activity error:",
+      lessonResult.error
+    );
+
+  }
+
+
+  if (
+    endorsementResult.error
+  ) {
+
+    console.error(
+      "Recent endorsement activity error:",
+      endorsementResult.error
+    );
+
+  }
+
+
+  const activities =
+    [];
+
+
+  if (lessonResult.data) {
+
+    activities.push({
+      type: "lesson",
+      created_at:
+        lessonResult.data.created_at,
+      data:
+        lessonResult.data
+    });
+
+  }
+
+
+  if (endorsementResult.data) {
+
+    activities.push({
+      type: "endorsement",
+      created_at:
+        endorsementResult.data.created_at,
+      data:
+        endorsementResult.data
+    });
+
+  }
+
+
+  if (!activities.length) {
+
+    recentActivityTitle.textContent =
+      "—";
+
+    recentActivityDetail.textContent =
+      "No activity yet";
+
+    return;
+
+  }
+
+
+  activities.sort(
+    (a, b) =>
+      new Date(b.created_at) -
+      new Date(a.created_at)
+  );
+
+
+  const latest =
+    activities[0];
+
+
+  if (
+    latest.type === "lesson"
+  ) {
+
+    renderRecentLessonActivity(
+      latest.data
+    );
+
+    return;
+
+  }
+
+
+  renderRecentEndorsementActivity(
+    latest.data
+  );
+
+}
+
+
+/* ==========================================================
+   RECENT LESSON
+========================================================== */
+
+function renderRecentLessonActivity(
+  lesson
+) {
+
+  recentActivityTitle.textContent =
+    "Lesson logged";
+
+
+  const details =
+    [];
+
+
+  if (
+    lesson.lesson_date
+  ) {
+
+    details.push(
+      formatRecentActivityDate(
+        lesson.lesson_date
+      )
+    );
+
+  }
+
+
+  const studentName =
+    lesson.profiles?.full_name;
+
+
+  if (studentName) {
+
+    details.push(
+      studentName
+    );
+
+  }
+
+
+  const totalTime =
+    Number(
+      lesson.flight_time || 0
+    ) +
+    Number(
+      lesson.ground_time || 0
+    ) +
+    Number(
+      lesson.sim_time || 0
+    );
+
+
+  if (totalTime > 0) {
+
+    details.push(
+      `${totalTime.toFixed(1)} hr`
+    );
+
+  }
+
+
+  recentActivityDetail.textContent =
+    details.join(" • ");
+
+}
+
+
+/* ==========================================================
+   RECENT ENDORSEMENT
+========================================================== */
+
+function renderRecentEndorsementActivity(
+  endorsement
+) {
+
+  recentActivityTitle.textContent =
+    "Endorsement issued";
+
+
+  const details =
+    [];
+
+
+  if (
+    endorsement.date_given
+  ) {
+
+    details.push(
+      formatRecentActivityDate(
+        endorsement.date_given
+      )
+    );
+
+  }
+
+
+  const studentName =
+    endorsement.profiles?.full_name;
+
+
+  if (studentName) {
+
+    details.push(
+      studentName
+    );
+
+  }
+
+
+  if (
+    endorsement.endorsement_type
+  ) {
+
+    details.push(
+      endorsement.endorsement_type
+    );
+
+  }
+
+
+  recentActivityDetail.textContent =
+    details.join(" • ");
+
+}
+
+
+/* ==========================================================
+   RECENT ACTIVITY HELPERS
+========================================================== */
+
+function formatRecentActivityDate(
+  date
+) {
+
+  return new Date(
+    `${date}T00:00:00`
+  ).toLocaleDateString(
+    "en-US",
+    {
+      month: "short",
+      day: "numeric"
+    }
+  );
+
+}
+
+/* ==========================================================
+   DOCUMENTS
+========================================================== */
+
+const DOCUMENT_BUCKET =
+  "student-documents";
+
+
+const studentDocumentsButton =
+  document.getElementById(
+    "student-documents-button"
+  );
+
+const documentsDialog =
+  document.getElementById(
+    "documents-dialog"
+  );
+
+const documentsDialogClose =
+  document.getElementById(
+    "documents-dialog-close"
+  );
+
+const documentsStudentName =
+  document.getElementById(
+    "documents-student-name"
+  );
+
+const studentDocumentDropzone =
+  document.getElementById(
+    "student-document-dropzone"
+  );
+
+const studentDocumentInput =
+  document.getElementById(
+    "student-document-input"
+  );
+
+const studentDocumentList =
+  document.getElementById(
+    "student-document-list"
+  );
+
+const resourceDocumentDropzone =
+  document.getElementById(
+    "resource-document-dropzone"
+  );
+
+const resourceDocumentInput =
+  document.getElementById(
+    "resource-document-input"
+  );
+
+const resourceDocumentList =
+  document.getElementById(
+    "resource-document-list"
+  );
+
+const documentMessage =
+  document.getElementById(
+    "document-message"
+  );
+
+
+let studentDocumentRecords = [];
+let resourceDocumentRecords = [];
+
+
+/* ==========================================================
+   OPEN DOCUMENTS
+========================================================== */
+
+studentDocumentsButton
+  ?.addEventListener(
+    "click",
+    async () => {
+
+      if (!selectedStudentId) {
+        return;
+      }
+
+
+      const student =
+        getStudentById(
+          selectedStudentId
+        );
+
+
+      documentsStudentName.textContent =
+        student?.full_name ||
+        student?.email ||
+        "Student";
+
+
+      clearDocumentMessage();
+
+
+      documentsDialog.showModal();
+
+
+      await loadDocuments();
+
+    }
+  );
+
+
+documentsDialogClose
+  ?.addEventListener(
+    "click",
+    () => {
+
+      documentsDialog.close();
+
+    }
+  );
+
+
+/* ==========================================================
+   LOAD DOCUMENTS
+========================================================== */
+
+async function loadDocuments() {
+
+  if (!selectedStudentId) {
+    return;
+  }
+
+
+  studentDocumentList.innerHTML =
+    `
+      <div class="student-list-empty">
+        Loading documents…
+      </div>
+    `;
+
+
+  resourceDocumentList.innerHTML =
+    `
+      <div class="student-list-empty">
+        Loading resources…
+      </div>
+    `;
+
+
+  const [
+    studentResult,
+    resourceResult
+  ] =
+    await Promise.all([
+
+      supabaseClient
+        .from("documents")
+        .select(`
+          id,
+          student_id,
+          document_type,
+          title,
+          file_name,
+          storage_path,
+          mime_type,
+          file_size,
+          created_at
+        `)
+        .eq(
+          "document_type",
+          "student_document"
+        )
+        .eq(
+          "student_id",
+          selectedStudentId
+        )
+        .order(
+          "created_at",
+          {
+            ascending: false
+          }
+        ),
+
+
+      supabaseClient
+        .from("documents")
+        .select(`
+          id,
+          student_id,
+          document_type,
+          title,
+          file_name,
+          storage_path,
+          mime_type,
+          file_size,
+          created_at
+        `)
+        .eq(
+          "document_type",
+          "student_resource"
+        )
+        .is(
+          "student_id",
+          null
+        )
+        .order(
+          "created_at",
+          {
+            ascending: false
+          }
+        )
+
+    ]);
+
+
+  if (studentResult.error) {
+
+    console.error(
+      "Student documents load error:",
+      studentResult.error
+    );
+
+
+    studentDocumentList.innerHTML =
+      `
+        <div class="student-list-empty">
+          Could not load documents.
+        </div>
+      `;
+
+  } else {
+
+    studentDocumentRecords =
+      studentResult.data || [];
+
+
+    renderDocumentList(
+      studentDocumentRecords,
+      studentDocumentList
+    );
+
+  }
+
+
+  if (resourceResult.error) {
+
+    console.error(
+      "Resource documents load error:",
+      resourceResult.error
+    );
+
+
+    resourceDocumentList.innerHTML =
+      `
+        <div class="student-list-empty">
+          Could not load resources.
+        </div>
+      `;
+
+  } else {
+
+    resourceDocumentRecords =
+      resourceResult.data || [];
+
+
+    renderDocumentList(
+      resourceDocumentRecords,
+      resourceDocumentList
+    );
+
+  }
+
+}
+
+
+/* ==========================================================
+   DROPZONES
+========================================================== */
+
+setupDocumentDropzone(
+  studentDocumentDropzone,
+  studentDocumentInput,
+  "student_document"
+);
+
+
+setupDocumentDropzone(
+  resourceDocumentDropzone,
+  resourceDocumentInput,
+  "student_resource"
+);
+
+
+function setupDocumentDropzone(
+  dropzone,
+  input,
+  documentType
+) {
+
+  if (
+    !dropzone ||
+    !input
+  ) {
+
+    return;
+
+  }
+
+
+  dropzone.addEventListener(
+    "click",
+    () => {
+
+      input.click();
+
+    }
+  );
+
+
+  dropzone.addEventListener(
+    "keydown",
+    event => {
+
+      if (
+        event.key === "Enter" ||
+        event.key === " "
+      ) {
+
+        event.preventDefault();
+
+        input.click();
+
+      }
+
+    }
+  );
+
+
+  input.addEventListener(
+    "change",
+    async () => {
+
+      const files =
+        Array.from(
+          input.files || []
+        );
+
+
+      input.value =
+        "";
+
+
+      if (files.length) {
+
+        await uploadDocuments(
+          files,
+          documentType
+        );
+
+      }
+
+    }
+  );
+
+
+  [
+    "dragenter",
+    "dragover"
+  ].forEach(
+    eventName => {
+
+      dropzone.addEventListener(
+        eventName,
+        event => {
+
+          event.preventDefault();
+          event.stopPropagation();
+
+
+          dropzone.classList.add(
+            "is-dragging"
+          );
+
+        }
+      );
+
+    }
+  );
+
+
+  [
+    "dragleave",
+    "drop"
+  ].forEach(
+    eventName => {
+
+      dropzone.addEventListener(
+        eventName,
+        event => {
+
+          event.preventDefault();
+          event.stopPropagation();
+
+
+          dropzone.classList.remove(
+            "is-dragging"
+          );
+
+        }
+      );
+
+    }
+  );
+
+
+  dropzone.addEventListener(
+    "drop",
+    async event => {
+
+      const files =
+        Array.from(
+          event.dataTransfer?.files ||
+          []
+        );
+
+
+      if (files.length) {
+
+        await uploadDocuments(
+          files,
+          documentType
+        );
+
+      }
+
+    }
+  );
+
+}
+
+
+/* ==========================================================
+   UPLOAD
+========================================================== */
+
+async function uploadDocuments(
+  files,
+  documentType
+) {
+
+  if (!selectedStudentId) {
+    return;
+  }
+
+
+  clearDocumentMessage();
+
+
+  const destinationLabel =
+    documentType ===
+      "student_resource"
+      ? "resource"
+      : "document";
+
+
+  for (let index = 0;
+       index < files.length;
+       index++) {
+
+    const file =
+      files[index];
+
+
+    documentMessage.textContent =
+      `Uploading ${index + 1} of ${files.length}: ${file.name}`;
+
+
+    const safeName =
+      sanitizeDocumentFileName(
+        file.name
+      );
+
+
+    const uniqueId =
+      crypto.randomUUID();
+
+
+    const storagePath =
+      documentType ===
+        "student_resource"
+
+        ? `resources/${uniqueId}-${safeName}`
+
+        : `students/${selectedStudentId}/${uniqueId}-${safeName}`;
+
+
+    const uploadOptions =
+      {
+        cacheControl:
+          "3600",
+
+        upsert:
+          false
+      };
+
+
+    if (file.type) {
+
+      uploadOptions.contentType =
+        file.type;
+
+    }
+
+
+    const {
+      error: uploadError
+    } =
+      await supabaseClient
+        .storage
+        .from(
+          DOCUMENT_BUCKET
+        )
+        .upload(
+          storagePath,
+          file,
+          uploadOptions
+        );
+
+
+    if (uploadError) {
+
+      console.error(
+        "Document upload error:",
+        uploadError
+      );
+
+
+      setDocumentError(
+        `Could not upload ${file.name}.`
+      );
+
+
+      continue;
+    }
+
+
+    const metadata =
+      {
+
+        student_id:
+          documentType ===
+            "student_document"
+            ? selectedStudentId
+            : null,
+
+        document_type:
+          documentType,
+
+        title:
+          file.name,
+
+        file_name:
+          file.name,
+
+        storage_path:
+          storagePath,
+
+        mime_type:
+          file.type ||
+          null,
+
+        file_size:
+          file.size
+
+      };
+
+
+    const {
+      error: metadataError
+    } =
+      await supabaseClient
+        .from("documents")
+        .insert(
+          metadata
+        );
+
+
+    if (metadataError) {
+
+      console.error(
+        "Document metadata error:",
+        metadataError
+      );
+
+
+      /*
+        Roll back the uploaded object so
+        Storage and the documents table
+        don't get out of sync.
+      */
+
+      await supabaseClient
+        .storage
+        .from(
+          DOCUMENT_BUCKET
+        )
+        .remove([
+          storagePath
+        ]);
+
+
+      setDocumentError(
+        `Could not record ${file.name}.`
+      );
+
+
+      continue;
+    }
+
+  }
+
+
+  if (
+    !documentMessage.classList
+      .contains("is-error")
+  ) {
+
+    documentMessage.textContent =
+      files.length === 1
+        ? `${destinationLabel} uploaded.`
+        : `${files.length} files uploaded.`;
+
+
+    documentMessage.classList.add(
+      "is-success"
+    );
+
+  }
+
+
+  await loadDocuments();
+
+}
+
+
+/* ==========================================================
+   RENDER
+========================================================== */
+
+function renderDocumentList(
+  records,
+  container
+) {
+
+  container.innerHTML =
+    "";
+
+
+  if (!records.length) {
+
+    container.innerHTML =
+      `
+        <div class="student-list-empty">
+          No files uploaded yet.
+        </div>
+      `;
+
+
+    return;
+  }
+
+
+  records.forEach(
+    record => {
+
+      const item =
+        document.createElement(
+          "article"
+        );
+
+
+      item.className =
+        "document-item";
+
+
+      item.innerHTML =
+        `
+          <div class="document-item-icon">
+            ${getDocumentIcon(
+              record.mime_type
+            )}
+          </div>
+
+
+          <div class="document-item-main">
+
+            <strong>
+              ${escapeHtml(
+                record.title ||
+                record.file_name
+              )}
+            </strong>
+
+            <span>
+              ${escapeHtml(
+                formatDocumentMeta(
+                  record
+                )
+              )}
+            </span>
+
+          </div>
+
+
+          <div class="document-item-actions">
+
+            <button
+              type="button"
+              class="document-action-button document-open-button"
+            >
+              Open
+            </button>
+
+
+            <button
+              type="button"
+              class="document-action-button document-download-button"
+            >
+              Download
+            </button>
+
+
+            <button
+              type="button"
+              class="document-action-button is-delete document-delete-button"
+            >
+              Delete
+            </button>
+
+          </div>
+        `;
+
+
+      item
+        .querySelector(
+          ".document-open-button"
+        )
+        .addEventListener(
+          "click",
+          () => {
+
+            openDocument(
+              record
+            );
+
+          }
+        );
+
+
+      item
+        .querySelector(
+          ".document-download-button"
+        )
+        .addEventListener(
+          "click",
+          () => {
+
+            downloadDocument(
+              record
+            );
+
+          }
+        );
+
+
+      item
+        .querySelector(
+          ".document-delete-button"
+        )
+        .addEventListener(
+          "click",
+          () => {
+
+            deleteDocument(
+              record
+            );
+
+          }
+        );
+
+
+      container.appendChild(
+        item
+      );
+
+    }
+  );
+
+}
+
+
+/* ==========================================================
+   OPEN
+========================================================== */
+
+async function openDocument(
+  record
+) {
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .storage
+      .from(
+        DOCUMENT_BUCKET
+      )
+      .createSignedUrl(
+        record.storage_path,
+        300
+      );
+
+
+  if (
+    error ||
+    !data?.signedUrl
+  ) {
+
+    console.error(
+      "Document open error:",
+      error
+    );
+
+
+    setDocumentError(
+      "Could not open the document."
+    );
+
+
+    return;
+  }
+
+
+  const link =
+    document.createElement(
+      "a"
+    );
+
+
+  link.href =
+    data.signedUrl;
+
+
+  link.target =
+    "_blank";
+
+
+  link.rel =
+    "noopener noreferrer";
+
+
+  link.click();
+
+}
+
+
+/* ==========================================================
+   DOWNLOAD
+========================================================== */
+
+async function downloadDocument(
+  record
+) {
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .storage
+      .from(
+        DOCUMENT_BUCKET
+      )
+      .download(
+        record.storage_path
+      );
+
+
+  if (
+    error ||
+    !data
+  ) {
+
+    console.error(
+      "Document download error:",
+      error
+    );
+
+
+    setDocumentError(
+      "Could not download the document."
+    );
+
+
+    return;
+  }
+
+
+  const url =
+    URL.createObjectURL(
+      data
+    );
+
+
+  const link =
+    document.createElement(
+      "a"
+    );
+
+
+  link.href =
+    url;
+
+
+  link.download =
+    record.file_name ||
+    "document";
+
+
+  document.body.appendChild(
+    link
+  );
+
+
+  link.click();
+
+
+  link.remove();
+
+
+  URL.revokeObjectURL(
+    url
+  );
+
+}
+
+
+/* ==========================================================
+   DELETE
+========================================================== */
+
+async function deleteDocument(
+  record
+) {
+
+  const confirmed =
+    window.confirm(
+      `Delete "${record.file_name}"?\n\nThis cannot be undone.`
+    );
+
+
+  if (!confirmed) {
+    return;
+  }
+
+
+  clearDocumentMessage();
+
+
+  const {
+    error: storageError
+  } =
+    await supabaseClient
+      .storage
+      .from(
+        DOCUMENT_BUCKET
+      )
+      .remove([
+        record.storage_path
+      ]);
+
+
+  if (storageError) {
+
+    console.error(
+      "Document Storage delete error:",
+      storageError
+    );
+
+
+    setDocumentError(
+      "Could not delete the file."
+    );
+
+
+    return;
+  }
+
+
+  const {
+    error: databaseError
+  } =
+    await supabaseClient
+      .from("documents")
+      .delete()
+      .eq(
+        "id",
+        record.id
+      );
+
+
+  if (databaseError) {
+
+    console.error(
+      "Document database delete error:",
+      databaseError
+    );
+
+
+    setDocumentError(
+      "File removed from Storage, but the document record could not be deleted."
+    );
+
+
+    return;
+  }
+
+
+  documentMessage.textContent =
+    "Document deleted.";
+
+
+  documentMessage.classList.add(
+    "is-success"
+  );
+
+
+  await loadDocuments();
+
+}
+
+
+/* ==========================================================
+   HELPERS
+========================================================== */
+
+function sanitizeDocumentFileName(
+  fileName
+) {
+
+  return fileName
+    .normalize("NFKD")
+    .replace(
+      /[^\w.\-]+/g,
+      "-"
+    )
+    .replace(
+      /-+/g,
+      "-"
+    )
+    .replace(
+      /^[-.]+|[-.]+$/g,
+      ""
+    ) ||
+    "document";
+
+}
+
+
+function formatDocumentMeta(
+  record
+) {
+
+  const values =
+    [];
+
+
+  if (record.file_size !== null) {
+
+    values.push(
+      formatDocumentSize(
+        Number(
+          record.file_size
+        )
+      )
+    );
+
+  }
+
+
+  if (record.created_at) {
+
+    values.push(
+      new Date(
+        record.created_at
+      ).toLocaleDateString(
+        "en-US",
+        {
+          month: "short",
+          day: "numeric",
+          year: "numeric"
+        }
+      )
+    );
+
+  }
+
+
+  return values.join(
+    " • "
+  );
+
+}
+
+
+function formatDocumentSize(
+  bytes
+) {
+
+  if (!Number.isFinite(bytes)) {
+    return "";
+  }
+
+
+  if (bytes < 1024) {
+
+    return `${bytes} B`;
+
+  }
+
+
+  if (
+    bytes <
+    1024 * 1024
+  ) {
+
+    return `${(
+      bytes / 1024
+    ).toFixed(1)} KB`;
+
+  }
+
+
+  return `${(
+    bytes /
+    (1024 * 1024)
+  ).toFixed(1)} MB`;
+
+}
+
+
+function getDocumentIcon(
+  mimeType
+) {
+
+  if (
+    mimeType ===
+    "application/pdf"
+  ) {
+
+    return "PDF";
+
+  }
+
+
+  if (
+    mimeType?.startsWith(
+      "image/"
+    )
+  ) {
+
+    return "IMG";
+
+  }
+
+
+  return "DOC";
+
+}
+
+
+function clearDocumentMessage() {
+
+  documentMessage.textContent =
+    "";
+
+
+  documentMessage.classList.remove(
+    "is-success",
+    "is-error"
+  );
+
+}
+
+
+function setDocumentError(
+  message
+) {
+
+  documentMessage.textContent =
+    message;
+
+
+  documentMessage.classList.remove(
+    "is-success"
+  );
+
+
+  documentMessage.classList.add(
+    "is-error"
+  );
+
+}
+
+/* ==========================================================
+   ACS PROGRESS
+========================================================== */
+
+const ACS_PROGRAM_CODE =
+  "PPL_ASEL";
+
+
+const studentAcsButton =
+  document.getElementById(
+    "student-acs-button"
+  );
+
+const acsDialog =
+  document.getElementById(
+    "acs-dialog"
+  );
+
+const acsDialogClose =
+  document.getElementById(
+    "acs-dialog-close"
+  );
+
+const acsStudentName =
+  document.getElementById(
+    "acs-student-name"
+  );
+
+const acsAreaList =
+  document.getElementById(
+    "acs-area-list"
+  );
+
+const acsOverallPercent =
+  document.getElementById(
+    "acs-overall-percent"
+  );
+
+const acsOverallDetail =
+  document.getElementById(
+    "acs-overall-detail"
+  );
+
+const acsProgressFill =
+  document.getElementById(
+    "acs-progress-fill"
+  );
+
+const acsMessage =
+  document.getElementById(
+    "acs-message"
+  );
+
+
+let currentAcsProgram =
+  null;
+
+let currentAcsTasks =
+  [];
+
+let currentAcsProgress =
+  new Map();
+
+
+/* ==========================================================
+   OPEN / CLOSE
+========================================================== */
+
+studentAcsButton
+  ?.addEventListener(
+    "click",
+    async () => {
+
+      if (!selectedStudentId) {
+        return;
+      }
+
+
+      const student =
+        getStudentById(
+          selectedStudentId
+        );
+
+
+      acsStudentName.textContent =
+        student?.full_name ||
+        student?.email ||
+        "Student";
+
+
+      clearAcsMessage();
+
+
+      acsDialog.showModal();
+
+
+      await loadAcsProgress();
+
+    }
+  );
+
+
+acsDialogClose
+  ?.addEventListener(
+    "click",
+    () => {
+
+      acsDialog.close();
+
+    }
+  );
+
+
+/* ==========================================================
+   LOAD ACS
+========================================================== */
+
+async function loadAcsProgress() {
+
+  if (!selectedStudentId) {
+    return;
+  }
+
+
+  const student =
+    getStudentById(
+      selectedStudentId
+    );
+
+
+  if (!student?.acs_program_id) {
+
+    currentAcsProgram =
+      null;
+
+    currentAcsTasks =
+      [];
+
+    currentAcsProgress =
+      new Map();
+
+
+    acsAreaList.innerHTML =
+      `
+        <div class="student-list-empty">
+          No ACS course has been assigned to this student.
+        </div>
+      `;
+
+
+    acsOverallPercent.textContent =
+      "—";
+
+
+    acsOverallDetail.textContent =
+      "Select an ACS course in the student's profile.";
+
+
+    acsProgressFill.style.width =
+      "0%";
+
+
+    return;
+  }
+
+
+  acsAreaList.innerHTML =
+    `
+      <div class="student-list-empty">
+        Loading ACS…
+      </div>
+    `;
+
+
+  const {
+    data: program,
+    error: programError
+  } =
+    await supabaseClient
+      .from("acs_programs")
+      .select(`
+        id,
+        code,
+        name,
+        version
+      `)
+      .eq(
+        "id",
+        student.acs_program_id
+      )
+      .single();
+
+
+  if (
+    programError ||
+    !program
+  ) {
+
+    console.error(
+      "ACS program load error:",
+      programError
+    );
+
+
+    acsAreaList.innerHTML =
+      `
+        <div class="student-list-empty">
+          Could not load ACS program.
+        </div>
+      `;
+
+
+    return;
+  }
+
+
+  currentAcsProgram =
+    program;
+
+
+  const [
+    taskResult,
+    progressResult
+  ] =
+    await Promise.all([
+
+      supabaseClient
+        .from("acs_tasks")
+        .select(`
+          id,
+          program_id,
+          area_code,
+          area_name,
+          task_code,
+          task_name,
+          area_sort,
+          task_sort
+        `)
+        .eq(
+          "program_id",
+          program.id
+        )
+        .order(
+          "area_sort",
+          {
+            ascending: true
+          }
+        )
+        .order(
+          "task_sort",
+          {
+            ascending: true
+          }
+        ),
+
+
+      supabaseClient
+        .from("student_acs_progress")
+        .select(`
+          id,
+          student_id,
+          task_id,
+          status,
+          last_assessed,
+          updated_at
+        `)
+        .eq(
+          "student_id",
+          selectedStudentId
+        )
+
+    ]);
+
+
+  if (
+    taskResult.error ||
+    progressResult.error
+  ) {
+
+    console.error(
+      "ACS load error:",
+      taskResult.error ||
+      progressResult.error
+    );
+
+
+    acsAreaList.innerHTML =
+      `
+        <div class="student-list-empty">
+          Could not load ACS progress.
+        </div>
+      `;
+
+
+    return;
+  }
+
+
+  currentAcsTasks =
+    taskResult.data || [];
+
+
+  currentAcsProgress =
+    new Map(
+      (progressResult.data || [])
+        .map(
+          progress => [
+            progress.task_id,
+            progress
+          ]
+        )
+    );
+
+
+  renderAcsProgress();
+
+}
+
+
+/* ==========================================================
+   RENDER
+========================================================== */
+
+function renderAcsProgress(
+  openAreaCodes = null
+) {
+
+  acsAreaList.innerHTML =
+    "";
+
+
+  if (!currentAcsTasks.length) {
+
+    acsAreaList.innerHTML =
+      `
+        <div class="student-list-empty">
+          No ACS tasks found.
+        </div>
+      `;
+
+
+    updateAcsSummary();
+
+    return;
+
+  }
+
+
+  const areas =
+    new Map();
+
+
+  currentAcsTasks.forEach(
+    task => {
+
+      const key =
+        task.area_code;
+
+
+      if (!areas.has(key)) {
+
+        areas.set(
+          key,
+          {
+            area_code:
+              task.area_code,
+
+            area_name:
+              task.area_name,
+
+            tasks:
+              []
+          }
+        );
+
+      }
+
+
+      areas
+        .get(key)
+        .tasks
+        .push(task);
+
+    }
+  );
+
+
+  let firstArea =
+    true;
+
+
+  areas.forEach(
+    area => {
+
+      const areaElement =
+        createAcsAreaElement(
+          area
+        );
+
+
+      const shouldOpen =
+        openAreaCodes
+          ? openAreaCodes.has(
+              area.area_code
+            )
+          : firstArea;
+
+
+      if (shouldOpen) {
+
+        areaElement.classList.add(
+          "is-open"
+        );
+
+      }
+
+
+      firstArea =
+        false;
+
+
+      acsAreaList.appendChild(
+        areaElement
+      );
+
+    }
+  );
+
+
+  updateAcsSummary();
+
+}
+
+
+
+/* ==========================================================
+   CREATE AREA
+========================================================== */
+
+function createAcsAreaElement(
+  area
+) {
+
+  const element =
+    document.createElement(
+      "section"
+    );
+
+
+  element.className =
+    "acs-area";
+
+    element.dataset.areaCode =
+  area.area_code;
+
+
+  const proficientCount =
+    area.tasks.filter(
+      task =>
+        getAcsTaskStatus(
+          task.id
+        ) ===
+        "proficient"
+    ).length;
+
+
+  element.innerHTML =
+    `
+      <div
+        class="acs-area-header"
+        role="button"
+        tabindex="0"
+      >
+
+        <div class="acs-area-heading">
+
+          <span>
+            Area ${escapeHtml(
+              area.area_code
+            )}
+          </span>
+
+          <strong>
+            ${escapeHtml(
+              area.area_name
+            )}
+          </strong>
+
+        </div>
+
+
+        <div class="acs-area-summary">
+
+          <span>
+            ${proficientCount}
+            /
+            ${area.tasks.length}
+            proficient
+          </span>
+
+          <span
+            class="acs-area-arrow"
+            aria-hidden="true"
+          >
+            →
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="acs-task-list">
+      </div>
+    `;
+
+
+  const header =
+    element.querySelector(
+      ".acs-area-header"
+    );
+
+
+  const taskList =
+    element.querySelector(
+      ".acs-task-list"
+    );
+
+
+  header.addEventListener(
+    "click",
+    () => {
+
+      element.classList.toggle(
+        "is-open"
+      );
+
+    }
+  );
+
+
+  header.addEventListener(
+    "keydown",
+    event => {
+
+      if (
+        event.key === "Enter" ||
+        event.key === " "
+      ) {
+
+        event.preventDefault();
+
+
+        element.classList.toggle(
+          "is-open"
+        );
+
+      }
+
+    }
+  );
+
+
+  area.tasks.forEach(
+    task => {
+
+      taskList.appendChild(
+        createAcsTaskElement(
+          task
+        )
+      );
+
+    }
+  );
+
+
+  return element;
+
+}
+
+
+/* ==========================================================
+   CREATE TASK
+========================================================== */
+
+function createAcsTaskElement(
+  task
+) {
+
+  const status =
+    getAcsTaskStatus(
+      task.id
+    );
+
+
+  const progress =
+    currentAcsProgress.get(
+      task.id
+    );
+
+
+  const element =
+    document.createElement(
+      "div"
+    );
+
+
+  element.className =
+    "acs-task";
+
+
+  element.innerHTML =
+    `
+      <div class="acs-task-main">
+
+        <span class="acs-task-code">
+          ${escapeHtml(
+            task.task_code
+          )}
+        </span>
+
+
+        <div class="acs-task-copy">
+
+          <strong>
+            ${escapeHtml(
+              task.task_name
+            )}
+          </strong>
+
+          <span>
+            ${
+              progress?.last_assessed
+                ? `Last assessed ${escapeHtml(
+                    formatAcsDate(
+                      progress.last_assessed
+                    )
+                  )}`
+                : "Not yet assessed"
+            }
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <select
+        class="acs-status-select"
+        aria-label="ACS proficiency status"
+      >
+
+        <option
+          value="not_started"
+          ${
+            status ===
+            "not_started"
+              ? "selected"
+              : ""
+          }
+        >
+          Not Started
+        </option>
+
+        <option
+          value="introduced"
+          ${
+            status ===
+            "introduced"
+              ? "selected"
+              : ""
+          }
+        >
+          Introduced
+        </option>
+
+        <option
+          value="developing"
+          ${
+            status ===
+            "developing"
+              ? "selected"
+              : ""
+          }
+        >
+          Developing
+        </option>
+
+        <option
+          value="proficient"
+          ${
+            status ===
+            "proficient"
+              ? "selected"
+              : ""
+          }
+        >
+          Proficient
+        </option>
+
+      </select>
+    `;
+
+
+  const select =
+    element.querySelector(
+      ".acs-status-select"
+    );
+
+
+  select.addEventListener(
+    "change",
+    async () => {
+
+      await saveAcsTaskStatus(
+        task,
+        select
+      );
+
+    }
+  );
+
+
+  return element;
+
+}
+
+
+/* ==========================================================
+   SAVE TASK STATUS
+========================================================== */
+
+async function saveAcsTaskStatus(
+  task,
+  select
+) {
+
+  if (!selectedStudentId) {
+    return;
+  }
+
+
+  clearAcsMessage();
+
+
+  const newStatus =
+    select.value;
+
+
+  const previousStatus =
+    getAcsTaskStatus(
+      task.id
+    );
+
+
+  select.disabled =
+    true;
+
+
+  select.classList.add(
+    "is-saving"
+  );
+
+
+  try {
+
+    /*
+      Not Started is represented by no row.
+      Keeps the progress table sparse.
+    */
+
+    if (
+      newStatus ===
+      "not_started"
+    ) {
+
+      const {
+        error
+      } =
+        await supabaseClient
+          .from(
+            "student_acs_progress"
+          )
+          .delete()
+          .eq(
+            "student_id",
+            selectedStudentId
+          )
+          .eq(
+            "task_id",
+            task.id
+          );
+
+
+      if (error) {
+        throw error;
+      }
+
+
+      currentAcsProgress.delete(
+        task.id
+      );
+
+    } else {
+
+      const {
+        data: {
+          user
+        }
+      } =
+        await supabaseClient
+          .auth
+          .getUser();
+
+
+      const today =
+        new Date()
+          .toISOString()
+          .slice(
+            0,
+            10
+          );
+
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+          .from(
+            "student_acs_progress"
+          )
+          .upsert(
+            {
+              student_id:
+                selectedStudentId,
+
+              task_id:
+                task.id,
+
+              status:
+                newStatus,
+
+              last_assessed:
+                today,
+
+              updated_by:
+                user?.id ||
+                null,
+
+              updated_at:
+                new Date()
+                  .toISOString()
+            },
+            {
+              onConflict:
+                "student_id,task_id"
+            }
+          )
+          .select(`
+            id,
+            student_id,
+            task_id,
+            status,
+            last_assessed,
+            updated_at
+          `)
+          .single();
+
+
+      if (error) {
+        throw error;
+      }
+
+
+      currentAcsProgress.set(
+        task.id,
+        data
+      );
+
+    }
+
+
+    const openAreaCodes =
+  new Set(
+    Array.from(
+      acsAreaList.querySelectorAll(
+        ".acs-area.is-open"
+      )
+    ).map(
+      area =>
+        area.dataset.areaCode
+    )
+  );
+
+
+renderAcsProgress(
+  openAreaCodes
+);
+
+
+    acsMessage.textContent =
+      `${task.task_name} updated.`;
+
+
+    acsMessage.classList.add(
+      "is-success"
+    );
+
+  } catch (error) {
+
+    console.error(
+      "ACS save error:",
+      error
+    );
+
+
+    select.value =
+      previousStatus;
+
+
+    acsMessage.textContent =
+      "Could not update ACS progress.";
+
+
+    acsMessage.classList.add(
+      "is-error"
+    );
+
+  } finally {
+
+    select.disabled =
+      false;
+
+
+    select.classList.remove(
+      "is-saving"
+    );
+
+  }
+
+}
+
+
+/* ==========================================================
+   SUMMARY
+========================================================== */
+
+function updateAcsSummary() {
+
+  const total =
+    currentAcsTasks.length;
+
+
+  const proficient =
+    currentAcsTasks.filter(
+      task =>
+        getAcsTaskStatus(
+          task.id
+        ) ===
+        "proficient"
+    ).length;
+
+
+  const percent =
+    total
+      ? Math.round(
+          proficient /
+          total *
+          100
+        )
+      : 0;
+
+
+  acsOverallPercent.textContent =
+    `${percent}%`;
+
+
+  acsOverallDetail.textContent =
+    `${proficient} of ${total} tasks proficient`;
+
+
+  acsProgressFill.style.width =
+    `${percent}%`;
+
+}
+
+
+/* ==========================================================
+   HELPERS
+========================================================== */
+
+function getAcsTaskStatus(
+  taskId
+) {
+
+  return (
+    currentAcsProgress
+      .get(taskId)
+      ?.status ||
+    "not_started"
+  );
+
+}
+
+
+function formatAcsDate(
+  value
+) {
+
+  if (!value) {
+    return "—";
+  }
+
+
+  return new Date(
+    `${value}T00:00:00`
+  ).toLocaleDateString(
+    "en-US",
+    {
+      month: "short",
+      day: "numeric",
+      year: "numeric"
+    }
+  );
+
+}
+
+
+function clearAcsMessage() {
+
+  acsMessage.textContent =
+    "";
+
+
+  acsMessage.classList.remove(
+    "is-success",
+    "is-error"
+  );
 
 }
 
