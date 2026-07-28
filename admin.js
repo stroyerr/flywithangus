@@ -37,6 +37,11 @@ const loadingScreen =
     "admin-loading"
   );
 
+  const lessonReceiptNumber =
+  document.getElementById(
+    "lesson-receipt-number"
+  );
+
 const adminEmail =
   document.getElementById(
     "admin-email"
@@ -4005,6 +4010,1426 @@ function formatTsaDate(
       year: "numeric"
     }
   );
+
+}
+
+/* ==========================================================
+   LESSONS
+========================================================== */
+
+const studentLessonsButton =
+  document.getElementById(
+    "student-lessons-button"
+  );
+
+const lessonDialog =
+  document.getElementById(
+    "lesson-dialog"
+  );
+
+const lessonDialogClose =
+  document.getElementById(
+    "lesson-dialog-close"
+  );
+
+const lessonDialogStudent =
+  document.getElementById(
+    "lesson-dialog-student"
+  );
+
+const lessonList =
+  document.getElementById(
+    "lesson-list"
+  );
+
+const addLessonButton =
+  document.getElementById(
+    "add-lesson-button"
+  );
+
+const lessonTotalFlight =
+  document.getElementById(
+    "lesson-total-flight"
+  );
+
+const lessonTotalGround =
+  document.getElementById(
+    "lesson-total-ground"
+  );
+
+const lessonTotalSim =
+  document.getElementById(
+    "lesson-total-sim"
+  );
+
+
+/* EDITOR */
+
+const lessonEditorDialog =
+  document.getElementById(
+    "lesson-editor-dialog"
+  );
+
+const lessonEditorTitle =
+  document.getElementById(
+    "lesson-editor-title"
+  );
+
+const lessonEditorClose =
+  document.getElementById(
+    "lesson-editor-close"
+  );
+
+const lessonEditorCancel =
+  document.getElementById(
+    "lesson-editor-cancel"
+  );
+
+const lessonForm =
+  document.getElementById(
+    "lesson-form"
+  );
+
+const lessonDate =
+  document.getElementById(
+    "lesson-date"
+  );
+
+const lessonType =
+  document.getElementById(
+    "lesson-type"
+  );
+
+const lessonTrainingGoal =
+  document.getElementById(
+    "lesson-training-goal"
+  );
+
+const lessonAircraft =
+  document.getElementById(
+    "lesson-aircraft"
+  );
+
+const lessonTailNumber =
+  document.getElementById(
+    "lesson-tail-number"
+  );
+
+const lessonFlightTime =
+  document.getElementById(
+    "lesson-flight-time"
+  );
+
+const lessonGroundTime =
+  document.getElementById(
+    "lesson-ground-time"
+  );
+
+const lessonSimTime =
+  document.getElementById(
+    "lesson-sim-time"
+  );
+
+const lessonRoute =
+  document.getElementById(
+    "lesson-route"
+  );
+
+const lessonTopics =
+  document.getElementById(
+    "lesson-topics"
+  );
+
+const lessonStudentNotes =
+  document.getElementById(
+    "lesson-student-notes"
+  );
+
+const lessonPrivateNotes =
+  document.getElementById(
+    "lesson-private-notes"
+  );
+
+const lessonAmount =
+  document.getElementById(
+    "lesson-amount"
+  );
+
+const lessonBillingStatus =
+  document.getElementById(
+    "lesson-billing-status"
+  );
+
+const lessonFormMessage =
+  document.getElementById(
+    "lesson-form-message"
+  );
+
+const saveLessonButton =
+  document.getElementById(
+    "save-lesson-button"
+  );
+
+
+let lessonRecords = [];
+
+let editingLessonId =
+  null;
+
+
+/* ==========================================================
+   OPEN LESSON HISTORY
+========================================================== */
+
+studentLessonsButton
+  ?.addEventListener(
+    "click",
+    async () => {
+
+      if (!selectedStudentId) {
+        return;
+      }
+
+
+      const student =
+        getStudentById(
+          selectedStudentId
+        );
+
+
+      lessonDialogStudent.textContent =
+        student?.full_name ||
+        student?.email ||
+        "Student";
+
+
+      lessonDialog.showModal();
+
+
+      await loadLessons(
+        selectedStudentId
+      );
+
+    }
+  );
+
+
+lessonDialogClose
+  ?.addEventListener(
+    "click",
+    () => {
+
+      lessonDialog.close();
+
+    }
+  );
+
+
+/* ==========================================================
+   LOAD LESSONS
+========================================================== */
+
+async function loadLessons(
+  studentId
+) {
+
+  lessonList.innerHTML =
+    `
+      <div class="student-list-empty">
+        Loading lessons…
+      </div>
+    `;
+
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from("lessons")
+      .select(`
+        id,
+        student_id,
+        lesson_date,
+        lesson_type,
+        training_goal,
+        aircraft,
+        tail_number,
+        flight_time,
+        ground_time,
+        sim_time,
+        route,
+        topics,
+        student_notes,
+        amount_charged,
+        payment_receipt_number,
+        billing_status,
+        created_at,
+        updated_at
+      `)
+      .eq(
+        "student_id",
+        studentId
+      )
+      .order(
+        "lesson_date",
+        {
+          ascending: false
+        }
+      )
+      .order(
+        "created_at",
+        {
+          ascending: false
+        }
+      );
+
+
+  if (error) {
+
+    console.error(
+      "Could not load lessons:",
+      error
+    );
+
+
+    lessonList.innerHTML =
+      `
+        <div class="student-list-empty">
+          Could not load lesson history.
+        </div>
+      `;
+
+    return;
+  }
+
+
+  lessonRecords =
+    data || [];
+
+
+  /*
+    Load private instructor notes separately.
+  */
+
+  if (lessonRecords.length) {
+
+    const lessonIds =
+      lessonRecords.map(
+        lesson => lesson.id
+      );
+
+
+    const {
+      data: privateNotes,
+      error: notesError
+    } =
+      await supabaseClient
+        .from(
+          "lesson_private_notes"
+        )
+        .select(
+          "lesson_id, notes"
+        )
+        .in(
+          "lesson_id",
+          lessonIds
+        );
+
+
+    if (notesError) {
+
+      console.error(
+        "Could not load private lesson notes:",
+        notesError
+      );
+
+    } else {
+
+      const noteMap =
+        new Map(
+          (privateNotes || []).map(
+            note => [
+              note.lesson_id,
+              note.notes
+            ]
+          )
+        );
+
+
+      lessonRecords =
+        lessonRecords.map(
+          lesson => ({
+            ...lesson,
+
+            private_notes:
+              noteMap.get(
+                lesson.id
+              ) || ""
+          })
+        );
+
+    }
+
+  }
+
+
+  renderLessons();
+
+  updateLessonTotals();
+
+}
+
+
+/* ==========================================================
+   TOTALS
+========================================================== */
+
+function updateLessonTotals() {
+
+  const totals =
+    lessonRecords.reduce(
+      (result, lesson) => {
+
+        result.flight +=
+          Number(
+            lesson.flight_time || 0
+          );
+
+        result.ground +=
+          Number(
+            lesson.ground_time || 0
+          );
+
+        result.sim +=
+          Number(
+            lesson.sim_time || 0
+          );
+
+        return result;
+
+      },
+      {
+        flight: 0,
+        ground: 0,
+        sim: 0
+      }
+    );
+
+
+  lessonTotalFlight.textContent =
+    totals.flight.toFixed(1);
+
+
+  lessonTotalGround.textContent =
+    totals.ground.toFixed(1);
+
+
+  lessonTotalSim.textContent =
+    totals.sim.toFixed(1);
+
+}
+
+
+/* ==========================================================
+   RENDER LESSONS
+========================================================== */
+
+function renderLessons() {
+
+  lessonList.innerHTML =
+    "";
+
+
+  if (!lessonRecords.length) {
+
+    lessonList.innerHTML =
+      `
+        <div class="student-list-empty">
+          No lessons recorded yet.
+        </div>
+      `;
+
+    return;
+  }
+
+
+  lessonRecords.forEach(
+    lesson => {
+
+      const item =
+        document.createElement(
+          "article"
+        );
+
+
+      item.className =
+        "lesson-item";
+
+
+      const meta =
+        [];
+
+
+      meta.push(
+        formatLessonDate(
+          lesson.lesson_date
+        )
+      );
+
+
+      meta.push(
+        formatLessonType(
+          lesson.lesson_type
+        )
+      );
+
+
+      if (lesson.aircraft) {
+
+        let aircraftText =
+          lesson.aircraft;
+
+
+        if (lesson.tail_number) {
+
+          aircraftText +=
+            ` • ${lesson.tail_number}`;
+
+        }
+
+
+        meta.push(
+          aircraftText
+        );
+
+      } else if (
+        lesson.tail_number
+      ) {
+
+        meta.push(
+          lesson.tail_number
+        );
+
+      }
+
+
+      if (
+        Number(
+          lesson.flight_time || 0
+        ) > 0
+      ) {
+
+        meta.push(
+          `${Number(
+            lesson.flight_time
+          ).toFixed(1)} flight`
+        );
+
+      }
+
+
+      if (
+        Number(
+          lesson.ground_time || 0
+        ) > 0
+      ) {
+
+        meta.push(
+          `${Number(
+            lesson.ground_time
+          ).toFixed(1)} ground`
+        );
+
+      }
+
+
+      if (
+        Number(
+          lesson.sim_time || 0
+        ) > 0
+      ) {
+
+        meta.push(
+          `${Number(
+            lesson.sim_time
+          ).toFixed(1)} sim`
+        );
+
+      }
+
+
+      if (lesson.route) {
+
+        meta.push(
+          lesson.route
+        );
+
+      }
+
+
+      const billing =
+        getLessonBillingStatus(
+          lesson.billing_status
+        );
+
+
+      item.innerHTML =
+        `
+          <div class="lesson-main">
+
+            <div class="lesson-heading">
+
+              <strong>
+                ${escapeHtml(
+                  formatLessonDate(
+                    lesson.lesson_date
+                  )
+                )}
+                —
+                ${escapeHtml(
+                  formatLessonType(
+                    lesson.lesson_type
+                  )
+                )}
+              </strong>
+
+              ${
+                lesson.training_goal
+                  ? `
+                      <span class="lesson-goal">
+                        ${escapeHtml(
+                          lesson.training_goal
+                        )}
+                      </span>
+                    `
+                  : ""
+              }
+
+            </div>
+
+
+            <div class="lesson-meta">
+
+              ${meta
+                .slice(2)
+                .map(
+                  value =>
+                    escapeHtml(value)
+                )
+                .join(" • ")}
+
+            </div>
+
+
+            ${
+              lesson.topics
+                ? `
+                    <p class="lesson-topics">
+                      <strong>Covered:</strong>
+                      ${escapeHtml(
+                        lesson.topics
+                      )}
+                    </p>
+                  `
+                : ""
+            }
+
+
+            ${
+              lesson.student_notes
+                ? `
+                    <p class="lesson-student-note">
+                      <strong>Student note:</strong>
+                      ${escapeHtml(
+                        lesson.student_notes
+                      )}
+                    </p>
+                  `
+                : ""
+            }
+
+
+            ${
+              lesson.private_notes
+                ? `
+                    <p class="lesson-private-note">
+                      <strong>Private:</strong>
+                      ${escapeHtml(
+                        lesson.private_notes
+                      )}
+                    </p>
+                  `
+                : ""
+            }
+
+          </div>
+
+
+          <div class="lesson-side">
+
+            <span
+              class="lesson-billing ${billing.className}"
+            >
+              ${escapeHtml(
+                billing.label
+              )}
+            </span>
+
+
+            ${
+              lesson.amount_charged !== null
+                ? `
+                    <span class="lesson-meta">
+                      $${Number(
+                        lesson.amount_charged
+                      ).toFixed(2)}
+                    </span>
+                  `
+                : ""
+            }
+
+            ${
+  lesson.payment_receipt_number
+    ? `
+        <span class="lesson-meta">
+          Receipt:
+          ${escapeHtml(
+            lesson.payment_receipt_number
+          )}
+        </span>
+      `
+    : ""
+}
+
+
+            <div class="lesson-actions">
+
+              <button
+                type="button"
+                class="lesson-action-button lesson-edit-button"
+              >
+                Edit
+              </button>
+
+
+              <button
+                type="button"
+                class="lesson-action-button is-delete lesson-delete-button"
+              >
+                Delete
+              </button>
+
+            </div>
+
+          </div>
+        `;
+
+
+      item
+        .querySelector(
+          ".lesson-edit-button"
+        )
+        .addEventListener(
+          "click",
+          () => {
+
+            openEditLesson(
+              lesson
+            );
+
+          }
+        );
+
+
+      item
+        .querySelector(
+          ".lesson-delete-button"
+        )
+        .addEventListener(
+          "click",
+          () => {
+
+            deleteLesson(
+              lesson
+            );
+
+          }
+        );
+
+
+      lessonList.appendChild(
+        item
+      );
+
+    }
+  );
+
+}
+
+
+/* ==========================================================
+   ADD LESSON
+========================================================== */
+
+addLessonButton
+  ?.addEventListener(
+    "click",
+    () => {
+
+      if (!selectedStudentId) {
+        return;
+      }
+
+
+      editingLessonId =
+        null;
+
+
+      lessonForm.reset();
+
+
+      lessonEditorTitle.textContent =
+        "Add lesson";
+
+
+      saveLessonButton.textContent =
+        "Save lesson";
+
+
+      lessonDate.value =
+        getTodayInputValue();
+
+
+      lessonType.value =
+        "flight";
+
+
+      lessonBillingStatus.value =
+        "unbilled";
+
+
+      /*
+        Pre-fill training toward from
+        the student's current program.
+      */
+
+      const student =
+        getStudentById(
+          selectedStudentId
+        );
+
+
+      lessonTrainingGoal.value =
+        student?.training_program ||
+        "";
+
+
+      lessonFormMessage.textContent =
+        "";
+
+
+      lessonFormMessage.classList.remove(
+        "is-success",
+        "is-error"
+      );
+
+
+      lessonEditorDialog.showModal();
+
+    }
+  );
+
+
+/* ==========================================================
+   EDIT LESSON
+========================================================== */
+
+function openEditLesson(
+  lesson
+) {
+
+  editingLessonId =
+    lesson.id;
+
+
+  lessonForm.reset();
+
+
+  lessonEditorTitle.textContent =
+    "Edit lesson";
+
+
+  saveLessonButton.textContent =
+    "Save changes";
+
+
+  lessonDate.value =
+    lesson.lesson_date ||
+    "";
+
+
+  lessonType.value =
+    lesson.lesson_type ||
+    "flight";
+
+
+  lessonTrainingGoal.value =
+    lesson.training_goal ||
+    "";
+
+
+  lessonAircraft.value =
+    lesson.aircraft ||
+    "";
+
+
+  lessonTailNumber.value =
+    lesson.tail_number ||
+    "";
+
+
+  lessonFlightTime.value =
+    lesson.flight_time ??
+    "";
+
+
+  lessonGroundTime.value =
+    lesson.ground_time ??
+    "";
+
+
+  lessonSimTime.value =
+    lesson.sim_time ??
+    "";
+
+
+  lessonRoute.value =
+    lesson.route ||
+    "";
+
+
+  lessonTopics.value =
+    lesson.topics ||
+    "";
+
+
+  lessonStudentNotes.value =
+    lesson.student_notes ||
+    "";
+
+
+  lessonPrivateNotes.value =
+    lesson.private_notes ||
+    "";
+
+
+  lessonAmount.value =
+    lesson.amount_charged ??
+    "";
+
+    lessonReceiptNumber.value =
+  lesson.payment_receipt_number ||
+  "";
+
+
+  lessonBillingStatus.value =
+    lesson.billing_status ||
+    "unbilled";
+
+
+  lessonFormMessage.textContent =
+    "";
+
+
+  lessonFormMessage.classList.remove(
+    "is-success",
+    "is-error"
+  );
+
+
+  lessonEditorDialog.showModal();
+
+}
+
+
+/* ==========================================================
+   SAVE LESSON
+========================================================== */
+
+lessonForm
+  ?.addEventListener(
+    "submit",
+    async event => {
+
+      event.preventDefault();
+
+
+      if (
+        !lessonForm.reportValidity()
+      ) {
+
+        return;
+
+      }
+
+
+      if (!selectedStudentId) {
+        return;
+      }
+
+
+      saveLessonButton.disabled =
+        true;
+
+
+      saveLessonButton.textContent =
+        "Saving…";
+
+
+      lessonFormMessage.textContent =
+        "";
+
+
+      lessonFormMessage.classList.remove(
+        "is-success",
+        "is-error"
+      );
+
+
+      const lessonRecord =
+        {
+
+          student_id:
+            selectedStudentId,
+
+          lesson_date:
+            lessonDate.value,
+
+          lesson_type:
+            lessonType.value,
+
+          training_goal:
+            lessonTrainingGoal
+              .value
+              .trim() ||
+            null,
+
+          aircraft:
+            lessonAircraft
+              .value
+              .trim() ||
+            null,
+
+          tail_number:
+            lessonTailNumber
+              .value
+              .trim()
+              .toUpperCase() ||
+            null,
+
+          flight_time:
+            parseOptionalNumber(
+              lessonFlightTime.value
+            ),
+
+          ground_time:
+            parseOptionalNumber(
+              lessonGroundTime.value
+            ),
+
+          sim_time:
+            parseOptionalNumber(
+              lessonSimTime.value
+            ),
+
+          route:
+            lessonRoute
+              .value
+              .trim() ||
+            null,
+
+          topics:
+            lessonTopics
+              .value
+              .trim() ||
+            null,
+
+          student_notes:
+            lessonStudentNotes
+              .value
+              .trim() ||
+            null,
+
+          amount_charged:
+            parseOptionalNumber(
+              lessonAmount.value
+            ),
+
+            payment_receipt_number:
+  lessonReceiptNumber
+    .value
+    .trim() ||
+  null,
+
+          billing_status:
+            lessonBillingStatus.value,
+
+          updated_at:
+            new Date().toISOString()
+
+        };
+
+
+      let lessonResult;
+
+
+      if (editingLessonId) {
+
+        lessonResult =
+          await supabaseClient
+            .from("lessons")
+            .update(
+              lessonRecord
+            )
+            .eq(
+              "id",
+              editingLessonId
+            )
+            .select()
+            .single();
+
+      } else {
+
+        lessonResult =
+          await supabaseClient
+            .from("lessons")
+            .insert(
+              lessonRecord
+            )
+            .select()
+            .single();
+
+      }
+
+
+      if (lessonResult.error) {
+
+        console.error(
+          "Lesson save error:",
+          lessonResult.error
+        );
+
+
+        lessonFormMessage.textContent =
+          "Could not save lesson.";
+
+
+        lessonFormMessage.classList.add(
+          "is-error"
+        );
+
+
+        saveLessonButton.disabled =
+          false;
+
+
+        saveLessonButton.textContent =
+          editingLessonId
+            ? "Save changes"
+            : "Save lesson";
+
+
+        return;
+
+      }
+
+
+      const savedLessonId =
+        lessonResult.data.id;
+
+
+      /*
+        Save private notes separately.
+      */
+
+      const {
+        error: privateNoteError
+      } =
+        await supabaseClient
+          .from(
+            "lesson_private_notes"
+          )
+          .upsert(
+            {
+              lesson_id:
+                savedLessonId,
+
+              notes:
+                lessonPrivateNotes
+                  .value
+                  .trim() ||
+                null,
+
+              updated_at:
+                new Date()
+                  .toISOString()
+            },
+            {
+              onConflict:
+                "lesson_id"
+            }
+          );
+
+
+      if (privateNoteError) {
+
+        console.error(
+          "Private lesson note save error:",
+          privateNoteError
+        );
+
+
+        lessonFormMessage.textContent =
+          "Lesson saved, but private notes could not be saved.";
+
+
+        lessonFormMessage.classList.add(
+          "is-error"
+        );
+
+
+        saveLessonButton.disabled =
+          false;
+
+
+        saveLessonButton.textContent =
+          "Save changes";
+
+
+        return;
+
+      }
+
+
+      editingLessonId =
+        null;
+
+
+      lessonEditorDialog.close();
+
+
+      await loadLessons(
+        selectedStudentId
+      );
+
+
+      saveLessonButton.disabled =
+        false;
+
+
+      saveLessonButton.textContent =
+        "Save lesson";
+
+    }
+  );
+
+
+/* ==========================================================
+   DELETE LESSON
+========================================================== */
+
+async function deleteLesson(
+  lesson
+) {
+
+  const confirmed =
+    window.confirm(
+      `Delete the ${formatLessonDate(
+        lesson.lesson_date
+      )} lesson?\n\nThis cannot be undone.`
+    );
+
+
+  if (!confirmed) {
+    return;
+  }
+
+
+  const {
+    error
+  } =
+    await supabaseClient
+      .from("lessons")
+      .delete()
+      .eq(
+        "id",
+        lesson.id
+      );
+
+
+  if (error) {
+
+    console.error(
+      "Lesson delete error:",
+      error
+    );
+
+
+    alert(
+      "Could not delete lesson."
+    );
+
+
+    return;
+
+  }
+
+
+  await loadLessons(
+    selectedStudentId
+  );
+
+}
+
+
+/* ==========================================================
+   CLOSE EDITOR
+========================================================== */
+
+lessonEditorClose
+  ?.addEventListener(
+    "click",
+    () => {
+
+      lessonEditorDialog.close();
+
+    }
+  );
+
+
+lessonEditorCancel
+  ?.addEventListener(
+    "click",
+    () => {
+
+      lessonEditorDialog.close();
+
+    }
+  );
+
+
+/* ==========================================================
+   LESSON HELPERS
+========================================================== */
+
+function parseOptionalNumber(
+  value
+) {
+
+  if (
+    value === "" ||
+    value === null ||
+    value === undefined
+  ) {
+
+    return null;
+
+  }
+
+
+  const number =
+    Number(value);
+
+
+  return Number.isFinite(number)
+    ? number
+    : null;
+
+}
+
+
+function formatLessonDate(
+  value
+) {
+
+  if (!value) {
+    return "—";
+  }
+
+
+  return new Date(
+    `${value}T00:00:00`
+  ).toLocaleDateString(
+    "en-US",
+    {
+      month: "short",
+      day: "numeric",
+      year: "numeric"
+    }
+  );
+
+}
+
+
+function formatLessonType(
+  value
+) {
+
+  const labels =
+    {
+      flight: "Flight",
+      ground: "Ground",
+      sim: "Simulator",
+      safety_pilot: "Safety Pilot",
+      other: "Other"
+    };
+
+
+  return labels[value] ||
+    "Lesson";
+
+}
+
+
+function getLessonBillingStatus(
+  value
+) {
+
+  switch (value) {
+
+    case "paid":
+
+      return {
+        label: "Paid",
+        className: "is-paid"
+      };
+
+
+    case "invoiced":
+
+      return {
+        label: "Invoiced",
+        className: "is-invoiced"
+      };
+
+
+    case "waived":
+
+      return {
+        label: "Waived",
+        className: ""
+      };
+
+
+    default:
+
+      return {
+        label: "Unbilled",
+        className: "is-unbilled"
+      };
+
+  }
 
 }
 

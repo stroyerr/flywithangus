@@ -933,3 +933,240 @@ a[aria-current="page"] {
   }
 
 }
+
+/* ==========================================================
+   STUDENT LESSON HISTORY
+========================================================== */
+
+.student-lessons-section {
+  margin-top: 22px;
+
+  padding: 26px;
+
+  border: 1px solid var(--line);
+  border-radius: 22px;
+
+  background: #fff;
+
+  box-shadow:
+    0 10px 34px rgba(0, 0, 0, 0.035);
+}
+
+
+.lesson-count {
+  display: grid;
+
+  min-width: 34px;
+  height: 34px;
+
+  place-items: center;
+
+  padding: 0 10px;
+
+  border-radius: 999px;
+
+  background: rgba(0, 113, 227, 0.08);
+
+  color: var(--accent);
+
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+
+.student-lesson-summary {
+  display: flex;
+
+  gap: 10px;
+
+  margin-bottom: 20px;
+}
+
+
+.student-lesson-summary > div {
+  min-width: 90px;
+
+  padding: 12px 14px;
+
+  border: 1px solid var(--line);
+  border-radius: 13px;
+
+  background: #fafbfc;
+}
+
+
+.student-lesson-summary strong {
+  display: block;
+
+  color: var(--text);
+
+  font-size: 0.95rem;
+}
+
+
+.student-lesson-summary span {
+  display: block;
+
+  margin-top: 2px;
+
+  color: var(--muted);
+
+  font-size: 0.65rem;
+}
+
+
+.student-lesson-list {
+  display: grid;
+
+  gap: 10px;
+}
+
+
+.student-lesson-item {
+  padding: 18px;
+
+  border: 1px solid var(--line);
+  border-radius: 15px;
+
+  background: #fafbfc;
+}
+
+
+.student-lesson-heading {
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+
+  flex-wrap: wrap;
+}
+
+
+.student-lesson-heading strong {
+  color: var(--text);
+
+  font-size: 0.9rem;
+}
+
+
+.student-lesson-goal {
+  display: inline-flex;
+
+  min-height: 24px;
+
+  align-items: center;
+
+  padding: 0 8px;
+
+  border-radius: 999px;
+
+  background: rgba(0, 113, 227, 0.08);
+
+  color: var(--accent);
+
+  font-size: 0.62rem;
+  font-weight: 750;
+}
+
+
+.student-lesson-meta {
+  margin-top: 6px;
+
+  color: var(--muted);
+
+  font-size: 0.71rem;
+
+  line-height: 1.5;
+}
+
+
+.student-lesson-topics,
+.student-lesson-notes {
+  margin: 10px 0 0;
+
+  color: #55585d;
+
+  font-size: 0.75rem;
+
+  line-height: 1.5;
+
+  white-space: pre-wrap;
+}
+
+
+.student-lesson-payment {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  flex-wrap: wrap;
+
+  margin-top: 12px;
+}
+
+
+.student-lesson-payment-status {
+  display: inline-flex;
+
+  min-height: 26px;
+
+  align-items: center;
+
+  padding: 0 9px;
+
+  border-radius: 999px;
+
+  background: #eef1f4;
+
+  color: #55585d;
+
+  font-size: 0.63rem;
+  font-weight: 750;
+}
+
+
+.student-lesson-payment-status.is-paid {
+  background: rgba(19, 115, 51, 0.09);
+
+  color: #137333;
+}
+
+
+.student-lesson-payment-status.is-invoiced {
+  background: rgba(0, 113, 227, 0.09);
+
+  color: var(--accent);
+}
+
+
+.student-lesson-payment-status.is-unbilled {
+  background: rgba(180, 120, 0, 0.1);
+
+  color: #8a5a00;
+}
+
+
+.student-lesson-payment-detail {
+  color: var(--muted);
+
+  font-size: 0.68rem;
+}
+
+
+@media (max-width: 600px) {
+
+  .student-lesson-summary {
+    width: 100%;
+  }
+
+
+  .student-lesson-summary > div {
+    min-width: 0;
+
+    flex: 1;
+  }
+
+}

@@ -15,6 +15,31 @@ const supabaseClient =
     SUPABASE_PUBLISHABLE_KEY
   );
 
+  const studentLessonList =
+  document.getElementById(
+    "student-lesson-list"
+  );
+
+const studentLessonCount =
+  document.getElementById(
+    "student-lesson-count"
+  );
+
+const studentTotalFlight =
+  document.getElementById(
+    "student-total-flight"
+  );
+
+const studentTotalGround =
+  document.getElementById(
+    "student-total-ground"
+  );
+
+const studentTotalSim =
+  document.getElementById(
+    "student-total-sim"
+  );
+
 
 const loadingScreen =
   document.getElementById(
@@ -545,9 +570,10 @@ async function initializeDashboard() {
     */
 
     await Promise.all([
-      loadProfile(user),
-      loadEndorsements(user)
-    ]);
+  loadProfile(user),
+  loadEndorsements(user),
+  loadStudentLessons(user)
+]);
 
 
   } catch (error) {
@@ -568,5 +594,527 @@ async function initializeDashboard() {
 
 }
 
+/* ==========================================================
+   STUDENT LESSON HISTORY
+========================================================== */
+
+async function loadStudentLessons(
+  user
+) {
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from("lessons")
+      .select(`
+        id,
+        lesson_date,
+        lesson_type,
+        training_goal,
+        aircraft,
+        tail_number,
+        flight_time,
+        ground_time,
+        sim_time,
+        route,
+        topics,
+        student_notes,
+        amount_charged,
+        payment_receipt_number,
+        billing_status
+      `)
+      .eq(
+        "student_id",
+        user.id
+      )
+      .order(
+        "lesson_date",
+        {
+          ascending: false
+        }
+      );
+
+
+  if (error) {
+
+    console.error(
+      "Lesson load error:",
+      error
+    );
+
+
+    studentLessonList.innerHTML =
+      `
+        <div class="dashboard-empty-state">
+          Lesson history could not be loaded.
+        </div>
+      `;
+
+
+    return;
+  }
+
+
+  const lessons =
+    data || [];
+
+
+  studentLessonCount.textContent =
+    lessons.length;
+
+
+  updateStudentLessonTotals(
+    lessons
+  );
+
+
+  renderStudentLessons(
+    lessons
+  );
+
+}
+
+
+/* ==========================================================
+   TOTALS
+========================================================== */
+
+function updateStudentLessonTotals(
+  lessons
+) {
+
+  const totals =
+    lessons.reduce(
+      (result, lesson) => {
+
+        result.flight +=
+          Number(
+            lesson.flight_time || 0
+          );
+
+        result.ground +=
+          Number(
+            lesson.ground_time || 0
+          );
+
+        result.sim +=
+          Number(
+            lesson.sim_time || 0
+          );
+
+
+        return result;
+
+      },
+      {
+        flight: 0,
+        ground: 0,
+        sim: 0
+      }
+    );
+
+
+  studentTotalFlight.textContent =
+    totals.flight.toFixed(1);
+
+
+  studentTotalGround.textContent =
+    totals.ground.toFixed(1);
+
+
+  studentTotalSim.textContent =
+    totals.sim.toFixed(1);
+
+}
+
+
+/* ==========================================================
+   RENDER
+========================================================== */
+
+function renderStudentLessons(
+  lessons
+) {
+
+  studentLessonList.innerHTML =
+    "";
+
+
+  if (!lessons.length) {
+
+    studentLessonList.innerHTML =
+      `
+        <div class="dashboard-empty-state">
+          No lessons recorded yet.
+        </div>
+      `;
+
+
+    return;
+  }
+
+
+  lessons.forEach(
+    lesson => {
+
+      const item =
+        document.createElement(
+          "article"
+        );
+
+
+      item.className =
+        "student-lesson-item";
+
+
+      const meta =
+        [];
+
+
+      if (lesson.aircraft) {
+
+        let aircraft =
+          lesson.aircraft;
+
+
+        if (lesson.tail_number) {
+
+          aircraft +=
+            ` • ${lesson.tail_number}`;
+
+        }
+
+
+        meta.push(
+          aircraft
+        );
+
+      } else if (
+        lesson.tail_number
+      ) {
+
+        meta.push(
+          lesson.tail_number
+        );
+
+      }
+
+
+      if (
+        Number(
+          lesson.flight_time || 0
+        ) > 0
+      ) {
+
+        meta.push(
+          `${Number(
+            lesson.flight_time
+          ).toFixed(1)} hr flight`
+        );
+
+      }
+
+
+      if (
+        Number(
+          lesson.ground_time || 0
+        ) > 0
+      ) {
+
+        meta.push(
+          `${Number(
+            lesson.ground_time
+          ).toFixed(1)} hr ground`
+        );
+
+      }
+
+
+      if (
+        Number(
+          lesson.sim_time || 0
+        ) > 0
+      ) {
+
+        meta.push(
+          `${Number(
+            lesson.sim_time
+          ).toFixed(1)} hr sim`
+        );
+
+      }
+
+
+      if (lesson.route) {
+
+        meta.push(
+          lesson.route
+        );
+
+      }
+
+
+      const payment =
+        getStudentLessonPaymentStatus(
+          lesson.billing_status
+        );
+
+
+      item.innerHTML =
+        `
+          <div class="student-lesson-heading">
+
+            <strong>
+              ${escapeDashboardHtml(
+                formatStudentLessonDate(
+                  lesson.lesson_date
+                )
+              )}
+              —
+              ${escapeDashboardHtml(
+                formatStudentLessonType(
+                  lesson.lesson_type
+                )
+              )}
+            </strong>
+
+
+            ${
+              lesson.training_goal
+                ? `
+                    <span class="student-lesson-goal">
+                      ${escapeDashboardHtml(
+                        lesson.training_goal
+                      )}
+                    </span>
+                  `
+                : ""
+            }
+
+          </div>
+
+
+          ${
+            meta.length
+              ? `
+                  <div class="student-lesson-meta">
+                    ${meta
+                      .map(
+                        value =>
+                          escapeDashboardHtml(
+                            value
+                          )
+                      )
+                      .join(" • ")}
+                  </div>
+                `
+              : ""
+          }
+
+
+          ${
+            lesson.topics
+              ? `
+                  <p class="student-lesson-topics">
+                    <strong>Covered:</strong>
+                    ${escapeDashboardHtml(
+                      lesson.topics
+                    )}
+                  </p>
+                `
+              : ""
+          }
+
+
+          ${
+            lesson.student_notes
+              ? `
+                  <p class="student-lesson-notes">
+                    ${escapeDashboardHtml(
+                      lesson.student_notes
+                    )}
+                  </p>
+                `
+              : ""
+          }
+
+
+          ${
+            lesson.amount_charged !== null ||
+            lesson.payment_receipt_number ||
+            lesson.billing_status
+              ? `
+                  <div class="student-lesson-payment">
+
+                    <span
+                      class="student-lesson-payment-status ${payment.className}"
+                    >
+                      ${payment.label}
+                    </span>
+
+
+                    ${
+                      lesson.amount_charged !== null
+                        ? `
+                            <span class="student-lesson-payment-detail">
+                              $${Number(
+                                lesson.amount_charged
+                              ).toFixed(2)}
+                            </span>
+                          `
+                        : ""
+                    }
+
+
+                    ${
+                      lesson.payment_receipt_number
+                        ? `
+                            <span class="student-lesson-payment-detail">
+                              Receipt:
+                              ${escapeDashboardHtml(
+                                lesson.payment_receipt_number
+                              )}
+                            </span>
+                          `
+                        : ""
+                    }
+
+                  </div>
+                `
+              : ""
+          }
+        `;
+
+
+      studentLessonList.appendChild(
+        item
+      );
+
+    }
+  );
+
+}
+
+
+/* ==========================================================
+   HELPERS
+========================================================== */
+
+function formatStudentLessonDate(
+  value
+) {
+
+  if (!value) {
+    return "—";
+  }
+
+
+  return new Date(
+    `${value}T00:00:00`
+  ).toLocaleDateString(
+    "en-US",
+    {
+      month: "short",
+      day: "numeric",
+      year: "numeric"
+    }
+  );
+
+}
+
+
+function formatStudentLessonType(
+  value
+) {
+
+  const labels =
+    {
+      flight: "Flight",
+      ground: "Ground",
+      sim: "Simulator",
+      safety_pilot: "Safety Pilot",
+      other: "Other"
+    };
+
+
+  return labels[value] ||
+    "Lesson";
+
+}
+
+
+function getStudentLessonPaymentStatus(
+  status
+) {
+
+  switch (status) {
+
+    case "paid":
+
+      return {
+        label: "Paid",
+        className: "is-paid"
+      };
+
+
+    case "invoiced":
+
+      return {
+        label: "Invoiced",
+        className: "is-invoiced"
+      };
+
+
+    case "waived":
+
+      return {
+        label: "Waived",
+        className: ""
+      };
+
+
+    default:
+
+      return {
+        label: "Unbilled",
+        className: "is-unbilled"
+      };
+
+  }
+
+}
+
+
+function escapeDashboardHtml(
+  value
+) {
+
+  return String(
+    value ?? ""
+  )
+    .replaceAll(
+      "&",
+      "&amp;"
+    )
+    .replaceAll(
+      "<",
+      "&lt;"
+    )
+    .replaceAll(
+      ">",
+      "&gt;"
+    )
+    .replaceAll(
+      '"',
+      "&quot;"
+    )
+    .replaceAll(
+      "'",
+      "&#039;"
+    );
+
+}
 
 initializeDashboard();

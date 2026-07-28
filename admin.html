@@ -460,32 +460,19 @@
 
 
               <button
-                class="student-management-card"
-                type="button"
-                data-section="lessons"
-              >
+  class="student-management-card"
+  id="student-lessons-button"
+  type="button"
+>
+  <span class="student-management-icon">✈</span>
 
-                <span class="student-management-icon">
-                  ✈
-                </span>
+  <span>
+    <strong>Lessons</strong>
+    <small>Training history and lesson records</small>
+  </span>
 
-                <span>
-
-                  <strong>
-                    Lessons
-                  </strong>
-
-                  <small>
-                    View and record training
-                  </small>
-
-                </span>
-
-                <span aria-hidden="true">
-                  →
-                </span>
-
-              </button>
+  <span aria-hidden="true">→</span>
+</button>
 
 
               <button
@@ -1763,6 +1750,487 @@
 
   </div>
 
+</dialog>
+
+<!-- =====================================================
+     LESSON HISTORY
+====================================================== -->
+
+<dialog
+  class="admin-dialog lesson-dialog"
+  id="lesson-dialog"
+>
+  <div class="admin-dialog-card lesson-dialog-card">
+
+    <div class="admin-dialog-heading">
+
+      <div>
+        <p class="admin-card-label">
+          Training records
+        </p>
+
+        <h2>
+          Lessons
+        </h2>
+
+        <p id="lesson-dialog-student">
+          Student training history
+        </p>
+      </div>
+
+      <button
+        type="button"
+        class="admin-dialog-close"
+        id="lesson-dialog-close"
+        aria-label="Close"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <div class="lesson-toolbar">
+
+      <div class="lesson-summary">
+
+        <div>
+          <strong id="lesson-total-flight">0.0</strong>
+          <span>Flight</span>
+        </div>
+
+        <div>
+          <strong id="lesson-total-ground">0.0</strong>
+          <span>Ground</span>
+        </div>
+
+        <div>
+          <strong id="lesson-total-sim">0.0</strong>
+          <span>Sim</span>
+        </div>
+
+      </div>
+
+
+      <button
+        id="add-lesson-button"
+        class="admin-primary-button"
+        type="button"
+      >
+        Add lesson
+      </button>
+
+    </div>
+
+
+    <div
+      id="lesson-list"
+      class="lesson-list"
+    >
+      <div class="student-list-empty">
+        Loading lessons…
+      </div>
+    </div>
+
+  </div>
+</dialog>
+
+<!-- =====================================================
+     ADD / EDIT LESSON
+====================================================== -->
+
+<dialog
+  class="admin-dialog lesson-editor-dialog"
+  id="lesson-editor-dialog"
+>
+  <div class="admin-dialog-card">
+
+    <div class="admin-dialog-heading">
+
+      <div>
+
+        <p class="admin-card-label">
+          Training record
+        </p>
+
+        <h2 id="lesson-editor-title">
+          Add lesson
+        </h2>
+
+        <p>
+          Record flight, ground or simulator training.
+        </p>
+
+      </div>
+
+      <button
+        type="button"
+        class="admin-dialog-close"
+        id="lesson-editor-close"
+        aria-label="Close"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <form id="lesson-form">
+
+      <div class="admin-form-grid">
+
+
+        <!-- DATE -->
+
+        <div class="admin-field">
+
+          <label for="lesson-date">
+            Date
+          </label>
+
+          <input
+            id="lesson-date"
+            type="date"
+            required
+          />
+
+        </div>
+
+
+        <!-- TYPE -->
+
+        <div class="admin-field">
+
+          <label for="lesson-type">
+            Lesson type
+          </label>
+
+          <select
+            id="lesson-type"
+            required
+          >
+            <option value="flight">
+              Flight
+            </option>
+
+            <option value="ground">
+              Ground
+            </option>
+
+            <option value="sim">
+              Simulator
+            </option>
+
+            <option value="safety_pilot">
+              Safety Pilot
+            </option>
+
+            <option value="other">
+              Other
+            </option>
+          </select>
+
+        </div>
+
+
+        <!-- TRAINING GOAL -->
+
+        <div class="admin-field">
+
+          <label for="lesson-training-goal">
+            Training toward
+          </label>
+
+          <input
+            id="lesson-training-goal"
+            type="text"
+            list="lesson-training-goal-options"
+            placeholder="Private Pilot"
+          />
+
+          <datalist id="lesson-training-goal-options">
+
+            <option value="Private Pilot"></option>
+            <option value="Instrument Rating"></option>
+            <option value="Commercial Pilot"></option>
+            <option value="CFI"></option>
+            <option value="CFII"></option>
+            <option value="Flight Review"></option>
+            <option value="IPC"></option>
+            <option value="Rusty Pilot Refresher"></option>
+            <option value="Aircraft Familiarization"></option>
+            <option value="Cross-Country Coaching"></option>
+            <option value="General Proficiency"></option>
+
+          </datalist>
+
+        </div>
+
+
+        <!-- AIRCRAFT -->
+
+        <div class="admin-field">
+
+          <label for="lesson-aircraft">
+            Aircraft
+          </label>
+
+          <input
+            id="lesson-aircraft"
+            type="text"
+            placeholder="C172S"
+          />
+
+        </div>
+
+
+        <!-- TAIL -->
+
+        <div class="admin-field">
+
+          <label for="lesson-tail-number">
+            Tail number
+          </label>
+
+          <input
+            id="lesson-tail-number"
+            type="text"
+            placeholder="N12345"
+          />
+
+        </div>
+
+
+        <!-- FLIGHT -->
+
+        <div class="admin-field">
+
+          <label for="lesson-flight-time">
+            Flight time
+          </label>
+
+          <input
+            id="lesson-flight-time"
+            type="number"
+            min="0"
+            step="0.1"
+            placeholder="1.4"
+          />
+
+        </div>
+
+
+        <!-- GROUND -->
+
+        <div class="admin-field">
+
+          <label for="lesson-ground-time">
+            Ground time
+          </label>
+
+          <input
+            id="lesson-ground-time"
+            type="number"
+            min="0"
+            step="0.1"
+            placeholder="0.3"
+          />
+
+        </div>
+
+
+        <!-- SIM -->
+
+        <div class="admin-field">
+
+          <label for="lesson-sim-time">
+            Simulator time
+          </label>
+
+          <input
+            id="lesson-sim-time"
+            type="number"
+            min="0"
+            step="0.1"
+            placeholder="1.0"
+          />
+
+        </div>
+
+
+        <!-- CHARGE -->
+
+        <div class="admin-field">
+
+          <label for="lesson-amount">
+            Amount charged
+          </label>
+
+          <input
+            id="lesson-amount"
+            type="number"
+            min="0"
+            step="0.01"
+            placeholder="56.00"
+          />
+
+        </div>
+
+        <div class="admin-field">
+
+  <label for="lesson-receipt-number">
+    Payment receipt number
+  </label>
+
+  <input
+    id="lesson-receipt-number"
+    type="text"
+    placeholder="Receipt / transaction reference"
+  />
+
+</div>
+
+
+        <!-- BILLING -->
+
+        <div class="admin-field">
+
+          <label for="lesson-billing-status">
+            Billing status
+          </label>
+
+          <select id="lesson-billing-status">
+
+            <option value="unbilled">
+              Unbilled
+            </option>
+
+            <option value="invoiced">
+              Invoiced
+            </option>
+
+            <option value="paid">
+              Paid
+            </option>
+
+            <option value="waived">
+              Waived
+            </option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <!-- ROUTE -->
+
+      <div class="admin-field lesson-full-field">
+
+        <label for="lesson-route">
+          Route / airports
+        </label>
+
+        <input
+          id="lesson-route"
+          type="text"
+          placeholder="KAZO → practice area → KAZO"
+        />
+
+      </div>
+
+
+      <!-- TOPICS -->
+
+      <div class="admin-field lesson-full-field">
+
+        <label for="lesson-topics">
+          Topics / maneuvers covered
+        </label>
+
+        <textarea
+          id="lesson-topics"
+          rows="4"
+          placeholder="Slow flight, power-off stalls, steep turns, pattern work..."
+        ></textarea>
+
+      </div>
+
+
+      <!-- STUDENT VISIBLE NOTES -->
+
+      <div class="admin-field lesson-full-field">
+
+        <label for="lesson-student-notes">
+          Student-visible notes
+        </label>
+
+        <textarea
+          id="lesson-student-notes"
+          rows="4"
+          placeholder="Good improvement on rudder coordination..."
+        ></textarea>
+
+        <small>
+          The student will be able to see this.
+        </small>
+
+      </div>
+
+
+      <!-- PRIVATE NOTES -->
+
+      <div class="admin-field lesson-full-field private-notes-field">
+
+        <label for="lesson-private-notes">
+          Private instructor notes
+        </label>
+
+        <textarea
+          id="lesson-private-notes"
+          rows="4"
+          placeholder="Internal notes only..."
+        ></textarea>
+
+        <small>
+          Admin only. Students cannot access this field.
+        </small>
+
+      </div>
+
+
+      <p
+        id="lesson-form-message"
+        class="admin-form-message"
+        role="status"
+      ></p>
+
+
+      <div class="admin-dialog-actions">
+
+        <button
+          id="lesson-editor-cancel"
+          type="button"
+          class="admin-secondary-button"
+        >
+          Cancel
+        </button>
+
+
+        <button
+          id="save-lesson-button"
+          type="submit"
+          class="admin-primary-button"
+        >
+          Save lesson
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
 </dialog>
 
 </body>
