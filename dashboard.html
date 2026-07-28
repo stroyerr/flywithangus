@@ -38,13 +38,17 @@
 
   <!-- Supabase -->
   <script
-    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
-  ></script>
+  src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+></script>
 
-  <script
-    src="/dashboard.js"
-    defer
-  ></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"
+></script>
+
+<script
+  src="/dashboard.js"
+  defer
+></script>
 </head>
 
 <body class="dashboard-page">
@@ -618,43 +622,46 @@
 
 
           <!-- Billing -->
-          <section class="dashboard-side-card">
+<section class="dashboard-side-card">
 
-            <div class="dashboard-side-heading">
+  <div class="dashboard-side-heading">
 
-              <div>
+    <div>
 
-                <p class="dashboard-card-label">
-                  Billing
-                </p>
+      <p class="dashboard-card-label">
+        Billing
+      </p>
 
-                <h3>
-                  Account
-                </h3>
+      <h3>
+        Account
+      </h3>
 
-              </div>
+    </div>
 
-              <a href="/billing">
-                View billing
-              </a>
+    <button
+      type="button"
+      class="dashboard-side-link-button"
+      id="view-billing-button"
+    >
+      View billing
+    </button>
 
-            </div>
+  </div>
 
 
-            <div class="billing-preview">
+  <div class="billing-preview">
 
-              <span>
-                Current balance
-              </span>
+    <span>
+      Current balance
+    </span>
 
-              <strong id="sidebar-balance">
-                $0.00
-              </strong>
+    <strong id="sidebar-balance">
+      $0.00
+    </strong>
 
-            </div>
+  </div>
 
-          </section>
-
+</section>
         </aside>
 
       </div>
@@ -965,6 +972,103 @@
 
       <div class="dashboard-empty-state">
         Loading progress…
+      </div>
+
+    </div>
+
+  </div>
+
+</dialog>
+
+<!-- =====================================================
+     STUDENT BILLING
+====================================================== -->
+
+<dialog
+  class="student-billing-dialog"
+  id="student-billing-dialog"
+>
+
+  <div class="student-billing-dialog-card">
+
+    <div class="student-billing-header">
+
+      <div>
+
+        <p class="dashboard-card-label">
+          Account
+        </p>
+
+        <h2>
+          Billing
+        </h2>
+
+        <p>
+          Your invoices, payments and current balance.
+        </p>
+
+      </div>
+
+      <button
+        type="button"
+        class="student-billing-close"
+        id="student-billing-close"
+        aria-label="Close"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <div class="student-billing-summary">
+
+      <div>
+
+        <span>
+          Outstanding
+        </span>
+
+        <strong id="student-billing-balance">
+          $0.00
+        </strong>
+
+      </div>
+
+      <div>
+
+        <span>
+          Total invoiced
+        </span>
+
+        <strong id="student-billing-total">
+          $0.00
+        </strong>
+
+      </div>
+
+      <div>
+
+        <span>
+          Payments
+        </span>
+
+        <strong id="student-billing-paid">
+          $0.00
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div
+      class="student-billing-list"
+      id="student-billing-list"
+    >
+
+      <div class="dashboard-empty-state">
+        Loading invoices…
       </div>
 
     </div>

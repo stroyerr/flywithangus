@@ -23,6 +23,57 @@ const supabaseClient =
     "total-hours"
   );
 
+  const viewBillingButton =
+  document.getElementById(
+    "view-billing-button"
+  );
+
+
+const sidebarBalance =
+  document.getElementById(
+    "sidebar-balance"
+  );
+
+
+const studentBillingDialog =
+  document.getElementById(
+    "student-billing-dialog"
+  );
+
+
+const studentBillingClose =
+  document.getElementById(
+    "student-billing-close"
+  );
+
+
+const studentBillingBalance =
+  document.getElementById(
+    "student-billing-balance"
+  );
+
+
+const studentBillingTotal =
+  document.getElementById(
+    "student-billing-total"
+  );
+
+
+const studentBillingPaid =
+  document.getElementById(
+    "student-billing-paid"
+  );
+
+
+const studentBillingList =
+  document.getElementById(
+    "student-billing-list"
+  );
+
+
+let studentInvoices =
+  [];
+
   const viewAllLessonsButton =
   document.getElementById(
     "view-all-lessons-button"
@@ -732,7 +783,8 @@ await Promise.all([
   loadEndorsements(user),
   loadStudentLessons(user),
   loadStudentDocuments(user),
-  loadStudentAcs(user)
+  loadStudentAcs(user),
+  loadStudentBilling(user)
 ]);
 
 
@@ -3119,6 +3171,1008 @@ function getDashboardAcsStatusInfo(
       };
 
   }
+
+}
+
+/* ==========================================================
+   STUDENT BILLING
+========================================================== */
+
+async function loadStudentBilling(
+  user
+) {
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from("invoices")
+      .select(`
+        id,
+        student_id,
+        invoice_number,
+        issue_date,
+        due_date,
+        status,
+        notes,
+        created_at,
+
+        invoice_items (
+          id,
+          lesson_id,
+          description,
+          quantity,
+          unit_amount
+        ),
+
+        payments (
+          id,
+          amount,
+          payment_date,
+          payment_method,
+          reference_number
+        )
+      `)
+      .eq(
+        "student_id",
+        user.id
+      )
+      .order(
+        "issue_date",
+        {
+          ascending: false
+        }
+      )
+      .order(
+        "created_at",
+        {
+          ascending: false
+        }
+      );
+
+
+  if (error) {
+
+    console.error(
+      "Billing load error:",
+      error
+    );
+
+
+    sidebarBalance.textContent =
+      "—";
+
+
+    return;
+  }
+
+
+  studentInvoices =
+    data || [];
+
+
+  updateStudentBillingSummary();
+
+}
+
+
+/* ==========================================================
+   BILLING TOTAL HELPERS
+========================================================== */
+
+function getStudentInvoiceTotal(
+  invoice
+) {
+
+  return (
+    invoice.invoice_items ||
+    []
+  ).reduce(
+    (total, item) =>
+      total +
+      (
+        Number(
+          item.quantity || 0
+        ) *
+        Number(
+          item.unit_amount || 0
+        )
+      ),
+    0
+  );
+
+}
+
+
+function getStudentInvoicePaid(
+  invoice
+) {
+
+  return (
+    invoice.payments ||
+    []
+  ).reduce(
+    (total, payment) =>
+      total +
+      Number(
+        payment.amount || 0
+      ),
+    0
+  );
+
+}
+
+
+function getStudentInvoiceBalance(
+  invoice
+) {
+
+  if (
+    invoice.status ===
+    "void"
+  ) {
+
+    return 0;
+  }
+
+
+  return Math.max(
+    0,
+    getStudentInvoiceTotal(
+      invoice
+    ) -
+    getStudentInvoicePaid(
+      invoice
+    )
+  );
+
+}
+
+
+function formatStudentMoney(
+  value
+) {
+
+  return Number(
+    value || 0
+  ).toLocaleString(
+    "en-US",
+    {
+      style:
+        "currency",
+
+      currency:
+        "USD"
+    }
+  );
+
+}
+
+
+/* ==========================================================
+   BILLING SUMMARY
+========================================================== */
+
+function updateStudentBillingSummary() {
+
+  const total =
+    studentInvoices.reduce(
+      (
+        sum,
+        invoice
+      ) =>
+        invoice.status ===
+        "void"
+          ? sum
+          : sum +
+            getStudentInvoiceTotal(
+              invoice
+            ),
+      0
+    );
+
+
+  const paid =
+    studentInvoices.reduce(
+      (
+        sum,
+        invoice
+      ) =>
+        sum +
+        getStudentInvoicePaid(
+          invoice
+        ),
+      0
+    );
+
+
+  const balance =
+    studentInvoices.reduce(
+      (
+        sum,
+        invoice
+      ) =>
+        sum +
+        getStudentInvoiceBalance(
+          invoice
+        ),
+      0
+    );
+
+
+  sidebarBalance.textContent =
+    formatStudentMoney(
+      balance
+    );
+
+
+  studentBillingBalance.textContent =
+    formatStudentMoney(
+      balance
+    );
+
+
+  studentBillingTotal.textContent =
+    formatStudentMoney(
+      total
+    );
+
+
+  studentBillingPaid.textContent =
+    formatStudentMoney(
+      paid
+    );
+
+}
+
+
+/* ==========================================================
+   OPEN / CLOSE BILLING
+========================================================== */
+
+viewBillingButton
+  ?.addEventListener(
+    "click",
+    () => {
+
+      renderStudentBilling();
+
+      studentBillingDialog
+        .showModal();
+
+    }
+  );
+
+
+studentBillingClose
+  ?.addEventListener(
+    "click",
+    () => {
+
+      studentBillingDialog.close();
+
+    }
+  );
+
+
+studentBillingDialog
+  ?.addEventListener(
+    "click",
+    event => {
+
+      if (
+        event.target ===
+        studentBillingDialog
+      ) {
+
+        studentBillingDialog.close();
+
+      }
+
+    }
+  );
+
+
+/* ==========================================================
+   RENDER BILLING
+========================================================== */
+
+function renderStudentBilling() {
+
+  studentBillingList.innerHTML =
+    "";
+
+
+  if (
+    !studentInvoices.length
+  ) {
+
+    studentBillingList.innerHTML =
+      `
+        <div class="dashboard-empty-state">
+          No invoices yet.
+        </div>
+      `;
+
+    return;
+  }
+
+
+  studentInvoices.forEach(
+    invoice => {
+
+      const total =
+        getStudentInvoiceTotal(
+          invoice
+        );
+
+
+      const paid =
+        getStudentInvoicePaid(
+          invoice
+        );
+
+
+      const balance =
+        getStudentInvoiceBalance(
+          invoice
+        );
+
+
+      let status =
+        "Outstanding";
+
+
+      let statusClass =
+        "is-outstanding";
+
+
+      if (
+        invoice.status ===
+        "void"
+      ) {
+
+        status =
+          "Void";
+
+        statusClass =
+          "is-void";
+
+      } else if (
+        balance <= 0
+      ) {
+
+        status =
+          "Paid";
+
+        statusClass =
+          "is-paid";
+
+      }
+
+
+      const card =
+        document.createElement(
+          "article"
+        );
+
+
+      card.className =
+        "student-billing-invoice";
+
+
+      card.innerHTML =
+        `
+          <div class="student-billing-invoice-header">
+
+            <div>
+
+              <strong>
+                ${escapeDashboardHtml(
+                  invoice.invoice_number
+                )}
+              </strong>
+
+              <span>
+                ${escapeDashboardHtml(
+                  formatStudentBillingDate(
+                    invoice.issue_date
+                  )
+                )}
+              </span>
+
+            </div>
+
+
+            <div class="student-billing-invoice-money">
+
+              <strong>
+                ${formatStudentMoney(
+                  total
+                )}
+              </strong>
+
+              <span>
+                Balance
+                ${formatStudentMoney(
+                  balance
+                )}
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <span
+            class="student-billing-status ${statusClass}"
+          >
+            ${status}
+          </span>
+
+
+          <div class="student-billing-items">
+
+            ${
+              (
+                invoice.invoice_items ||
+                []
+              )
+                .map(
+                  item => `
+                    <div class="student-billing-item">
+
+                      <span>
+                        ${escapeDashboardHtml(
+                          item.description ||
+                          "Flight training"
+                        )}
+                      </span>
+
+                      <strong>
+                        ${formatStudentMoney(
+                          Number(
+                            item.quantity || 0
+                          ) *
+                          Number(
+                            item.unit_amount || 0
+                          )
+                        )}
+                      </strong>
+
+                    </div>
+                  `
+                )
+                .join("")
+            }
+
+          </div>
+
+
+          ${
+            (
+              invoice.payments ||
+              []
+            ).length
+              ? `
+                  <div class="student-billing-payments">
+
+                    ${
+                      invoice.payments
+                        .map(
+                          payment => `
+                            <span>
+                              ${escapeDashboardHtml(
+                                payment.payment_method ||
+                                "Payment"
+                              )}
+
+                              •
+
+                              ${formatStudentMoney(
+                                payment.amount
+                              )}
+
+                              ${
+                                payment.reference_number
+                                  ? ` • ${escapeDashboardHtml(
+                                      payment.reference_number
+                                    )}`
+                                  : ""
+                              }
+                            </span>
+                          `
+                        )
+                        .join("")
+                    }
+
+                  </div>
+                `
+              : ""
+          }
+
+
+          <div class="student-billing-actions">
+
+            <button
+              type="button"
+              class="dashboard-inline-button student-invoice-pdf-button"
+            >
+              Download invoice
+            </button>
+
+          </div>
+        `;
+
+
+      card
+        .querySelector(
+          ".student-invoice-pdf-button"
+        )
+        ?.addEventListener(
+          "click",
+          () => {
+
+            generateStudentInvoicePdf(
+              invoice
+            );
+
+          }
+        );
+
+
+      studentBillingList
+        .appendChild(
+          card
+        );
+
+    }
+  );
+
+}
+
+
+function formatStudentBillingDate(
+  value
+) {
+
+  if (!value) {
+    return "—";
+  }
+
+
+  return new Date(
+    `${value}T00:00:00`
+  ).toLocaleDateString(
+    "en-US",
+    {
+      month:
+        "short",
+
+      day:
+        "numeric",
+
+      year:
+        "numeric"
+    }
+  );
+
+}
+
+
+/* ==========================================================
+   INVOICE PDF
+========================================================== */
+
+function generateStudentInvoicePdf(
+  invoice
+) {
+
+  if (
+    !window.jspdf?.jsPDF
+  ) {
+
+    alert(
+      "PDF generator could not be loaded."
+    );
+
+    return;
+  }
+
+
+  const {
+    jsPDF
+  } =
+    window.jspdf;
+
+
+  const doc =
+    new jsPDF({
+      unit:
+        "pt",
+
+      format:
+        "letter"
+    });
+
+
+  const left =
+    52;
+
+  const right =
+    doc.internal.pageSize
+      .getWidth() -
+    52;
+
+
+  const total =
+    getStudentInvoiceTotal(
+      invoice
+    );
+
+  const paid =
+    getStudentInvoicePaid(
+      invoice
+    );
+
+  const balance =
+    getStudentInvoiceBalance(
+      invoice
+    );
+
+
+  let status =
+    "OUTSTANDING";
+
+
+  if (
+    invoice.status ===
+    "void"
+  ) {
+
+    status =
+      "VOID";
+
+  } else if (
+    balance <= 0
+  ) {
+
+    status =
+      "PAID";
+
+  }
+
+
+  doc.setFont(
+    "helvetica",
+    "bold"
+  );
+
+  doc.setFontSize(
+    20
+  );
+
+  doc.text(
+    "Fly With Angus",
+    left,
+    62
+  );
+
+
+  doc.setFont(
+    "helvetica",
+    "normal"
+  );
+
+  doc.setFontSize(
+    9
+  );
+
+  doc.text(
+    "angus@flywithangus.com",
+    left,
+    80
+  );
+
+  doc.text(
+    "flywithangus.com",
+    left,
+    94
+  );
+
+
+  doc.setFont(
+    "helvetica",
+    "bold"
+  );
+
+  doc.setFontSize(
+    26
+  );
+
+  doc.text(
+    "INVOICE",
+    right,
+    62,
+    {
+      align:
+        "right"
+    }
+  );
+
+
+  doc.setFontSize(
+    11
+  );
+
+  doc.text(
+    invoice.invoice_number,
+    right,
+    82,
+    {
+      align:
+        "right"
+    }
+  );
+
+
+  doc.setFont(
+    "helvetica",
+    "normal"
+  );
+
+  doc.setFontSize(
+    9
+  );
+
+  doc.text(
+    `Status: ${status}`,
+    right,
+    98,
+    {
+      align:
+        "right"
+    }
+  );
+
+
+  doc.setDrawColor(
+    220
+  );
+
+  doc.line(
+    left,
+    118,
+    right,
+    118
+  );
+
+
+  let y =
+    155;
+
+
+  doc.setFont(
+    "helvetica",
+    "bold"
+  );
+
+  doc.text(
+    "ISSUE DATE",
+    left,
+    y
+  );
+
+
+  doc.setFont(
+    "helvetica",
+    "normal"
+  );
+
+  doc.text(
+    formatStudentBillingDate(
+      invoice.issue_date
+    ),
+    140,
+    y
+  );
+
+
+  y +=
+    48;
+
+
+  doc.setFillColor(
+    245,
+    246,
+    248
+  );
+
+  doc.rect(
+    left,
+    y - 16,
+    right - left,
+    26,
+    "F"
+  );
+
+
+  doc.setFont(
+    "helvetica",
+    "bold"
+  );
+
+  doc.text(
+    "DESCRIPTION",
+    left + 8,
+    y
+  );
+
+  doc.text(
+    "AMOUNT",
+    right - 8,
+    y,
+    {
+      align:
+        "right"
+    }
+  );
+
+
+  y +=
+    34;
+
+
+  (
+    invoice.invoice_items ||
+    []
+  ).forEach(
+    item => {
+
+      const amount =
+        Number(
+          item.quantity || 0
+        ) *
+        Number(
+          item.unit_amount || 0
+        );
+
+
+      doc.setFont(
+        "helvetica",
+        "normal"
+      );
+
+      doc.setFontSize(
+        10
+      );
+
+
+      const lines =
+        doc.splitTextToSize(
+          item.description ||
+          "Flight training",
+          390
+        );
+
+
+      doc.text(
+        lines,
+        left + 8,
+        y
+      );
+
+
+      doc.text(
+        formatStudentMoney(
+          amount
+        ),
+        right - 8,
+        y,
+        {
+          align:
+            "right"
+        }
+      );
+
+
+      y +=
+        Math.max(
+          24,
+          lines.length *
+          13
+        );
+
+    }
+  );
+
+
+  y +=
+    30;
+
+
+  const labelX =
+    390;
+
+
+  doc.text(
+    "Total",
+    labelX,
+    y
+  );
+
+  doc.text(
+    formatStudentMoney(
+      total
+    ),
+    right,
+    y,
+    {
+      align:
+        "right"
+    }
+  );
+
+
+  y +=
+    20;
+
+
+  doc.text(
+    "Paid",
+    labelX,
+    y
+  );
+
+  doc.text(
+    formatStudentMoney(
+      paid
+    ),
+    right,
+    y,
+    {
+      align:
+        "right"
+    }
+  );
+
+
+  y +=
+    24;
+
+
+  doc.setFont(
+    "helvetica",
+    "bold"
+  );
+
+  doc.setFontSize(
+    12
+  );
+
+  doc.text(
+    "Balance",
+    labelX,
+    y
+  );
+
+  doc.text(
+    formatStudentMoney(
+      balance
+    ),
+    right,
+    y,
+    {
+      align:
+        "right"
+    }
+  );
+
+
+  doc.save(
+    `${invoice.invoice_number}.pdf`
+  );
 
 }
 

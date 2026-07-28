@@ -2173,3 +2173,304 @@ a[aria-current="page"] {
   }
 
 }
+
+/* ==========================================================
+   STUDENT BILLING
+========================================================== */
+
+.student-billing-dialog {
+  width: min(900px, calc(100% - 32px));
+  max-width: 900px;
+  max-height: 88vh;
+
+  padding: 0;
+
+  border: 0;
+  border-radius: 24px;
+
+  background: transparent;
+}
+
+
+.student-billing-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.35);
+
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+
+.student-billing-dialog-card {
+  max-height: 88vh;
+
+  overflow-y: auto;
+
+  padding: 30px;
+
+  border-radius: 24px;
+
+  background: #fff;
+
+  box-shadow:
+    0 30px 80px
+    rgba(0, 0, 0, 0.2);
+}
+
+
+.student-billing-header {
+  display: flex;
+
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  margin-bottom: 24px;
+  padding-bottom: 22px;
+
+  border-bottom: 1px solid var(--line);
+}
+
+
+.student-billing-header h2 {
+  margin: 5px 0 6px;
+
+  font-size: 2rem;
+
+  letter-spacing: -0.045em;
+}
+
+
+.student-billing-header p:last-child {
+  margin: 0;
+
+  color: var(--muted);
+
+  font-size: 0.8rem;
+}
+
+
+.student-billing-close {
+  display: grid;
+
+  width: 38px;
+  height: 38px;
+
+  place-items: center;
+
+  flex: 0 0 auto;
+
+  border: 0;
+  border-radius: 50%;
+
+  background: #f0f1f3;
+
+  color: #515154;
+
+  font-size: 1.3rem;
+
+  cursor: pointer;
+}
+
+
+.student-billing-summary {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap: 12px;
+
+  margin-bottom: 28px;
+}
+
+
+.student-billing-summary > div {
+  display: grid;
+
+  gap: 6px;
+
+  padding: 18px;
+
+  border: 1px solid var(--line);
+  border-radius: 16px;
+
+  background: #fafbfc;
+}
+
+
+.student-billing-summary span {
+  color: var(--muted);
+
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+
+.student-billing-summary strong {
+  font-size: 1.35rem;
+
+  letter-spacing: -0.04em;
+}
+
+
+.student-billing-list {
+  display: grid;
+
+  gap: 12px;
+}
+
+
+.student-billing-invoice {
+  padding: 20px;
+
+  border: 1px solid var(--line);
+  border-radius: 17px;
+
+  background: #fff;
+}
+
+
+.student-billing-invoice-header {
+  display: flex;
+
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 20px;
+}
+
+
+.student-billing-invoice-header > div:first-child strong,
+.student-billing-invoice-money strong {
+  display: block;
+
+  font-size: 0.92rem;
+}
+
+
+.student-billing-invoice-header span,
+.student-billing-invoice-money span {
+  display: block;
+
+  margin-top: 4px;
+
+  color: var(--muted);
+
+  font-size: 0.68rem;
+}
+
+
+.student-billing-invoice-money {
+  text-align: right;
+}
+
+
+.student-billing-status {
+  display: inline-flex;
+
+  margin-top: 12px;
+  padding: 5px 9px;
+
+  border-radius: 999px;
+
+  font-size: 0.63rem;
+  font-weight: 750;
+}
+
+
+.student-billing-status.is-outstanding {
+  background: rgba(180, 83, 9, 0.09);
+
+  color: #a04b08;
+}
+
+
+.student-billing-status.is-paid {
+  background: rgba(19, 115, 51, 0.09);
+
+  color: #137333;
+}
+
+
+.student-billing-status.is-void {
+  background: #eef0f3;
+
+  color: #6e6e73;
+}
+
+
+.student-billing-items {
+  display: grid;
+
+  gap: 8px;
+
+  margin-top: 16px;
+  padding-top: 15px;
+
+  border-top: 1px solid var(--line);
+}
+
+
+.student-billing-item {
+  display: flex;
+
+  justify-content: space-between;
+
+  gap: 20px;
+
+  font-size: 0.74rem;
+}
+
+
+.student-billing-item span {
+  color: var(--muted);
+}
+
+
+.student-billing-payments {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 8px 16px;
+
+  margin-top: 15px;
+
+  color: var(--muted);
+
+  font-size: 0.68rem;
+}
+
+
+.student-billing-actions {
+  display: flex;
+
+  justify-content: flex-end;
+
+  margin-top: 18px;
+}
+
+
+@media (max-width: 600px) {
+
+  .student-billing-dialog-card {
+    padding: 21px;
+  }
+
+
+  .student-billing-summary {
+    grid-template-columns: 1fr;
+  }
+
+
+  .student-billing-invoice-header {
+    flex-direction: column;
+  }
+
+
+  .student-billing-invoice-money {
+    text-align: left;
+  }
+
+}
