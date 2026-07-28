@@ -479,6 +479,182 @@
       </a>
     </div>
   </footer>
+<dialog
+  class="admin-dialog"
+  id="add-student-dialog"
+>
+  <div class="admin-dialog-card">
 
+    <div class="admin-dialog-heading">
+
+      <div>
+        <p class="admin-card-label">
+          New student
+        </p>
+
+        <h2>Add student</h2>
+
+        <p>
+          Create their Fly With Angus portal account.
+        </p>
+      </div>
+
+      <button
+        type="button"
+        class="admin-dialog-close"
+        id="add-student-close"
+        aria-label="Close"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <form id="add-student-form">
+
+      <div class="admin-form-grid">
+
+        <div class="admin-field">
+          <label for="new-student-full-name">
+            Full name
+          </label>
+
+          <input
+            id="new-student-full-name"
+            type="text"
+            required
+          />
+        </div>
+
+
+        <div class="admin-field">
+          <label for="new-student-preferred-name">
+            Preferred name
+          </label>
+
+          <input
+            id="new-student-preferred-name"
+            type="text"
+          />
+        </div>
+
+
+        <div class="admin-field">
+          <label for="new-student-email">
+            Email
+          </label>
+
+          <input
+            id="new-student-email"
+            type="email"
+            required
+          />
+        </div>
+
+
+        <div class="admin-field">
+          <label for="new-student-program">
+            Training program
+          </label>
+
+          <input
+            id="new-student-program"
+            type="text"
+            placeholder="Private Pilot Training"
+          />
+        </div>
+
+
+        <div class="admin-field">
+          <label for="new-student-start-date">
+            Start date
+          </label>
+
+          <input
+            id="new-student-start-date"
+            type="date"
+          />
+        </div>
+
+
+        <div class="admin-field">
+          <label for="new-student-status">
+            Status
+          </label>
+
+          <select id="new-student-status">
+            <option value="Active">
+              Active
+            </option>
+
+            <option value="Inactive">
+              Inactive
+            </option>
+          </select>
+        </div>
+
+
+        <div class="admin-field admin-password-field">
+
+          <label for="new-student-password">
+            Temporary password
+          </label>
+
+          <div class="admin-password-row">
+
+            <input
+              id="new-student-password"
+              type="text"
+              minlength="8"
+              required
+            />
+
+            <button
+              id="generate-password-button"
+              class="admin-secondary-button"
+              type="button"
+            >
+              Generate
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <p
+        class="admin-form-message"
+        id="add-student-message"
+        role="status"
+      ></p>
+
+
+      <div class="admin-dialog-actions">
+
+        <button
+          type="button"
+          class="admin-secondary-button"
+          id="add-student-cancel"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="submit"
+          class="admin-primary-button"
+          id="create-student-button"
+        >
+          Create student
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+</dialog>
 </body>
 </html>

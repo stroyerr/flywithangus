@@ -1078,5 +1078,165 @@ a[aria-current="page"] {
     flex-direction:
       column;
   }
+  
+}
+/* ADD STUDENT DIALOG */
+
+.admin-dialog {
+  width: min(720px, calc(100% - 32px));
+
+  max-height: calc(100vh - 40px);
+
+  padding: 0;
+
+  border: 0;
+  border-radius: 24px;
+
+  background: transparent;
+
+  overflow: visible;
+}
+
+.admin-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.36);
+
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+}
+
+.admin-dialog-card {
+  max-height: calc(100vh - 40px);
+
+  overflow-y: auto;
+
+  padding: 30px;
+
+  border-radius: 24px;
+
+  background: #fff;
+
+  box-shadow:
+    0 30px 100px rgba(0, 0, 0, 0.22);
+}
+
+.admin-dialog-heading {
+  display: flex;
+
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 24px;
+
+  margin-bottom: 28px;
+
+  padding-bottom: 22px;
+
+  border-bottom: 1px solid var(--line);
+}
+
+.admin-dialog-heading h2 {
+  margin: 5px 0 7px;
+
+  font-size: 2rem;
+
+  letter-spacing: -0.05em;
+}
+
+.admin-dialog-heading p:last-child {
+  margin: 0;
+
+  color: var(--muted);
+
+  font-size: 0.82rem;
+}
+
+.admin-dialog-close {
+  display: grid;
+
+  width: 38px;
+  height: 38px;
+
+  flex: 0 0 auto;
+
+  place-items: center;
+
+  border: 0;
+
+  border-radius: 50%;
+
+  background: #f1f2f4;
+
+  color: var(--text);
+
+  font-size: 1.45rem;
+
+  cursor: pointer;
+}
+
+.admin-dialog-actions {
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 10px;
+
+  margin-top: 24px;
+}
+
+.admin-secondary-button {
+  min-height: 43px;
+
+  padding: 0 15px;
+
+  border: 1px solid rgba(29, 29, 31, 0.14);
+
+  border-radius: 12px;
+
+  background: #fff;
+
+  color: var(--text);
+
+  font: inherit;
+
+  font-size: 0.78rem;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.admin-password-field {
+  grid-column: 1 / -1;
+}
+
+.admin-password-row {
+  display: grid;
+
+  grid-template-columns: 1fr auto;
+
+  gap: 10px;
+}
+
+#add-student-message {
+  margin-top: 18px;
+}
+
+
+@media (max-width: 600px) {
+
+  .admin-dialog-card {
+    padding: 22px;
+  }
+
+  .admin-dialog-actions {
+    flex-direction: column-reverse;
+  }
+
+  .admin-dialog-actions button {
+    width: 100%;
+  }
+
+  .admin-password-row {
+    grid-template-columns: 1fr;
+  }
 
 }

@@ -808,16 +808,334 @@ function showProfileMessage(
 
 
 /* ==========================================================
-   NEW STUDENT
+   ADD STUDENT
 ========================================================== */
+
+const addStudentDialog =
+  document.getElementById(
+    "add-student-dialog"
+  );
+
+const addStudentForm =
+  document.getElementById(
+    "add-student-form"
+  );
+
+const addStudentClose =
+  document.getElementById(
+    "add-student-close"
+  );
+
+const addStudentCancel =
+  document.getElementById(
+    "add-student-cancel"
+  );
+
+const createStudentButton =
+  document.getElementById(
+    "create-student-button"
+  );
+
+const addStudentMessage =
+  document.getElementById(
+    "add-student-message"
+  );
+
+const newStudentFullName =
+  document.getElementById(
+    "new-student-full-name"
+  );
+
+const newStudentPreferredName =
+  document.getElementById(
+    "new-student-preferred-name"
+  );
+
+const newStudentEmail =
+  document.getElementById(
+    "new-student-email"
+  );
+
+const newStudentProgram =
+  document.getElementById(
+    "new-student-program"
+  );
+
+const newStudentStartDate =
+  document.getElementById(
+    "new-student-start-date"
+  );
+
+const newStudentStatus =
+  document.getElementById(
+    "new-student-status"
+  );
+
+const newStudentPassword =
+  document.getElementById(
+    "new-student-password"
+  );
+
+const generatePasswordButton =
+  document.getElementById(
+    "generate-password-button"
+  );
+
+
+/* OPEN */
 
 newStudentButton?.addEventListener(
   "click",
   () => {
 
-    alert(
-      "Next step: we'll build the Add Student workflow so you can create the Auth account and profile without opening Supabase."
+    addStudentForm.reset();
+
+    addStudentMessage.textContent =
+      "";
+
+    addStudentMessage.classList.remove(
+      "is-success",
+      "is-error"
     );
+
+    newStudentStatus.value =
+      "Active";
+
+    newStudentPassword.value =
+      generateTemporaryPassword();
+
+    addStudentDialog.showModal();
+
+    newStudentFullName.focus();
+  }
+);
+
+
+/* CLOSE */
+
+function closeAddStudentDialog() {
+
+  addStudentDialog.close();
+
+}
+
+
+addStudentClose?.addEventListener(
+  "click",
+  closeAddStudentDialog
+);
+
+
+addStudentCancel?.addEventListener(
+  "click",
+  closeAddStudentDialog
+);
+
+
+/* PASSWORD GENERATOR */
+
+generatePasswordButton?.addEventListener(
+  "click",
+  () => {
+
+    newStudentPassword.value =
+      generateTemporaryPassword();
+
+  }
+);
+
+
+function generateTemporaryPassword() {
+
+  const characters =
+    "ABCDEFGHJKLMNPQRSTUVWXYZ" +
+    "abcdefghijkmnopqrstuvwxyz" +
+    "23456789" +
+    "!@#$%";
+
+  const randomValues =
+    new Uint32Array(14);
+
+  crypto.getRandomValues(
+    randomValues
+  );
+
+  return Array
+    .from(
+      randomValues,
+      value =>
+        characters[
+          value %
+          characters.length
+        ]
+    )
+    .join("");
+}
+
+
+/* CREATE */
+
+addStudentForm?.addEventListener(
+  "submit",
+  async event => {
+
+    event.preventDefault();
+
+
+    if (
+      !addStudentForm.reportValidity()
+    ) {
+      return;
+    }
+
+
+    createStudentButton.disabled =
+      true;
+
+    createStudentButton.textContent =
+      "Creating…";
+
+
+    addStudentMessage.textContent =
+      "";
+
+    addStudentMessage.classList.remove(
+      "is-success",
+      "is-error"
+    );
+
+
+    const studentData = {
+
+      full_name:
+        newStudentFullName
+          .value
+          .trim(),
+
+      preferred_name:
+        newStudentPreferredName
+          .value
+          .trim(),
+
+      email:
+        newStudentEmail
+          .value
+          .trim(),
+
+      training_program:
+        newStudentProgram
+          .value
+          .trim(),
+
+      start_date:
+        newStudentStartDate
+          .value ||
+        null,
+
+      status:
+        newStudentStatus
+          .value,
+
+      temporary_password:
+        newStudentPassword
+          .value,
+
+    };
+
+
+    try {
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+          .functions
+          .invoke(
+            "create-student",
+            {
+              body:
+                studentData,
+            }
+          );
+
+
+      if (error) {
+
+        console.error(
+          "Create student function error:",
+          error
+        );
+
+        throw error;
+      }
+
+
+      if (
+        !data?.success
+      ) {
+
+        throw new Error(
+          data?.error ||
+          "Could not create student."
+        );
+      }
+
+
+      addStudentMessage.textContent =
+        "Student created successfully. Save their temporary password before closing this window.";
+
+      addStudentMessage.classList.add(
+        "is-success"
+      );
+
+
+      /*
+        Refresh admin student list.
+      */
+
+      await loadStudents();
+
+
+      /*
+        Select the newly created student.
+      */
+
+      if (
+        data.student?.id
+      ) {
+
+        selectStudent(
+          data.student.id
+        );
+
+      }
+
+
+    } catch (error) {
+
+      console.error(
+        error
+      );
+
+      addStudentMessage.textContent =
+        error.message ||
+        "Could not create student.";
+
+      addStudentMessage.classList.add(
+        "is-error"
+      );
+
+
+    } finally {
+
+      createStudentButton.disabled =
+        false;
+
+      createStudentButton.textContent =
+        "Create student";
+
+    }
 
   }
 );
