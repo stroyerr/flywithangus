@@ -52,6 +52,71 @@ function setLoading(isLoading) {
     label.textContent = isLoading ? "Signing in…" : "Sign in";
   }
 }
+const forgotPasswordButton =
+  document.getElementById("forgot-password-button");
+
+forgotPasswordButton?.addEventListener("click", async () => {
+
+  showMessage("");
+
+  const email = emailInput.value.trim();
+
+  if (!email) {
+    showMessage(
+      "Enter your email address first, then click Forgot password."
+    );
+
+    emailInput.focus();
+    return;
+  }
+
+  forgotPasswordButton.disabled = true;
+  forgotPasswordButton.textContent = "Sending…";
+
+  try {
+
+    const redirectUrl =
+      `${window.location.origin}/reset-password.html`;
+
+    const { error } =
+      await supabaseClient.auth.resetPasswordForEmail(
+        email,
+        {
+          redirectTo: redirectUrl,
+        }
+      );
+
+    if (error) {
+      console.error(error);
+
+      showMessage(
+        "Could not send the reset email. Please try again."
+      );
+
+      return;
+    }
+
+    showMessage(
+      "Password reset email sent. Check your inbox.",
+      "success"
+    );
+
+  } catch (error) {
+
+    console.error(error);
+
+    showMessage(
+      "Something went wrong. Please try again."
+    );
+
+  } finally {
+
+    forgotPasswordButton.disabled = false;
+    forgotPasswordButton.textContent = "Forgot password?";
+
+  }
+
+});
 
 // Show/hide password.
 passwordToggle?.addEventListener("click", () => {

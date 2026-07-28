@@ -1147,7 +1147,7 @@ addStudentForm?.addEventListener(
 
 document
   .querySelectorAll(
-    ".student-management-card"
+    ".student-management-card[data-section]"
   )
   .forEach(
     button => {
@@ -1290,6 +1290,1225 @@ async function initializeAdmin() {
   }
 
 }
+
+/* ==========================================================
+   ENDORSEMENTS
+========================================================== */
+
+const studentEndorsementsButton =
+  document.getElementById(
+    "student-endorsements-button"
+  );
+
+const allEndorsementsButton =
+  document.getElementById(
+    "all-endorsements-button"
+  );
+
+const endorsementDialog =
+  document.getElementById(
+    "endorsement-dialog"
+  );
+
+const endorsementDialogClose =
+  document.getElementById(
+    "endorsement-dialog-close"
+  );
+
+const endorsementDialogTitle =
+  document.getElementById(
+    "endorsement-dialog-title"
+  );
+
+const endorsementDialogSubtitle =
+  document.getElementById(
+    "endorsement-dialog-subtitle"
+  );
+
+const endorsementSearch =
+  document.getElementById(
+    "endorsement-search"
+  );
+
+const endorsementList =
+  document.getElementById(
+    "endorsement-list"
+  );
+
+const addEndorsementButton =
+  document.getElementById(
+    "add-endorsement-button"
+  );
+
+const addEndorsementDialog =
+  document.getElementById(
+    "add-endorsement-dialog"
+  );
+
+const addEndorsementClose =
+  document.getElementById(
+    "add-endorsement-close"
+  );
+
+const addEndorsementCancel =
+  document.getElementById(
+    "add-endorsement-cancel"
+  );
+
+const addEndorsementForm =
+  document.getElementById(
+    "add-endorsement-form"
+  );
+
+const endorsementStudent =
+  document.getElementById(
+    "endorsement-student"
+  );
+
+const endorsementType =
+  document.getElementById(
+    "endorsement-type"
+  );
+
+const endorsementRegulation =
+  document.getElementById(
+    "endorsement-regulation"
+  );
+
+const endorsementDate =
+  document.getElementById(
+    "endorsement-date"
+  );
+
+const endorsementExpiry =
+  document.getElementById(
+    "endorsement-expiry"
+  );
+
+const endorsementAircraft =
+  document.getElementById(
+    "endorsement-aircraft"
+  );
+
+const endorsementText =
+  document.getElementById(
+    "endorsement-text"
+  );
+
+const endorsementNotes =
+  document.getElementById(
+    "endorsement-notes"
+  );
+
+const endorsementFormMessage =
+  document.getElementById(
+    "endorsement-form-message"
+  );
+
+const saveEndorsementButton =
+  document.getElementById(
+    "save-endorsement-button"
+  );
+
+
+let endorsementRecords = [];
+
+let editingEndorsementId =
+  null;
+
+let endorsementViewStudentId =
+  null;
+
+
+/* ==========================================================
+   HELPERS
+========================================================== */
+
+function getStudentById(id) {
+
+  return students.find(
+    student =>
+      student.id === id
+  );
+
+}
+
+
+function getStudentName(id) {
+
+  const student =
+    getStudentById(id);
+
+  return (
+    student?.full_name ||
+    student?.email ||
+    "Student"
+  );
+
+}
+
+
+function formatEndorsementDate(value) {
+
+  if (!value) {
+    return "—";
+  }
+
+  return new Date(
+    `${value}T00:00:00`
+  ).toLocaleDateString(
+    "en-US",
+    {
+      month: "short",
+      day: "numeric",
+      year: "numeric"
+    }
+  );
+
+}
+
+
+function getTodayInputValue() {
+
+  const now =
+    new Date();
+
+  const local =
+    new Date(
+      now.getTime() -
+      now.getTimezoneOffset() * 60000
+    );
+
+  return local
+    .toISOString()
+    .slice(0, 10);
+
+}
+
+
+function getEndorsementStatus(
+  expiresAt
+) {
+
+  if (!expiresAt) {
+
+    return {
+      label: "Recorded",
+      className: "no-expiry"
+    };
+
+  }
+
+
+  const today =
+    new Date();
+
+  today.setHours(
+    0,
+    0,
+    0,
+    0
+  );
+
+
+  const expiry =
+    new Date(
+      `${expiresAt}T00:00:00`
+    );
+
+
+  const difference =
+    expiry.getTime() -
+    today.getTime();
+
+
+  const daysRemaining =
+    Math.round(
+      difference /
+      86400000
+    );
+
+
+  if (daysRemaining < 0) {
+
+    return {
+      label: "Expired",
+      className: "is-expired"
+    };
+
+  }
+
+
+  if (daysRemaining === 0) {
+
+    return {
+      label: "Expires today",
+      className: "is-expiring"
+    };
+
+  }
+
+
+  if (daysRemaining <= 30) {
+
+    return {
+      label:
+        `Expires in ${daysRemaining}d`,
+
+      className:
+        "is-expiring"
+    };
+
+  }
+
+
+  return {
+    label: "Active",
+    className: ""
+  };
+
+}
+
+
+/* ==========================================================
+   LOAD ENDORSEMENTS
+========================================================== */
+
+async function loadEndorsements(
+  studentId = null
+) {
+
+  endorsementList.innerHTML =
+    `
+      <div class="student-list-empty">
+        Loading endorsements…
+      </div>
+    `;
+
+
+  let query =
+    supabaseClient
+      .from("endorsements")
+      .select(`
+        id,
+        student_id,
+        endorsement_type,
+        regulation,
+        date_given,
+        expires_at,
+        aircraft,
+        endorsement_text,
+        notes,
+        created_at
+      `)
+      .order(
+        "date_given",
+        {
+          ascending: false
+        }
+      );
+
+
+  if (studentId) {
+
+    query =
+      query.eq(
+        "student_id",
+        studentId
+      );
+
+  }
+
+
+  const {
+    data,
+    error
+  } =
+    await query;
+
+
+  if (error) {
+
+    console.error(
+      "Could not load endorsements:",
+      error
+    );
+
+
+    endorsementList.innerHTML =
+      `
+        <div class="student-list-empty">
+          Could not load endorsements.
+        </div>
+      `;
+
+    return;
+
+  }
+
+
+  endorsementRecords =
+    data || [];
+
+
+  renderEndorsements(
+    endorsementRecords
+  );
+
+}
+
+
+/* ==========================================================
+   RENDER
+========================================================== */
+
+function renderEndorsements(records) {
+
+  endorsementList.innerHTML = "";
+
+
+  if (!records.length) {
+
+    endorsementList.innerHTML =
+      `
+        <div class="student-list-empty">
+          No endorsements recorded.
+        </div>
+      `;
+
+    return;
+
+  }
+
+
+  records.forEach(
+    endorsement => {
+
+      const item =
+        document.createElement(
+          "article"
+        );
+
+
+      item.className =
+        "endorsement-item";
+
+
+      const status =
+        getEndorsementStatus(
+          endorsement.expires_at
+        );
+
+
+      const studentName =
+        endorsementViewStudentId
+          ? ""
+          : `
+              <span class="endorsement-student-name">
+                ${escapeHtml(
+                  getStudentName(
+                    endorsement.student_id
+                  )
+                )}
+              </span>
+            `;
+
+
+      const metaParts =
+        [];
+
+
+      metaParts.push(
+        formatEndorsementDate(
+          endorsement.date_given
+        )
+      );
+
+
+      if (
+        endorsement.regulation
+      ) {
+
+        metaParts.push(
+          endorsement.regulation
+        );
+
+      }
+
+
+      if (
+        endorsement.aircraft
+      ) {
+
+        metaParts.push(
+          endorsement.aircraft
+        );
+
+      }
+
+
+      if (
+        endorsement.expires_at
+      ) {
+
+        metaParts.push(
+          `Expires ${formatEndorsementDate(
+            endorsement.expires_at
+          )}`
+        );
+
+      }
+
+
+      item.innerHTML =
+        `
+          <div class="endorsement-item-main">
+
+            <div class="endorsement-item-heading">
+
+              <strong>
+                ${escapeHtml(
+                  endorsement.endorsement_type
+                )}
+              </strong>
+
+              ${studentName}
+
+            </div>
+
+
+            <div class="endorsement-meta">
+
+              ${metaParts
+                .map(
+                  part =>
+                    escapeHtml(part)
+                )
+                .join(" • ")}
+
+            </div>
+
+
+            ${
+              endorsement.notes
+                ? `
+                    <p class="endorsement-notes">
+                      ${escapeHtml(
+                        endorsement.notes
+                      )}
+                    </p>
+                  `
+                : ""
+            }
+
+
+            <div class="endorsement-item-actions">
+
+              <button
+                type="button"
+                class="endorsement-action-button endorsement-edit-button"
+              >
+                Edit
+              </button>
+
+              <button
+                type="button"
+                class="endorsement-action-button is-delete endorsement-delete-button"
+              >
+                Delete
+              </button>
+
+            </div>
+
+          </div>
+
+
+          <span
+            class="endorsement-status ${status.className}"
+          >
+            ${escapeHtml(
+              status.label
+            )}
+          </span>
+        `;
+
+
+      const editButton =
+        item.querySelector(
+          ".endorsement-edit-button"
+        );
+
+
+      const deleteButton =
+        item.querySelector(
+          ".endorsement-delete-button"
+        );
+
+
+      editButton.addEventListener(
+        "click",
+        () => {
+
+          openEditEndorsement(
+            endorsement
+          );
+
+        }
+      );
+
+
+      deleteButton.addEventListener(
+        "click",
+        () => {
+
+          deleteEndorsement(
+            endorsement
+          );
+
+        }
+      );
+
+
+      endorsementList.appendChild(
+        item
+      );
+
+    }
+  );
+
+}
+
+
+/* ==========================================================
+   OPEN STUDENT ENDORSEMENTS
+========================================================== */
+
+studentEndorsementsButton
+  ?.addEventListener(
+    "click",
+    async () => {
+
+      if (
+        !selectedStudentId
+      ) {
+
+        return;
+
+      }
+
+
+      endorsementViewStudentId =
+        selectedStudentId;
+
+
+      const student =
+        getStudentById(
+          selectedStudentId
+        );
+
+
+      endorsementDialogTitle.textContent =
+        "Endorsements";
+
+
+      endorsementDialogSubtitle.textContent =
+        student?.full_name ||
+        student?.email ||
+        "Student";
+
+
+      endorsementSearch.value =
+        "";
+
+
+      endorsementDialog.showModal();
+
+
+      await loadEndorsements(
+        selectedStudentId
+      );
+
+    }
+  );
+
+
+/* ==========================================================
+   OPEN MASTER REGISTER
+========================================================== */
+
+allEndorsementsButton
+  ?.addEventListener(
+    "click",
+    async () => {
+
+      endorsementViewStudentId =
+        null;
+
+
+      endorsementDialogTitle.textContent =
+        "All endorsements";
+
+
+      endorsementDialogSubtitle.textContent =
+        "Complete instructor endorsement register.";
+
+
+      endorsementSearch.value =
+        "";
+
+
+      endorsementDialog.showModal();
+
+
+      await loadEndorsements();
+
+    }
+  );
+
+
+endorsementDialogClose
+  ?.addEventListener(
+    "click",
+    () => {
+
+      endorsementDialog.close();
+
+    }
+  );
+
+/* ==========================================================
+   EDIT ENDORSEMENT
+========================================================== */
+
+function openEditEndorsement(
+  endorsement
+) {
+
+  editingEndorsementId =
+    endorsement.id;
+
+
+  addEndorsementForm.reset();
+
+
+  endorsementFormMessage.textContent =
+    "";
+
+
+  endorsementFormMessage
+    .classList
+    .remove(
+      "is-success",
+      "is-error"
+    );
+
+
+  /*
+    Populate student list
+  */
+
+  endorsementStudent.innerHTML =
+    "";
+
+
+  students.forEach(
+    student => {
+
+      const option =
+        document.createElement(
+          "option"
+        );
+
+
+      option.value =
+        student.id;
+
+
+      option.textContent =
+        student.full_name ||
+        student.email ||
+        "Student";
+
+
+      endorsementStudent
+        .appendChild(
+          option
+        );
+
+    }
+  );
+
+
+  /*
+    Fill existing endorsement
+  */
+
+  endorsementStudent.value =
+    endorsement.student_id;
+
+
+  endorsementType.value =
+    endorsement.endorsement_type ||
+    "";
+
+
+  endorsementRegulation.value =
+    endorsement.regulation ||
+    "";
+
+
+  endorsementDate.value =
+    endorsement.date_given ||
+    "";
+
+
+  endorsementExpiry.value =
+    endorsement.expires_at ||
+    "";
+
+
+  endorsementAircraft.value =
+    endorsement.aircraft ||
+    "";
+
+
+  endorsementText.value =
+    endorsement.endorsement_text ||
+    "";
+
+
+  endorsementNotes.value =
+    endorsement.notes ||
+    "";
+
+
+  saveEndorsementButton.textContent =
+    "Save changes";
+
+
+  addEndorsementDialog.showModal();
+
+
+  endorsementType.focus();
+
+}
+
+/* ==========================================================
+   DELETE ENDORSEMENT
+========================================================== */
+
+async function deleteEndorsement(
+  endorsement
+) {
+
+  const studentName =
+    getStudentName(
+      endorsement.student_id
+    );
+
+
+  const confirmed =
+    window.confirm(
+      `Delete "${endorsement.endorsement_type}" for ${studentName}?\n\nThis cannot be undone.`
+    );
+
+
+  if (!confirmed) {
+    return;
+  }
+
+
+  const {
+    error
+  } =
+    await supabaseClient
+      .from("endorsements")
+      .delete()
+      .eq(
+        "id",
+        endorsement.id
+      );
+
+
+  if (error) {
+
+    console.error(
+      "Could not delete endorsement:",
+      error
+    );
+
+
+    alert(
+      "Could not delete the endorsement."
+    );
+
+    return;
+
+  }
+
+
+  await loadEndorsements(
+    endorsementViewStudentId
+  );
+
+}
+
+/* ==========================================================
+   OPEN ADD ENDORSEMENT
+========================================================== */
+
+addEndorsementButton
+  ?.addEventListener(
+    "click",
+    () => {
+
+      addEndorsementForm.reset();
+
+      editingEndorsementId =
+  null;
+
+saveEndorsementButton.textContent =
+  "Save endorsement";
+
+
+      endorsementFormMessage.textContent =
+        "";
+
+
+      endorsementStudent.innerHTML =
+        "";
+
+
+      students.forEach(
+        student => {
+
+          const option =
+            document.createElement(
+              "option"
+            );
+
+
+          option.value =
+            student.id;
+
+
+          option.textContent =
+            student.full_name ||
+            student.email ||
+            "Student";
+
+
+          endorsementStudent.appendChild(
+            option
+          );
+
+        }
+      );
+
+
+      if (
+        endorsementViewStudentId
+      ) {
+
+        endorsementStudent.value =
+          endorsementViewStudentId;
+
+      } else if (
+        selectedStudentId
+      ) {
+
+        endorsementStudent.value =
+          selectedStudentId;
+
+      }
+
+
+      endorsementDate.value =
+        getTodayInputValue();
+
+
+      addEndorsementDialog.showModal();
+
+
+      endorsementType.focus();
+
+    }
+  );
+
+
+/* ==========================================================
+   CLOSE ADD ENDORSEMENT
+========================================================== */
+
+addEndorsementClose
+  ?.addEventListener(
+    "click",
+    () => {
+
+      addEndorsementDialog.close();
+
+    }
+  );
+
+
+addEndorsementCancel
+  ?.addEventListener(
+    "click",
+    () => {
+
+      addEndorsementDialog.close();
+
+    }
+  );
+
+
+/* ==========================================================
+   SAVE ENDORSEMENT
+========================================================== */
+
+addEndorsementForm
+  ?.addEventListener(
+    "submit",
+    async event => {
+
+      event.preventDefault();
+
+
+      if (
+        !addEndorsementForm
+          .reportValidity()
+      ) {
+
+        return;
+
+      }
+
+
+      saveEndorsementButton.disabled =
+        true;
+
+
+      saveEndorsementButton.textContent =
+        "Saving…";
+
+
+      endorsementFormMessage.textContent =
+        "";
+
+
+      endorsementFormMessage
+        .classList
+        .remove(
+          "is-success",
+          "is-error"
+        );
+
+
+      const record =
+        {
+
+          student_id:
+            endorsementStudent.value,
+
+          endorsement_type:
+            endorsementType
+              .value
+              .trim(),
+
+          regulation:
+            endorsementRegulation
+              .value
+              .trim() ||
+            null,
+
+          date_given:
+            endorsementDate.value,
+
+          expires_at:
+            endorsementExpiry.value ||
+            null,
+
+          aircraft:
+            endorsementAircraft
+              .value
+              .trim() ||
+            null,
+
+          endorsement_text:
+            endorsementText
+              .value
+              .trim() ||
+            null,
+
+          notes:
+            endorsementNotes
+              .value
+              .trim() ||
+            null
+
+        };
+
+
+      let saveResult;
+
+
+if (
+  editingEndorsementId
+) {
+
+  saveResult =
+    await supabaseClient
+      .from("endorsements")
+      .update({
+        ...record,
+
+        updated_at:
+          new Date().toISOString()
+      })
+      .eq(
+        "id",
+        editingEndorsementId
+      );
+
+} else {
+
+  saveResult =
+    await supabaseClient
+      .from("endorsements")
+      .insert(
+        record
+      );
+
+}
+
+
+const {
+  error
+} =
+  saveResult;
+
+
+      if (error) {
+
+        console.error(
+          "Could not save endorsement:",
+          error
+        );
+
+
+        endorsementFormMessage.textContent =
+          "Could not save endorsement.";
+
+
+        endorsementFormMessage
+          .classList
+          .add(
+            "is-error"
+          );
+
+
+        saveEndorsementButton.disabled =
+          false;
+
+
+        saveEndorsementButton.textContent =
+          "Save endorsement";
+
+
+        return;
+
+      }
+
+
+      addEndorsementDialog.close();
+
+      editingEndorsementId =
+  null;
+
+
+      await loadEndorsements(
+        endorsementViewStudentId
+      );
+
+
+      saveEndorsementButton.disabled =
+        false;
+
+
+      saveEndorsementButton.textContent =
+        "Save endorsement";
+
+    }
+  );
+
+
+/* ==========================================================
+   ENDORSEMENT SEARCH
+========================================================== */
+
+endorsementSearch
+  ?.addEventListener(
+    "input",
+    () => {
+
+      const search =
+        endorsementSearch
+          .value
+          .trim()
+          .toLowerCase();
+
+
+      if (!search) {
+
+        renderEndorsements(
+          endorsementRecords
+        );
+
+        return;
+
+      }
+
+
+      const filtered =
+        endorsementRecords.filter(
+          endorsement => {
+
+            const studentName =
+              getStudentName(
+                endorsement.student_id
+              );
+
+
+            const values =
+              [
+                studentName,
+                endorsement.endorsement_type,
+                endorsement.regulation,
+                endorsement.aircraft,
+                endorsement.notes,
+                endorsement.endorsement_text
+              ];
+
+
+            return values.some(
+              value =>
+                String(
+                  value || ""
+                )
+                  .toLowerCase()
+                  .includes(search)
+            );
+
+          }
+        );
+
+
+      renderEndorsements(
+        filtered
+      );
+
+    }
+  );
 
 
 initializeAdmin();

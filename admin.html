@@ -25,6 +25,7 @@
 
   <div class="admin-loading" id="admin-loading">
     <div class="admin-loading-inner">
+
       <img
         class="admin-loading-logo"
         src="/favicon.png"
@@ -32,17 +33,20 @@
       />
 
       <p>Loading admin portal…</p>
+
     </div>
   </div>
 
 
   <header class="admin-header">
+
     <div class="container admin-nav">
 
       <a class="admin-brand" href="/">
         <img src="/favicon.png" alt="" />
         <span>FlyWithAngus</span>
       </a>
+
 
       <nav class="admin-nav-links" aria-label="Admin navigation">
 
@@ -53,6 +57,18 @@
         <a href="/students.html">
           Students
         </a>
+
+
+        <!-- ENDORSEMENTS: MASTER REGISTER -->
+
+        <button
+          id="all-endorsements-button"
+          class="admin-nav-button"
+          type="button"
+        >
+          Endorsements
+        </button>
+
 
         <button
           id="admin-logout-button"
@@ -65,6 +81,7 @@
       </nav>
 
     </div>
+
   </header>
 
 
@@ -72,22 +89,37 @@
 
     <div class="container">
 
+
       <section class="admin-welcome">
 
         <div>
-          <p class="admin-eyebrow">Fly With Angus</p>
 
-          <h1>Admin portal</h1>
+          <p class="admin-eyebrow">
+            Fly With Angus
+          </p>
+
+          <h1>
+            Admin portal
+          </h1>
 
           <p class="admin-welcome-copy">
             Manage students, training records, documents,
             balances, and progress from one place.
           </p>
+
         </div>
 
+
         <div class="admin-session-card">
-          <span>Signed in as</span>
-          <strong id="admin-email">—</strong>
+
+          <span>
+            Signed in as
+          </span>
+
+          <strong id="admin-email">
+            —
+          </strong>
+
         </div>
 
       </section>
@@ -95,7 +127,9 @@
 
       <section class="admin-summary-grid">
 
+
         <article class="admin-summary-card">
+
           <p class="admin-card-label">
             Active students
           </p>
@@ -107,10 +141,12 @@
           <span>
             Current student profiles
           </span>
+
         </article>
 
 
         <article class="admin-summary-card">
+
           <p class="admin-card-label">
             Outstanding balance
           </p>
@@ -122,10 +158,12 @@
           <span>
             Billing integration coming soon
           </span>
+
         </article>
 
 
         <article class="admin-summary-card">
+
           <p class="admin-card-label">
             Recent activity
           </p>
@@ -137,7 +175,9 @@
           <span>
             Lesson tracking coming soon
           </span>
+
         </article>
+
 
       </section>
 
@@ -147,15 +187,21 @@
 
         <section class="admin-students-panel">
 
+
           <div class="admin-panel-heading">
 
             <div>
+
               <p class="admin-card-label">
                 Students
               </p>
 
-              <h2>Student records</h2>
+              <h2>
+                Student records
+              </h2>
+
             </div>
+
 
             <button
               class="admin-primary-button"
@@ -163,7 +209,11 @@
               type="button"
             >
               Add student
-              <span aria-hidden="true">+</span>
+
+              <span aria-hidden="true">
+                +
+              </span>
+
             </button>
 
           </div>
@@ -177,6 +227,7 @@
             >
               Search students
             </label>
+
 
             <input
               id="student-search"
@@ -199,25 +250,31 @@
 
           </div>
 
+
         </section>
 
 
         <aside class="admin-student-detail">
 
+
           <div
             class="student-detail-empty"
             id="student-detail-empty"
           >
+
             <div class="student-detail-empty-icon">
               ✈
             </div>
 
-            <h3>Select a student</h3>
+            <h3>
+              Select a student
+            </h3>
 
             <p>
               Choose a student record to view
               and manage their profile.
             </p>
+
           </div>
 
 
@@ -227,9 +284,11 @@
             hidden
           >
 
+
             <div class="student-detail-heading">
 
               <div>
+
                 <p class="admin-card-label">
                   Student profile
                 </p>
@@ -241,7 +300,9 @@
                 <p id="detail-student-email">
                   —
                 </p>
+
               </div>
+
 
               <span
                 class="student-status-badge"
@@ -258,6 +319,7 @@
               id="student-profile-form"
             >
 
+
               <input
                 type="hidden"
                 id="profile-id"
@@ -266,7 +328,9 @@
 
               <div class="admin-form-grid">
 
+
                 <div class="admin-field">
+
                   <label for="profile-full-name">
                     Full name
                   </label>
@@ -276,10 +340,12 @@
                     type="text"
                     required
                   />
+
                 </div>
 
 
                 <div class="admin-field">
+
                   <label for="profile-preferred-name">
                     Preferred name
                   </label>
@@ -288,10 +354,12 @@
                     id="profile-preferred-name"
                     type="text"
                   />
+
                 </div>
 
 
                 <div class="admin-field">
+
                   <label for="profile-email">
                     Email
                   </label>
@@ -301,10 +369,12 @@
                     type="email"
                     required
                   />
+
                 </div>
 
 
                 <div class="admin-field">
+
                   <label for="profile-training-program">
                     Training program
                   </label>
@@ -314,10 +384,12 @@
                     type="text"
                     placeholder="Private Pilot Training"
                   />
+
                 </div>
 
 
                 <div class="admin-field">
+
                   <label for="profile-start-date">
                     Start date
                   </label>
@@ -326,15 +398,18 @@
                     id="profile-start-date"
                     type="date"
                   />
+
                 </div>
 
 
                 <div class="admin-field">
+
                   <label for="profile-status">
                     Status
                   </label>
 
                   <select id="profile-status">
+
                     <option value="Active">
                       Active
                     </option>
@@ -346,13 +421,17 @@
                     <option value="Complete">
                       Complete
                     </option>
+
                   </select>
+
                 </div>
+
 
               </div>
 
 
               <div class="student-profile-actions">
+
 
                 <button
                   class="admin-primary-button"
@@ -362,6 +441,7 @@
                   Save changes
                 </button>
 
+
                 <p
                   class="admin-form-message"
                   id="profile-form-message"
@@ -369,7 +449,9 @@
                   aria-live="polite"
                 ></p>
 
+
               </div>
+
 
             </form>
 
@@ -382,18 +464,27 @@
                 type="button"
                 data-section="lessons"
               >
+
                 <span class="student-management-icon">
                   ✈
                 </span>
 
                 <span>
-                  <strong>Lessons</strong>
-                  <small>View and record training</small>
+
+                  <strong>
+                    Lessons
+                  </strong>
+
+                  <small>
+                    View and record training
+                  </small>
+
                 </span>
 
                 <span aria-hidden="true">
                   →
                 </span>
+
               </button>
 
 
@@ -402,18 +493,58 @@
                 type="button"
                 data-section="progress"
               >
+
                 <span class="student-management-icon">
                   ✓
                 </span>
 
                 <span>
-                  <strong>ACS progress</strong>
-                  <small>Update proficiency status</small>
+
+                  <strong>
+                    ACS progress
+                  </strong>
+
+                  <small>
+                    Update proficiency status
+                  </small>
+
                 </span>
 
                 <span aria-hidden="true">
                   →
                 </span>
+
+              </button>
+
+
+              <!-- ENDORSEMENTS: SELECTED STUDENT -->
+
+              <button
+                class="student-management-card"
+                id="student-endorsements-button"
+                type="button"
+              >
+
+                <span class="student-management-icon">
+                  ✓
+                </span>
+
+                <span>
+
+                  <strong>
+                    Endorsements
+                  </strong>
+
+                  <small>
+                    View and record endorsements
+                  </small>
+
+                </span>
+
+                <span aria-hidden="true">
+                  →
+                </span>
+
               </button>
 
 
@@ -422,18 +553,27 @@
                 type="button"
                 data-section="documents"
               >
+
                 <span class="student-management-icon">
                   ▤
                 </span>
 
                 <span>
-                  <strong>Documents</strong>
-                  <small>Agreements and records</small>
+
+                  <strong>
+                    Documents
+                  </strong>
+
+                  <small>
+                    Agreements and records
+                  </small>
+
                 </span>
 
                 <span aria-hidden="true">
                   →
                 </span>
+
               </button>
 
 
@@ -442,67 +582,319 @@
                 type="button"
                 data-section="billing"
               >
+
                 <span class="student-management-icon">
                   $
                 </span>
 
                 <span>
-                  <strong>Billing</strong>
-                  <small>Invoices and balances</small>
+
+                  <strong>
+                    Billing
+                  </strong>
+
+                  <small>
+                    Invoices and balances
+                  </small>
+
                 </span>
 
                 <span aria-hidden="true">
                   →
                 </span>
+
               </button>
 
 
             </div>
 
+
           </div>
+
 
         </aside>
 
+
       </div>
 
+
     </div>
+
 
   </main>
 
 
   <footer class="admin-footer">
+
     <div class="container">
-      <span>Fly With Angus Admin Portal</span>
+
+      <span>
+        Fly With Angus Admin Portal
+      </span>
 
       <a href="mailto:angus@flywithangus.com">
         Support
       </a>
+
     </div>
+
   </footer>
+
+
+
+  <!-- =====================================================
+       ADD STUDENT DIALOG
+  ====================================================== -->
+
+
+  <dialog
+    class="admin-dialog"
+    id="add-student-dialog"
+  >
+
+
+    <div class="admin-dialog-card">
+
+
+      <div class="admin-dialog-heading">
+
+
+        <div>
+
+          <p class="admin-card-label">
+            New student
+          </p>
+
+          <h2>
+            Add student
+          </h2>
+
+          <p>
+            Create their Fly With Angus portal account.
+          </p>
+
+        </div>
+
+
+        <button
+          type="button"
+          class="admin-dialog-close"
+          id="add-student-close"
+          aria-label="Close"
+        >
+          ×
+        </button>
+
+
+      </div>
+
+
+      <form id="add-student-form">
+
+
+        <div class="admin-form-grid">
+
+
+          <div class="admin-field">
+
+            <label for="new-student-full-name">
+              Full name
+            </label>
+
+            <input
+              id="new-student-full-name"
+              type="text"
+              required
+            />
+
+          </div>
+
+
+          <div class="admin-field">
+
+            <label for="new-student-preferred-name">
+              Preferred name
+            </label>
+
+            <input
+              id="new-student-preferred-name"
+              type="text"
+            />
+
+          </div>
+
+
+          <div class="admin-field">
+
+            <label for="new-student-email">
+              Email
+            </label>
+
+            <input
+              id="new-student-email"
+              type="email"
+              required
+            />
+
+          </div>
+
+
+          <div class="admin-field">
+
+            <label for="new-student-program">
+              Training program
+            </label>
+
+            <input
+              id="new-student-program"
+              type="text"
+              placeholder="Private Pilot Training"
+            />
+
+          </div>
+
+
+          <div class="admin-field">
+
+            <label for="new-student-start-date">
+              Start date
+            </label>
+
+            <input
+              id="new-student-start-date"
+              type="date"
+            />
+
+          </div>
+
+
+          <div class="admin-field">
+
+            <label for="new-student-status">
+              Status
+            </label>
+
+            <select id="new-student-status">
+
+              <option value="Active">
+                Active
+              </option>
+
+              <option value="Inactive">
+                Inactive
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="admin-field admin-password-field">
+
+
+            <label for="new-student-password">
+              Temporary password
+            </label>
+
+
+            <div class="admin-password-row">
+
+
+              <input
+                id="new-student-password"
+                type="text"
+                minlength="8"
+                required
+              />
+
+
+              <button
+                id="generate-password-button"
+                class="admin-secondary-button"
+                type="button"
+              >
+                Generate
+              </button>
+
+
+            </div>
+
+
+          </div>
+
+
+        </div>
+
+
+        <p
+          class="admin-form-message"
+          id="add-student-message"
+          role="status"
+        ></p>
+
+
+        <div class="admin-dialog-actions">
+
+
+          <button
+            type="button"
+            class="admin-secondary-button"
+            id="add-student-cancel"
+          >
+            Cancel
+          </button>
+
+
+          <button
+            type="submit"
+            class="admin-primary-button"
+            id="create-student-button"
+          >
+            Create student
+          </button>
+
+
+        </div>
+
+
+      </form>
+
+
+    </div>
+
+
+  </dialog>
+
+  <!-- =====================================================
+     ENDORSEMENT REGISTER
+====================================================== -->
+
 <dialog
-  class="admin-dialog"
-  id="add-student-dialog"
+  class="admin-dialog endorsement-dialog"
+  id="endorsement-dialog"
 >
-  <div class="admin-dialog-card">
+  <div class="admin-dialog-card endorsement-dialog-card">
 
     <div class="admin-dialog-heading">
 
       <div>
         <p class="admin-card-label">
-          New student
+          Training records
         </p>
 
-        <h2>Add student</h2>
+        <h2 id="endorsement-dialog-title">
+          Endorsements
+        </h2>
 
-        <p>
-          Create their Fly With Angus portal account.
+        <p id="endorsement-dialog-subtitle">
+          View and manage endorsements.
         </p>
       </div>
 
       <button
         type="button"
         class="admin-dialog-close"
-        id="add-student-close"
+        id="endorsement-dialog-close"
         aria-label="Close"
       >
         ×
@@ -511,123 +903,208 @@
     </div>
 
 
-    <form id="add-student-form">
+    <div class="endorsement-toolbar">
+
+      <input
+        id="endorsement-search"
+        class="admin-search"
+        type="search"
+        placeholder="Search endorsements"
+      />
+
+      <button
+        id="add-endorsement-button"
+        class="admin-primary-button"
+        type="button"
+      >
+        Add endorsement
+      </button>
+
+    </div>
+
+
+    <div
+      class="endorsement-list"
+      id="endorsement-list"
+    >
+      <div class="student-list-empty">
+        Loading endorsements…
+      </div>
+    </div>
+
+  </div>
+</dialog>
+
+
+
+<!-- =====================================================
+     ADD ENDORSEMENT
+====================================================== -->
+
+<dialog
+  class="admin-dialog"
+  id="add-endorsement-dialog"
+>
+  <div class="admin-dialog-card">
+
+    <div class="admin-dialog-heading">
+
+      <div>
+        <p class="admin-card-label">
+          New record
+        </p>
+
+        <h2>
+          Add endorsement
+        </h2>
+
+        <p>
+          Record an endorsement issued to a student.
+        </p>
+      </div>
+
+      <button
+        type="button"
+        class="admin-dialog-close"
+        id="add-endorsement-close"
+        aria-label="Close"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <form id="add-endorsement-form">
 
       <div class="admin-form-grid">
 
+
         <div class="admin-field">
-          <label for="new-student-full-name">
-            Full name
+
+          <label for="endorsement-student">
+            Student
+          </label>
+
+          <select
+            id="endorsement-student"
+            required
+          >
+          </select>
+
+        </div>
+
+
+        <div class="admin-field">
+
+          <label for="endorsement-type">
+            Endorsement
           </label>
 
           <input
-            id="new-student-full-name"
+            id="endorsement-type"
             type="text"
+            placeholder="90-day solo"
             required
           />
+
         </div>
 
 
         <div class="admin-field">
-          <label for="new-student-preferred-name">
-            Preferred name
+
+          <label for="endorsement-regulation">
+            Regulation / reference
           </label>
 
           <input
-            id="new-student-preferred-name"
+            id="endorsement-regulation"
             type="text"
+            placeholder="61.87"
           />
+
         </div>
 
 
         <div class="admin-field">
-          <label for="new-student-email">
-            Email
+
+          <label for="endorsement-date">
+            Date given
           </label>
 
           <input
-            id="new-student-email"
-            type="email"
+            id="endorsement-date"
+            type="date"
             required
           />
+
         </div>
 
 
         <div class="admin-field">
-          <label for="new-student-program">
-            Training program
+
+          <label for="endorsement-expiry">
+            Expiration
           </label>
 
           <input
-            id="new-student-program"
-            type="text"
-            placeholder="Private Pilot Training"
-          />
-        </div>
-
-
-        <div class="admin-field">
-          <label for="new-student-start-date">
-            Start date
-          </label>
-
-          <input
-            id="new-student-start-date"
+            id="endorsement-expiry"
             type="date"
           />
+
         </div>
 
 
         <div class="admin-field">
-          <label for="new-student-status">
-            Status
+
+          <label for="endorsement-aircraft">
+            Aircraft
           </label>
 
-          <select id="new-student-status">
-            <option value="Active">
-              Active
-            </option>
-
-            <option value="Inactive">
-              Inactive
-            </option>
-          </select>
-        </div>
-
-
-        <div class="admin-field admin-password-field">
-
-          <label for="new-student-password">
-            Temporary password
-          </label>
-
-          <div class="admin-password-row">
-
-            <input
-              id="new-student-password"
-              type="text"
-              minlength="8"
-              required
-            />
-
-            <button
-              id="generate-password-button"
-              class="admin-secondary-button"
-              type="button"
-            >
-              Generate
-            </button>
-
-          </div>
+          <input
+            id="endorsement-aircraft"
+            type="text"
+            placeholder="C172 / N12345"
+          />
 
         </div>
 
       </div>
 
 
+      <div class="admin-field endorsement-full-field">
+
+        <label for="endorsement-text">
+          Endorsement text
+        </label>
+
+        <textarea
+          id="endorsement-text"
+          rows="6"
+          placeholder="Optional copy of the endorsement..."
+        ></textarea>
+
+      </div>
+
+
+      <div class="admin-field endorsement-full-field">
+
+        <label for="endorsement-notes">
+          Internal notes
+        </label>
+
+        <textarea
+          id="endorsement-notes"
+          rows="3"
+          placeholder="Optional notes..."
+        ></textarea>
+
+      </div>
+
+
       <p
         class="admin-form-message"
-        id="add-student-message"
+        id="endorsement-form-message"
         role="status"
       ></p>
 
@@ -637,7 +1114,7 @@
         <button
           type="button"
           class="admin-secondary-button"
-          id="add-student-cancel"
+          id="add-endorsement-cancel"
         >
           Cancel
         </button>
@@ -645,9 +1122,9 @@
         <button
           type="submit"
           class="admin-primary-button"
-          id="create-student-button"
+          id="save-endorsement-button"
         >
-          Create student
+          Save endorsement
         </button>
 
       </div>
@@ -656,5 +1133,6 @@
 
   </div>
 </dialog>
+
 </body>
 </html>

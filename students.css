@@ -16,6 +16,27 @@
     radial-gradient(circle at 82% 20%, rgba(0, 113, 227, 0.12), transparent 28%),
     linear-gradient(180deg, #fff 0%, #f7f8fa 100%);
 }
+.portal-forgot-password {
+  display: inline-block;
+
+  margin-top: 8px;
+  padding: 0;
+
+  border: 0;
+  background: none;
+
+  color: var(--accent);
+
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 650;
+
+  cursor: pointer;
+}
+
+.portal-forgot-password:hover {
+  text-decoration: underline;
+}
 
 .student-hero::after {
   content: "";

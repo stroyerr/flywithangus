@@ -1240,3 +1240,304 @@ a[aria-current="page"] {
   }
 
 }
+
+/* ==========================================================
+   ENDORSEMENTS NAV BUTTON
+========================================================== */
+
+.admin-nav-button {
+  border: 0;
+  padding: 0;
+
+  background: none;
+
+  color: #515154;
+
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 650;
+
+  cursor: pointer;
+
+  transition: color 160ms ease;
+}
+
+.admin-nav-button:hover {
+  color: var(--accent);
+}
+
+/* ==========================================================
+   ENDORSEMENT REGISTER
+========================================================== */
+
+.endorsement-dialog {
+  width: min(900px, calc(100% - 32px));
+  max-width: 900px;
+}
+
+.endorsement-dialog-card {
+  min-height: 480px;
+}
+
+.endorsement-toolbar {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr) auto;
+
+  gap: 12px;
+
+  margin-bottom: 22px;
+}
+
+
+.endorsement-list {
+  display: grid;
+
+  gap: 11px;
+}
+
+
+.endorsement-item {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr) auto;
+
+  align-items: start;
+
+  gap: 20px;
+
+  padding: 18px;
+
+  border: 1px solid var(--line);
+  border-radius: 16px;
+
+  background: #fafbfc;
+
+  transition:
+    background 150ms ease,
+    border-color 150ms ease;
+}
+
+.endorsement-item:hover {
+  background: #fff;
+
+  border-color:
+    rgba(0, 113, 227, 0.18);
+}
+
+
+.endorsement-item-main {
+  display: grid;
+
+  gap: 6px;
+}
+
+
+.endorsement-item-heading {
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+
+  flex-wrap: wrap;
+}
+
+
+.endorsement-item-heading strong {
+  color: var(--text);
+
+  font-size: 0.9rem;
+}
+
+
+.endorsement-student-name {
+  color: var(--accent);
+
+  font-size: 0.68rem;
+  font-weight: 750;
+}
+
+
+.endorsement-meta {
+  color: var(--muted);
+
+  font-size: 0.71rem;
+
+  line-height: 1.5;
+}
+
+
+.endorsement-notes {
+  margin: 3px 0 0;
+
+  color: #55585d;
+
+  font-size: 0.74rem;
+
+  line-height: 1.45;
+}
+
+
+.endorsement-status {
+  display: inline-flex;
+
+  min-height: 27px;
+
+  align-items: center;
+
+  padding: 0 9px;
+
+  border-radius: 999px;
+
+  background:
+    rgba(19, 115, 51, 0.09);
+
+  color: #137333;
+
+  font-size: 0.63rem;
+  font-weight: 750;
+
+  white-space: nowrap;
+}
+
+
+.endorsement-status.is-expiring {
+  background:
+    rgba(180, 120, 0, 0.1);
+
+  color:
+    #8a5a00;
+}
+
+
+.endorsement-status.is-expired {
+  background:
+    rgba(180, 35, 24, 0.08);
+
+  color:
+    #b42318;
+}
+
+
+.endorsement-status.no-expiry {
+  background:
+    #eef1f4;
+
+  color:
+    #55585d;
+}
+
+
+.endorsement-full-field {
+  margin-top: 18px;
+}
+
+
+.endorsement-full-field textarea {
+  width: 100%;
+
+  padding: 13px;
+
+  border:
+    1px solid rgba(29, 29, 31, 0.14);
+
+  border-radius: 12px;
+
+  outline: none;
+
+  resize: vertical;
+
+  background: #fff;
+
+  color: var(--text);
+
+  font: inherit;
+  font-size: 0.82rem;
+
+  line-height: 1.5;
+}
+
+
+.endorsement-full-field textarea:focus {
+  border-color:
+    rgba(0, 113, 227, 0.58);
+
+  box-shadow:
+    0 0 0 4px rgba(0, 113, 227, 0.09);
+}
+
+
+@media (max-width: 650px) {
+
+  .endorsement-toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .endorsement-item {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+/* ==========================================================
+   ENDORSEMENT ADMIN ACTIONS
+========================================================== */
+
+.endorsement-item-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 7px;
+
+  margin-top: 10px;
+}
+
+
+.endorsement-action-button {
+  min-height: 31px;
+
+  padding: 0 10px;
+
+  border: 1px solid rgba(29, 29, 31, 0.12);
+  border-radius: 9px;
+
+  background: #fff;
+
+  color: #515154;
+
+  font: inherit;
+  font-size: 0.67rem;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease;
+}
+
+
+.endorsement-action-button:hover {
+  background: #f5f6f8;
+
+  border-color:
+    rgba(29, 29, 31, 0.2);
+}
+
+
+.endorsement-action-button.is-delete {
+  color: #b42318;
+}
+
+
+.endorsement-action-button.is-delete:hover {
+  background:
+    rgba(180, 35, 24, 0.06);
+
+  border-color:
+    rgba(180, 35, 24, 0.18);
+}

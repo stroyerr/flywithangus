@@ -22,6 +22,207 @@
     visibility 220ms ease;
 }
 
+/* ==========================================================
+   ENDORSEMENTS
+========================================================== */
+
+.student-endorsements-section {
+  margin-top: 22px;
+
+  padding: 26px;
+
+  border: 1px solid var(--line);
+  border-radius: 22px;
+
+  background: #fff;
+
+  box-shadow:
+    0 10px 34px rgba(0, 0, 0, 0.035);
+}
+
+
+.dashboard-section-heading {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  margin-bottom: 20px;
+}
+
+
+.dashboard-section-heading h2 {
+  margin: 5px 0 0;
+
+  font-size: 1.65rem;
+
+  letter-spacing: -0.045em;
+}
+
+
+.dashboard-card-label {
+  margin: 0;
+
+  color: var(--accent);
+
+  font-size: 0.68rem;
+  font-weight: 800;
+
+  letter-spacing: 0.1em;
+
+  text-transform: uppercase;
+}
+
+
+.endorsement-count {
+  display: grid;
+
+  min-width: 34px;
+  height: 34px;
+
+  place-items: center;
+
+  padding: 0 10px;
+
+  border-radius: 999px;
+
+  background:
+    rgba(0, 113, 227, 0.08);
+
+  color: var(--accent);
+
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+
+.student-endorsement-list {
+  display: grid;
+
+  gap: 10px;
+}
+
+
+.student-endorsement-item {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr) auto;
+
+  align-items: start;
+
+  gap: 18px;
+
+  padding: 17px;
+
+  border: 1px solid var(--line);
+  border-radius: 15px;
+
+  background: #fafbfc;
+}
+
+
+.student-endorsement-main {
+  display: grid;
+
+  gap: 5px;
+}
+
+
+.student-endorsement-main strong {
+  font-size: 0.88rem;
+}
+
+
+.student-endorsement-meta {
+  color: var(--muted);
+
+  font-size: 0.71rem;
+
+  line-height: 1.5;
+}
+
+
+.student-endorsement-text {
+  margin: 7px 0 0;
+
+  color: #55585d;
+
+  font-size: 0.75rem;
+
+  line-height: 1.5;
+
+  white-space: pre-wrap;
+}
+
+
+.student-endorsement-status {
+  display: inline-flex;
+
+  min-height: 27px;
+
+  align-items: center;
+
+  padding: 0 9px;
+
+  border-radius: 999px;
+
+  background:
+    rgba(19, 115, 51, 0.09);
+
+  color: #137333;
+
+  font-size: 0.63rem;
+  font-weight: 750;
+
+  white-space: nowrap;
+}
+
+
+.student-endorsement-status.no-expiry {
+  background: #eef1f4;
+
+  color: #55585d;
+}
+
+
+.student-endorsement-status.is-expiring {
+  background:
+    rgba(180, 120, 0, 0.1);
+
+  color: #8a5a00;
+}
+
+
+.student-endorsement-status.is-expired {
+  background:
+    rgba(180, 35, 24, 0.08);
+
+  color: #b42318;
+}
+
+
+.dashboard-empty-state {
+  padding: 30px;
+
+  color: var(--muted);
+
+  font-size: 0.8rem;
+
+  text-align: center;
+}
+
+
+@media (max-width: 600px) {
+
+  .student-endorsement-item {
+    grid-template-columns: 1fr;
+  }
+
+}
+
 .dashboard-loading.is-hidden {
   opacity: 0;
   visibility: hidden;
